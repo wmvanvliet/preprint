@@ -62,7 +62,7 @@ class ThreeLayerNet(nn.Module):
 
 
 class VGG16(nn.Module):
-    def __init__(self, image_size=64, num_channels=1, num_classes=200):
+    def __init__(self, image_size=64, num_channels=3, num_classes=200):
         super().__init__()
 
         self.features = nn.Sequential(
@@ -90,28 +90,23 @@ class VGG16(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
-            # nn.Conv2d(256, 512, kernel_size=3, padding=1),
-            # nn.BatchNorm2d(512),
-            # nn.ReLU(inplace=True),
-            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            # nn.BatchNorm2d(512),
-            # nn.ReLU(inplace=True),
-            # nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(256, 512, kernel_size=3, padding=1),
+            nn.BatchNorm2d(512),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.BatchNorm2d(512),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
-        if image_size == 64:
-            size = 8
-        elif image_size == 128:
-            size = 7
-
         self.classifier = nn.Sequential(
-            nn.Linear(256 * size * size, 256),
+            nn.Linear(512 * 3 * 3, 4096),
             nn.ReLU(True),
-            #nn.Dropout(),
-            #nn.Linear(4096, 4096),
-            #nn.ReLU(True),
-            #nn.Dropout(),
-            nn.Linear(256, num_classes),
+            nn.Dropout(),
+            nn.Linear(4096, 4096),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(4096, num_classes),
         )
 
         self.initialize_weights()
@@ -137,3 +132,4 @@ class VGG16(nn.Module):
 
 twolayer = TwoLayerNet
 alexnet = models.alexnet
+vgg = VGG16

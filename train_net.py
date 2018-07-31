@@ -102,7 +102,7 @@ def main():
     train_dataset = datasets.ImageFolder(
         traindir,
         transforms.Compose([
-            transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(64),
+            transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(60),
             transforms.ToTensor(),
             normalize,
         ]))
@@ -113,7 +113,7 @@ def main():
         model = networks.__dict__[args.arch](pretrained=True)
     else:
         print("=> creating model '{}'".format(args.arch))
-        model = networks.__dict__[args.arch](num_classes=len(train_dataset.classes))
+        model = networks.__dict__[args.arch](num_classes=200)
 
     if args.gpu is not None:
         model = model.cuda(args.gpu)
@@ -145,6 +145,11 @@ def main():
             optimizer.load_state_dict(checkpoint['optimizer'])
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(args.resume, checkpoint['epoch']))
+            current_num_classes = num_classes(model)
+            target_num_classes = len(train_dataset.classes)
+            if current_num_classes != target_num_classes:
+                print("=> changing number of classes from %d to %d" % (current_num_classes, target_num_classes))
+                model = add_classes(model, target_num_classes - current_num_classes).cuda()
         else:
             print("=> no checkpoint found at '{}'".format(args.resume))
 
@@ -162,7 +167,7 @@ def main():
     val_loader = torch.utils.data.DataLoader(
         datasets.ImageFolder(valdir, transforms.Compose([
             transforms.Resize(256) if args.arch == 'alexnet' else transforms.Resize(64),
-            transforms.CenterCrop(224) if args.arch == 'alexnet' else transforms.CenterCrop(64),
+            transforms.CenterCrop(224) if args.arch == 'alexnet' else transforms.CenterCrop(60),
             transforms.ToTensor(),
             normalize,
         ])),
@@ -337,6 +342,23 @@ def accuracy(output, target, topk=(1,)):
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 
+def add_classes(model, n):
+    modulelist = list(model.classifier.modules())[1:]
+    final_layer = modulelist.pop()
+    num_classes = final_layer.weight.shape[0]
+    new_final_layer = nn.Linear(4096, num_classes + n)
+    nn.init.normal_(new_final_layer.weight, 0, 0.01)
+    nn.init.constant_(new_final_layer.bias, 0)
+    #new_final_layer.weight[:num_classes, :] = final_layer.weight
+    #new_final_layer.bias[:num_classes] = final_layer.bias
+    modulelist.append(new_final_layer)
+    model.classifier = nn.Sequential(*modulelist)
+    return model
+
+def num_classes(model):
+    final_layer = list(model.classifier.modules())[-1]
+    num_classes = final_layer.weight.shape[0]
+    return num_classes
 
 if __name__ == '__main__':
     main()
