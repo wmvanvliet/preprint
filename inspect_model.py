@@ -3,15 +3,16 @@ from torchvision import transforms, datasets
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib import pyplot as plt
 import numpy as np
+from tqdm import tqdm
 
 import networks
 
-model = networks.vgg(num_classes=200)
+model = networks.vgg(num_classes=400)
 model.features = torch.nn.DataParallel(model.features)
-checkpoint = torch.load('checkpoint.pth.tar')
+checkpoint = torch.load('models/vgg_first_images_then_words.pth.tar')
 model.load_state_dict(checkpoint['state_dict'])
 modulelist = list(model.features.modules())[2:] + list(model.classifier.modules())[1:]
-model = model.cpu()
+model = model.cuda()
 
 dataset = datasets.ImageFolder(
     '/l/vanvlm1/tiny_word_image/val',
@@ -22,6 +23,9 @@ dataset = datasets.ImageFolder(
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 )
+data_loader = torch.utils.data.DataLoader(
+    dataset, batch_size=256, shuffle=False, num_workers=4,
+    pin_memory=True)
 
 
 def vis_layer(layer, img, num_cols=8):
@@ -34,7 +38,7 @@ def vis_layer(layer, img, num_cols=8):
     plt.imshow(X[0])
 
     # Run the image through the layers
-    X2 = X.unsqueeze(0)
+    X2 = X.unsqueeze(0).cuda()
     for i in range(layer + 1):
         X2 = modulelist[i](X2)
     X2 = X2.cpu().detach().numpy()
@@ -88,4 +92,20 @@ def text_phantom(text, size, fontsize=14, font='arial'):
     draw.text(offset, text, font=pil_font, fill="#000000")
 
     # Convert the canvas into an array with values in [0, 1]
-    return torch.tensor(np.asarray(canvas) / 255.0, dtype=torch.float32).transpose((2, 1, 0)).unsqueeze(0)
+    return torch.tensor(np.asarray(canvas) / 255.0, dtype=torch.float32).permute(2, 0, 1)
+
+def collect_output(layer):
+    pbar = tqdm(total=len(data_loader))
+    output = []
+    word = []
+    for X, y in data_loader:
+        X = X.cuda()
+        # Run the image through the layers
+        for i in range(layer + 1):
+            X = modulelist[i](X)
+        output.append(X.cpu().detach().numpy())
+        word.append(y >= 200)
+        pbar.update(1)
+    pbar.close()
+    return np.vstack(output), np.hstack(word).astype(bool)
+
