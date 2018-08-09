@@ -106,6 +106,7 @@ def main():
             transforms.ToTensor(),
             normalize,
         ]))
+    target_num_classes = len(train_dataset.classes)
 
     # create model
     if args.pretrained:
@@ -113,7 +114,7 @@ def main():
         model = networks.__dict__[args.arch](pretrained=True)
     else:
         print("=> creating model '{}'".format(args.arch))
-        model = networks.__dict__[args.arch](num_classes=200)
+        model = networks.__dict__[args.arch](num_classes=target_num_classes)
 
     if args.gpu is not None:
         model = model.cuda(args.gpu)
@@ -146,7 +147,6 @@ def main():
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(args.resume, checkpoint['epoch']))
             current_num_classes = num_classes(model)
-            target_num_classes = len(train_dataset.classes)
             if current_num_classes != target_num_classes:
                 print("=> changing number of classes from %d to %d" % (current_num_classes, target_num_classes))
                 model = add_classes(model, target_num_classes - current_num_classes).cuda()

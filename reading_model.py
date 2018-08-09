@@ -116,8 +116,8 @@ def dd_helper(layer, iterations, lr, img=None):
             out = modulelist[j](out)
         loss = out.norm()
         loss.backward()
+
         input.data = input.data + lr * input.grad.data
-    
     return input.cpu().detach().numpy()[0]
 
 def vis_layer(layer, img, num_cols=8):

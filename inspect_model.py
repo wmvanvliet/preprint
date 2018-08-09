@@ -11,11 +11,12 @@ model = networks.vgg(num_classes=400)
 model.features = torch.nn.DataParallel(model.features)
 checkpoint = torch.load('models/vgg_first_images_then_words.pth.tar')
 model.load_state_dict(checkpoint['state_dict'])
+model = model.eval()
 modulelist = list(model.features.modules())[2:] + list(model.classifier.modules())[1:]
 model = model.cuda()
 
 dataset = datasets.ImageFolder(
-    '/l/vanvlm1/tiny_word_image/val',
+    '/l/vanvlm1/word_stimuli/symbols',
     transforms.Compose([
         transforms.Resize(64),
         transforms.CenterCrop(60),
