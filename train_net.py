@@ -12,14 +12,16 @@ import torch
 import torch.nn as nn
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
-import torch.distributed as dist
 import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 
+from tensorboardX import SummaryWriter
+
 import networks
+from h5_dataset import H5File
 
 model_names = sorted(name for name in networks.__dict__
     if name.islower() and not name.startswith("__")
@@ -37,12 +39,14 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--epochs', default=90, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
+parser.add_argument('--start-epoch', default=-1, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('-b', '--batch-size', default=256, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 parser.add_argument('--lr', '--learning-rate', default=0.1, type=float,
                     metavar='LR', help='initial learning rate')
+parser.add_argument('--drop-lr', '--drop-learning-rate', default=30, type=int,
+                    metavar='N', help='drop learning rate after this many epochs.')
 parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                     help='momentum')
 parser.add_argument('--weight-decay', '--wd', default=1e-4, type=float,
@@ -53,24 +57,21 @@ parser.add_argument('--resume', default='', type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
-parser.add_argument('--pretrained', dest='pretrained', action='store_true',
-                    help='use pre-trained model')
-parser.add_argument('--world-size', default=1, type=int,
-                    help='number of distributed processes')
-parser.add_argument('--dist-url', default='tcp://224.66.41.62:23456', type=str,
-                    help='url used to set up distributed training')
-parser.add_argument('--dist-backend', default='gloo', type=str,
-                    help='distributed backend')
 parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 parser.add_argument('--gpu', default=None, type=int,
                     help='GPU id to use.')
+parser.add_argument('--log', '-l', metavar='FILE', default=None,
+                    help='filename to write the log to')
+parser.add_argument('--attach', action='store_true',
+                    help='attach a word recognition classifier')
 
 best_prec1 = 0
+device = torch.device('cpu')
 
 
 def main():
-    global args, best_prec1
+    global args, best_prec1, device, summary
     args = parser.parse_args()
 
     if args.seed is not None:
@@ -87,46 +88,38 @@ def main():
         warnings.warn('You have chosen a specific GPU. This will completely '
                       'disable data parallelism.')
 
-    args.distributed = args.world_size > 1
-
-    if args.distributed:
-        dist.init_process_group(backend=args.dist_backend, init_method=args.dist_url,
-                                world_size=args.world_size)
+    if args.log is not None:
+        print('Writing tensorboard log to', args.log)
+        summary = SummaryWriter(args.log)
 
     # Data loading code
-    traindir = os.path.join(args.data, 'train')
-    valdir = os.path.join(args.data, 'val')
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
+    #train_dataset = H5File(
     train_dataset = datasets.ImageFolder(
-        traindir,
+        args.data + '/train',
         transforms.Compose([
-            transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(60),
+            #transforms.ToPILImage(mode='RGB'),
+            #transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(60),
+            transforms.CenterCrop(60),
             transforms.ToTensor(),
             normalize,
         ]))
     target_num_classes = len(train_dataset.classes)
 
     # create model
-    if args.pretrained:
-        print("=> using pre-trained model '{}'".format(args.arch))
-        model = networks.__dict__[args.arch](pretrained=True)
-    else:
-        print("=> creating model '{}'".format(args.arch))
-        model = networks.__dict__[args.arch](num_classes=target_num_classes)
+    print("=> creating model '{}'".format(args.arch))
+    #model = networks.__dict__[args.arch](num_classes=target_num_classes)
+    model = networks.__dict__[args.arch](num_classes=200)
 
     if args.gpu is not None:
-        model = model.cuda(args.gpu)
-    elif args.distributed:
-        model.cuda()
-        model = torch.nn.parallel.DistributedDataParallel(model)
+        device = torch.device(args.gpu)
     else:
-        if args.arch.startswith('alexnet') or args.arch.startswith('vgg'):
-            model.features = torch.nn.DataParallel(model.features)
-            model.cuda()
-        else:
-            model = torch.nn.DataParallel(model).cuda()
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+    print("=> using device", device)
+    model = model.to(device)
 
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().cuda(args.gpu)
@@ -140,7 +133,8 @@ def main():
         if os.path.isfile(args.resume):
             print("=> loading checkpoint '{}'".format(args.resume))
             checkpoint = torch.load(args.resume)
-            args.start_epoch = checkpoint['epoch']
+            if(args.start_epoch) == -1:
+                args.start_epoch = checkpoint['epoch']
             best_prec1 = checkpoint['best_prec1']
             model.load_state_dict(checkpoint['state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer'])
@@ -149,28 +143,29 @@ def main():
             current_num_classes = num_classes(model)
             if current_num_classes != target_num_classes:
                 print("=> changing number of classes from %d to %d" % (current_num_classes, target_num_classes))
-                model = add_classes(model, target_num_classes - current_num_classes).cuda()
+                model = attach_classifier(model, target_num_classes).cuda()
+            elif args.attach:
+                print("=> attaching word classifier")
+                model = attach_classifier(model, target_num_classes).cuda()
         else:
             print("=> no checkpoint found at '{}'".format(args.resume))
 
     cudnn.benchmark = True
 
-    if args.distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-    else:
-        train_sampler = None
-
     train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=args.batch_size, shuffle=(train_sampler is None),
-        num_workers=args.workers, pin_memory=True, sampler=train_sampler)
+        train_dataset, batch_size=args.batch_size, shuffle=True,
+        num_workers=args.workers, pin_memory=True)
 
     val_loader = torch.utils.data.DataLoader(
-        datasets.ImageFolder(valdir, transforms.Compose([
-            transforms.Resize(256) if args.arch == 'alexnet' else transforms.Resize(64),
-            transforms.CenterCrop(224) if args.arch == 'alexnet' else transforms.CenterCrop(60),
-            transforms.ToTensor(),
-            normalize,
-        ])),
+        #H5File(args.data + '/val.h5',
+        datasets.ImageFolder(args.data + '/val',
+            transforms.Compose([
+                #transforms.ToPILImage(mode='RGB'),
+                transforms.Resize(256) if args.arch == 'alexnet' else transforms.Resize(64),
+                transforms.CenterCrop(224) if args.arch == 'alexnet' else transforms.CenterCrop(60),
+                transforms.ToTensor(),
+                normalize,
+            ])),
         batch_size=args.batch_size, shuffle=False,
         num_workers=args.workers, pin_memory=True)
 
@@ -178,9 +173,7 @@ def main():
         validate(val_loader, model, criterion)
         return
 
-    for epoch in range(args.start_epoch, args.epochs):
-        if args.distributed:
-            train_sampler.set_epoch(epoch)
+    for epoch in range(0 if args.start_epoch == -1 else args.start_epoch, args.epochs):
         adjust_learning_rate(optimizer, epoch)
 
         # train for one epoch
@@ -202,6 +195,7 @@ def main():
 
 
 def train(train_loader, model, criterion, optimizer, epoch):
+    print("=> training on device", device)
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -216,9 +210,8 @@ def train(train_loader, model, criterion, optimizer, epoch):
         # measure data loading time
         data_time.update(time.time() - end)
 
-        if args.gpu is not None:
-            input = input.cuda(args.gpu, non_blocking=True)
-        target = target.cuda(args.gpu, non_blocking=True)
+        input = input.to(device, non_blocking=True)
+        target = target.to(device, non_blocking=True)
 
         # compute output
         output = model(input)
@@ -246,8 +239,14 @@ def train(train_loader, model, criterion, optimizer, epoch):
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                   'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
                   'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-                   epoch, i, len(train_loader), batch_time=batch_time,
-                   data_time=data_time, loss=losses, top1=top1, top5=top5))
+                      epoch, i, len(train_loader), batch_time=batch_time,
+                      data_time=data_time, loss=losses, top1=top1, top5=top5))
+
+        # Write tensorboard stuff
+        if args.log is not None:
+            summary.add_scalar('loss', losses.val, i)
+            summary.add_scalar('Prec@1', top1.val, i)
+            summary.add_scalar('Prec@5', top5.val, i)
 
 
 def validate(val_loader, model, criterion):
@@ -262,9 +261,8 @@ def validate(val_loader, model, criterion):
     with torch.no_grad():
         end = time.time()
         for i, (input, target) in enumerate(val_loader):
-            if args.gpu is not None:
-                input = input.cuda(args.gpu, non_blocking=True)
-            target = target.cuda(args.gpu, non_blocking=True)
+            input = input.to(device, non_blocking=True)
+            target = target.to(device, non_blocking=True)
 
             # compute output
             output = model(input)
@@ -320,8 +318,8 @@ class AverageMeter(object):
 
 
 def adjust_learning_rate(optimizer, epoch):
-    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = args.lr * (0.1 ** (epoch // 30))
+    """Sets the learning rate to the initial LR decayed by 10 every drop_lr epochs"""
+    lr = args.lr * (0.1 ** (epoch // args.drop_lr))
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
@@ -342,18 +340,63 @@ def accuracy(output, target, topk=(1,)):
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 
-def add_classes(model, n):
-    modulelist = list(model.classifier.modules())[1:]
-    final_layer = modulelist.pop()
-    num_classes = final_layer.weight.shape[0]
-    new_final_layer = nn.Linear(4096, num_classes + n)
-    nn.init.normal_(new_final_layer.weight, 0, 0.01)
-    nn.init.constant_(new_final_layer.bias, 0)
-    #new_final_layer.weight[:num_classes, :] = final_layer.weight
-    #new_final_layer.bias[:num_classes] = final_layer.bias
-    modulelist.append(new_final_layer)
-    model.classifier = nn.Sequential(*modulelist)
-    return model
+
+class Visual(nn.Module):
+    def __init__(self, base_model, layer=27, num_classes=200):
+        super().__init__()
+
+        # Copy features from base model
+        #modulelist = list(base_model.features.modules())
+        #self.features = nn.Sequential(*modulelist[1:layer+2])
+        #for p in self.features.parameters():
+        #    p.requires_grad = False
+        self.features = base_model.features
+        for p in self.features.parameters():
+            p.requires_grad = False
+
+        # classifier1 = nn.Linear(4608, 4096)
+        # classifier2 = nn.Linear(4096, 4096)
+        # classifier3 = nn.Linear(4096, num_classes)
+        # nn.init.normal_(classifier1.weight, 0, 0.01)
+        # nn.init.constant_(classifier1.bias, 0)
+        # nn.init.normal_(classifier2.weight, 0, 0.01)
+        # nn.init.constant_(classifier2.bias, 0)
+        # nn.init.normal_(classifier3.weight, 0, 0.01)
+        # nn.init.constant_(classifier3.bias, 0)
+        #
+        # self.classifier = nn.Sequential(
+        #     classifier1,
+        #     nn.ReLU(True),
+        #     nn.Dropout(),
+        #     classifier2,
+        #     nn.ReLU(True),
+        #     nn.Dropout(),
+        #     classifier3,
+        # )
+
+
+        # Attach new classifier
+        modulelist = list(base_model.classifier.modules())[1:]
+        modulelist[0].requires_grad=False
+        for module in modulelist:
+            module.requires_grad = False
+        modulelist.pop()
+        classifier3 = nn.Linear(4096, num_classes)
+        nn.init.normal_(classifier3.weight, 0, 0.01)
+        nn.init.constant_(classifier3.bias, 0)
+        modulelist.append(classifier3)
+        self.classifier = nn.Sequential(*modulelist)
+
+        print(self)
+
+    def forward(self, X):
+        out = self.features(X)
+        out = out.view(out.size(0), -1)
+        return self.classifier(out)
+
+
+def attach_classifier(model, n):
+    return Visual(model, num_classes=n)
 
 def num_classes(model):
     final_layer = list(model.classifier.modules())[-1]

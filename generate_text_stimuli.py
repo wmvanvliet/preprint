@@ -11,6 +11,7 @@ from tqdm import tqdm
 parser = argparse.ArgumentParser(description='Generate text stimuli')
 parser.add_argument('path', type=str, help='The path to write the dataset to.')
 parser.add_argument('set', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
+parser.add_argument('words', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
 args = parser.parse_args()
 
 # Limits

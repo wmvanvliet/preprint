@@ -1,9 +1,10 @@
 import mne
-from scipy.io import loadmat, savemat
 import numpy as np
 import pandas as pd
 import unicodedata
 from tqdm import tqdm
+from matplotlib import pyplot as plt
+from scipy.io import loadmat
 import rsa
 
 def strip_accents(s):
@@ -41,8 +42,8 @@ for word in word2vec_words:
     for subject in range(20):
         ev = mne.read_evokeds(evoked_fname.format(subject=subject + 1, word=word))[0]
         ev.decimate(4)
-        #ev.info.normalize_proj()
-        #ev = mne.whiten_evoked(ev, noise_cov)
+        ev.info.normalize_proj()
+        ev = mne.whiten_evoked(ev, noise_cov, diag=True)
         if evoked is None:
             evoked = ev
         else:
@@ -51,6 +52,26 @@ for word in word2vec_words:
     evoked.data /= 20
     evokeds.append(evoked)
 
-#rsa_word2vec = rsa.rsa_evokeds(evokeds, word2vec, spatial_radius=0.001, n_jobs=4, verbose=True)
-#rsa_length = rsa.rsa_evokeds(evokeds, stimuli['letters'].values[:, None], model_dsm_metric='euclidean', spatial_radius=0.001, n_jobs=4, verbose=True)
-#rsa_category = rsa.rsa_evokeds(evokeds, pd.get_dummies(stimuli['Category']).values, spatial_radius=0.001, n_jobs=4, verbose=True)
+mne.write_evokeds('/l/vanvlm1/redness1/ga-ave.fif', evokeds)
+np.save('/l/vanvlm1/redness1/word2vec.npy', word2vec)
+stimuli.to_csv('/l/vanvlm1/redness1/stimuli.csv')
+
+# Create image files
+for word in tqdm(stimuli['Finnish']):
+    dpi = 96.
+    f = plt.figure(figsize=(128 / dpi, 128 / dpi), dpi=dpi)
+    ax = f.add_axes([0, 0, 1, 1])
+
+    fontsize = 19
+    family = 'arial'
+    ax.text(0.5, 0.5, word, ha='center', va='center',
+            fontsize=fontsize, family=family)
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+    plt.axis('off')
+    plt.savefig('/l/vanvlm1/redness1/images/%s.JPEG' % strip_accents(word))
+    plt.close()
+
+# rsa_word2vec = rsa.rsa_evokeds(evokeds, word2vec, spatial_radius=0.001, n_jobs=4, verbose=True)
+# rsa_length = rsa.rsa_evokeds(evokeds, stimuli['letters'].values[:, None], model_dsm_metric='euclidean', spatial_radius=0.001, n_jobs=4, verbose=True)
+# rsa_category = rsa.rsa_evokeds(evokeds, pd.get_dummies(stimuli['Category']).values, spatial_radius=0.001, n_jobs=4, verbose=True)
