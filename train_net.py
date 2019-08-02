@@ -59,7 +59,7 @@ parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
 parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
-parser.add_argument('--gpu', default=None, type=int,
+parser.add_argument('--gpu', default=None, type=str,
                     help='GPU id to use.')
 parser.add_argument('--log', '-l', metavar='FILE', default=None,
                     help='filename to write the log to')
@@ -351,8 +351,8 @@ class Visual(nn.Module):
         #for p in self.features.parameters():
         #    p.requires_grad = False
         self.features = base_model.features
-        for p in self.features.parameters():
-            p.requires_grad = False
+        #for p in self.features.parameters():
+        #    p.requires_grad = False
 
         # classifier1 = nn.Linear(4608, 4096)
         # classifier2 = nn.Linear(4096, 4096)
@@ -377,9 +377,9 @@ class Visual(nn.Module):
 
         # Attach new classifier
         modulelist = list(base_model.classifier.modules())[1:]
-        modulelist[0].requires_grad=False
-        for module in modulelist:
-            module.requires_grad = False
+        #modulelist[0].requires_grad=False
+        #for module in modulelist:
+        #    module.requires_grad = False
         modulelist.pop()
         classifier3 = nn.Linear(4096, num_classes)
         nn.init.normal_(classifier3.weight, 0, 0.01)
