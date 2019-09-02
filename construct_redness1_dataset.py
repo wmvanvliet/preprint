@@ -41,7 +41,7 @@ for i, word in enumerate(word2vec_words):
     #evoked = None
     for subject in range(20):
         ev = mne.read_evokeds(evoked_fname.format(subject=subject + 1, word=word))[0]
-        ev.decimate(4)
+        ev.decimate(3)
         ev.info.normalize_proj()
         ev = mne.whiten_evoked(ev, noise_cov, diag=True)
         ev.comment = word
@@ -60,19 +60,21 @@ np.save('/l/vanvlm1/redness1/word2vec.npy', word2vec)
 stimuli.to_csv('/l/vanvlm1/redness1/stimuli.csv')
 
 # Create image files
+plt.close('all')
 dpi = 96.
-f = plt.figure(figsize=(128 / dpi, 128 / dpi), dpi=dpi)
+f = plt.figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
 for word in tqdm(stimuli['ITEM']):
     plt.clf()
     ax = f.add_axes([0, 0, 1, 1])
     fontsize = 19
-    family = 'arial'
+    family = 'courier new'
     ax.text(0.5, 0.5, word, ha='center', va='center',
             fontsize=fontsize, family=family)
     plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.axis('off')
     plt.savefig('/l/vanvlm1/redness1/images/%s.JPEG' % strip_accents(word))
+plt.close()
 
 # rsa_word2vec = rsa.rsa_evokeds(evokeds, word2vec, spatial_radius=0.001, n_jobs=4, verbose=True)
 # rsa_length = rsa.rsa_evokeds(evokeds, stimuli['letters'].values[:, None], model_dsm_metric='euclidean', spatial_radius=0.001, n_jobs=4, verbose=True)

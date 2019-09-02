@@ -4,6 +4,7 @@ import pandas as pd
 import unicodedata
 from tqdm import tqdm
 from matplotlib import pyplot as plt
+from matplotlib import font_manager as fm
 from scipy.io import loadmat
 import subprocess
 
@@ -32,8 +33,8 @@ all_epochs = []
 for subject in tqdm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20]):
     e = mne.read_epochs('/m/nbe/scratch/redness2/marijn/derivatives/sub-{subject:02d}/sub-{subject:02d}-task-naming_filt-ica_epo.fif'.format(subject=subject), preload=True)
     e.metadata = e.metadata.join(stimuli, on='word')
-    e.decimate(2)
-    e.pick_types(meg='mag')
+    e.decimate(3)
+    e.pick_types(meg='grad')
     all_epochs.append(e)
 all_epochs = mne.concatenate_epochs(all_epochs)
 
@@ -46,39 +47,53 @@ for i, row in ref.iterrows():
 all_epochs.metadata['label'] = [index[tuple(row[:4])] for _, row in all_epochs.metadata.iterrows()]
 
 # Compute noise cov
-noise_cov = mne.compute_covariance(all_epochs, tmin=-0.2)
-noise_cov.save('/l/vanvlm1/redness2/noise-cov.fif')
+# noise_cov = mne.compute_covariance(all_epochs, tmin=-0.2)
+# noise_cov.save('/l/vanvlm1/redness2/noise-cov.fif')
 
 # Save epochs
-all_epochs.save('/l/vanvlm1/redness1/all-epo.fif', overwrite=True)
+all_epochs.save('/l/vanvlm1/redness2/all-epo.fif', overwrite=True)
+
+fonts = {
+    'ubuntu mono': [None, '/u/45/vanvlm1/unix/.fonts/UbuntuMono-R.ttf'],
+    'courier': ['courier new', None],
+    'luxi mono regular': [None, '/u/45/vanvlm1/unix/.fonts/luximr.ttf'],
+    'lucida console': [None, '/u/45/vanvlm1/unix/.fonts/LucidaConsole-R.ttf'],
+    'lekton': [None, '/u/45/vanvlm1/unix/.fonts/Lekton-Regular.ttf'],
+    'dejavu sans mono': ['dejavu sans mono', None],
+    'times new roman': ['times new roman', None],
+    'arial': ['arial', None],
+    'arial black': ['arial black', None],
+    'verdana': ['verdana', None],
+    'comic sans ms': ['comic sans ms', None],
+    'georgia': ['georgia', None],
+    'liberation serif': ['liberation serif', None],
+    'impact': ['impact', None],
+    'roboto condensed': ['roboto condensed', None]
+}
 
 # Create image files
+plt.close('all')
+dpi = 96.
+f = plt.figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
 for label, meta in tqdm(all_epochs.metadata.query('modality=="wri"').groupby('label').aggregate('first').iterrows(), total=300):
-    fonts = {
-        'Ubuntu Mono': '/u/45/vanvlm1/unix/.fonts/UbuntuMono-R.ttf',
-        'Courier': 'Courier',
-        'Luxi Mono Regular': '/u/45/vanvlm1/unix/.fonts/luximr.ttf',
-        'Lucida Console': '/u/45/vanvlm1/unix/.fonts/LucidaConsole-R.TTF',
-        'Lekton': '/u/45/vanvlm1/unix/.fonts/Lekton-Regular.ttf',
-    }
-
-    subprocess.call([
-        'convert',
-        '-background', 'white',
-        '-fill', 'black',
-        '-font', fonts[meta.font],
-        '-pointsize', '19',
-        '-size', '128x128',
-        '-gravity', 'center',
-        'label:%s' % meta.word,
-        '/l/vanvlm1/redness2/images/%d.JPEG' % label
-    ])
+    plt.clf()
+    ax = f.add_axes([0, 0, 1, 1])
+    fontsize = 19
+    fontfamily, fontfile = fonts[meta.font.lower()]
+    fontprop = fm.FontProperties(family=fontfamily, fname=fontfile)
+    ax.text(0.5, 0.5, meta.word, ha='center', va='center',
+            fontsize=fontsize, fontproperties=fontprop)
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+    plt.axis('off')
+    plt.savefig('/l/vanvlm1/redness2/images/%d.JPEG' % label)
+plt.close()
 
 for label, meta in tqdm(all_epochs.metadata.query('modality=="pic"').groupby('label').aggregate('first').iterrows(), total=300):
     subprocess.call([
         'convert', '/m/nbe/archive/redness2/presentation/Presentation-Redness2-2015-06-29/stim_final20150610/%s' % meta.filename,
-        '-resize', '128x128^',
+        '-resize', '64x64^',
         '-gravity', 'center',
-        '-extent', '128x128',
+        '-extent', '64x64',
         '/l/vanvlm1/redness2/images/%d.JPEG' % label
     ])
