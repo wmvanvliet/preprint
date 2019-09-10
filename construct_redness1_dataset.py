@@ -27,35 +27,34 @@ stimuli = pd.read_excel(
 stimuli.index.name = 'word'
 stimuli['letters'] = stimuli['ITEM'].map(len)
 stimuli = stimuli.loc[word2vec_words]
-
-# Read noise cov
-cov_fname = '/m/nbe/scratch/redness1/MEG/source_localized/ico4/s{subject:02d}/solutions/s{subject:02d}_alldat05-20Hz-cov.fif'
-noise_cov = mne.read_cov(cov_fname.format(subject=1))
+stimuli = stimuli.reset_index()
 
 # Read in MEG data
 evoked_fname = '/m/nbe/scratch/redness1/MEG/filtered0_5-20Hz_evoked/s{subject:02d}/s{subject:02d}_{word}-ave.fif'
-evokeds = []
+cov_fname = '/m/nbe/scratch/redness1/MEG/source_localized/ico4/s{subject:02d}/solutions/s{subject:02d}_alldat05-20Hz-cov.fif'
+epochs_data = []
+epochs_metadata = []
 y = []
-pbar = tqdm(total=20 * 123)
-for i, word in enumerate(word2vec_words):
-    #evoked = None
-    for subject in range(20):
+pbar = tqdm(total=20 * len(stimuli))
+for subject in range(20):
+    for i, word in enumerate(word2vec_words):
         ev = mne.read_evokeds(evoked_fname.format(subject=subject + 1, word=word))[0]
-        ev.decimate(3)
+        noise_cov = mne.read_cov(cov_fname.format(subject=subject + 1))
+        ev.decimate(5)
         ev.info.normalize_proj()
         ev = mne.whiten_evoked(ev, noise_cov, diag=True)
-        ev.comment = word
-        y.append(i)
-        #if evoked is None:
-        #    evoked = ev
-        #else:
-        #    evoked.data += ev.data
-        evokeds.append(ev)
+        epochs_data.append(ev.data)
+        metadata = stimuli.iloc[i]
+        metadata['label'] = i
+        epochs_metadata.append(metadata)
         pbar.update(1)
-    #evoked.data /= 20
-    #evokeds.append(evoked)
 
-mne.write_evokeds('/l/vanvlm1/redness1/all-ave.fif', evokeds)
+epochs_metadata = pd.DataFrame(epochs_metadata)
+events = np.zeros((len(epochs_data), 3), dtype=np.int)
+events[:, 0] = np.arange(len(events))
+events[:, 2] = epochs_metadata.label
+epochs = mne.EpochsArray(np.array(epochs_data), ev.info, events, event_id={word: i for i, word in enumerate(word2vec_words)}, tmin=ev.times[0], metadata=epochs_metadata)
+epochs.save('/l/vanvlm1/redness1/all-epo.fif', overwrite=True)
 np.save('/l/vanvlm1/redness1/word2vec.npy', word2vec)
 stimuli.to_csv('/l/vanvlm1/redness1/stimuli.csv')
 
@@ -63,17 +62,17 @@ stimuli.to_csv('/l/vanvlm1/redness1/stimuli.csv')
 plt.close('all')
 dpi = 96.
 f = plt.figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
-for word in tqdm(stimuli['ITEM']):
+for word in tqdm(stimuli['word']):
     plt.clf()
     ax = f.add_axes([0, 0, 1, 1])
-    fontsize = 19
+    fontsize = 8
     family = 'courier new'
     ax.text(0.5, 0.5, word, ha='center', va='center',
             fontsize=fontsize, family=family)
     plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.axis('off')
-    plt.savefig('/l/vanvlm1/redness1/images/%s.JPEG' % strip_accents(word))
+    plt.savefig('/l/vanvlm1/redness1/images/%s.JPEG' % word)
 plt.close()
 
 # rsa_word2vec = rsa.rsa_evokeds(evokeds, word2vec, spatial_radius=0.001, n_jobs=4, verbose=True)

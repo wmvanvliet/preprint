@@ -98,13 +98,13 @@ class VGG16(nn.Module):
         )
 
         self.classifier = nn.Sequential(
-            nn.Linear(512 * 3 * 3, 4096),
+            nn.Linear(512 * 3 * 3, 1024),
             nn.ReLU(True),
             nn.Dropout(),
-            nn.Linear(4096, 4096),
+            nn.Linear(1024, 1024),
             nn.ReLU(True),
             nn.Dropout(),
-            nn.Linear(4096, num_classes),
+            nn.Linear(1024, num_classes),
         )
 
         self.initialize_weights()

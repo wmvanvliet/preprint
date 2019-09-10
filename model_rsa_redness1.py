@@ -2,21 +2,13 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import pandas as pd
-from scipy.io import loadmat
+from scipy.spatial import distance
+from scipy.stats import zscore
 import rsa
 import mne
 import numpy as np
 import sys
-import os
 from matplotlib import pyplot as plt
-import mkl
-mkl.set_num_threads(4)
-
-os.environ['MKL_NUM_THREADS'] = '4'
-os.environ['NUMEXPR_NUM_THREADS'] = '4'
-os.environ['OMP_NUM_THREADS'] = '4'
-os.environ['VECLIB_MAXIMUM_THREADS'] = '4'
-os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
@@ -30,16 +22,13 @@ preproc = transforms.Compose([
                          std=[0.229, 0.224, 0.225]),
 ])
 
-epochs = mne.read_epochs('/l/vanvlm1/redness2/all-epo.fif')
-epochs.shift_time(-0.044)  # Compensate for projector delay
-
-stimuli = epochs.metadata.query("modality=='wri'").groupby('label').aggregate('first')
-#stimuli = epochs.metadata.query("modality=='pic'").groupby('label').aggregate('first')
+epochs = mne.read_epochs('/l/vanvlm1/redness1/all-epo.fif')
+stimuli = epochs.metadata.groupby('label').aggregate('first')
 #stimuli = epochs.metadata.query("modality=='wri' or modality=='pic'").groupby('label').aggregate('first')
 
 images = []
-for label in stimuli.index:
-    image = Image.open('/l/vanvlm1/redness2/images/%s.JPEG' % label)
+for label in stimuli.word:
+    image = Image.open('/l/vanvlm1/redness1/images/%s.JPEG' % label)
     image = 2.64 - preproc(image).unsqueeze(0)
     if image.shape[1] == 1:
         image = image.repeat(1, 3, 1, 1)
@@ -81,15 +70,7 @@ for i, layer in enumerate(model.classifier):
         classifier_outputs.append(out.detach().numpy().copy())
 #classifier_outputs.append(model.classifier(out).detach().numpy().copy())
 
-
-# Read in the word2vec vectors
-m = loadmat('/m/nbe/scratch/redness2/semantic_features/Ginter-300-5+5.mat')
-word2vec_words = [w[0][0] for w in m['sorted']['wordsNoscand'][0, 0]]
-#order = stimuli.index.get_indexer_for(word2vec_words)
-word2vec = m['sorted']['mat'][0, 0]
-sel = [word2vec_words.index(w) for w in stimuli.Noscand if w in word2vec_words]
-word2vec = word2vec[sel]
-word2vec_words = [word2vec_words[s] for s in sel]
+word2vec = np.load('/l/vanvlm1/redness1/word2vec.npy')
 
 dsm_models = [
     rsa.compute_dsm(feature_outputs[0], metric='correlation'),
@@ -104,7 +85,6 @@ dsm_models = [
     rsa.compute_dsm(word2vec, metric='cosine'),
 ]
 
-epochs = epochs['written']
 rsa_epochs = rsa.rsa_epochs(
     epochs,
     dsm_models,
@@ -112,7 +92,7 @@ rsa_epochs = rsa.rsa_epochs(
     spatial_radius=0.001,
     temporal_radius=0.05,
     epochs_dsm_metric='sqeuclidean',
-    n_folds=5,
+    n_folds=10,
     n_jobs=4,
     verbose=True,
 )
