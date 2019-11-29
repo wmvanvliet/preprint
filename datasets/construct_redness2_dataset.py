@@ -30,13 +30,25 @@ word2vec_words = [word2vec_words[s] for s in sel]
 np.save('/l/vanvlm1/redness2/word2vec.npy', word2vec)
 
 all_epochs = []
-for subject in tqdm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20]):
-    e = mne.read_epochs('/m/nbe/scratch/redness2/marijn/derivatives/sub-{subject:02d}/sub-{subject:02d}-task-naming_filt-ica_epo.fif'.format(subject=subject), preload=True)
-    e.metadata = e.metadata.join(stimuli, on='word')
-    e.decimate(3)
-    e.pick_types(meg='grad')
-    all_epochs.append(e)
+bad_subjects = [10, 11, 18]
+pbar = tqdm(total=20 * 3 * 3)
+for subject in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]:
+    if subject in bad_subjects:
+        print('Skipping', subject)
+        continue
+    for session in [1, 2, 3]:
+        for run in [1, 2, 3]:
+            epochs_fname = '/m/nbe/project/redness2/bids/derivatives/meg-derivatives/sub-{subject:02d}/ses-{session:02d}/sub-{subject:02d}_ses-{session:02d}_task-naming_run-{run:02d}_clean-epo.fif'
+            events_fname = '/m/nbe/project/redness2/bids/sub-{subject:02d}/ses-{session:02d}/meg/sub-{subject:02d}_ses-{session:02d}_task-naming_run-{run:02d}_events.tsv'
+            e = mne.read_epochs(epochs_fname.format(subject=subject, session=session, run=run), preload=True)
+            metadata = pd.read_csv(events_fname.format(subject=subject, session=session, run=run), sep='\t')
+            e.metadata = metadata.iloc[np.flatnonzero([len(d) == 0 for d in e.drop_log])]
+            e.decimate(3)
+            e.pick_types(meg='grad')
+            all_epochs.append(e)
+            pbar.update(1)
 all_epochs = mne.concatenate_epochs(all_epochs)
+pbar.close()
 
 # Compute class labels
 ref = all_epochs.metadata.drop_duplicates()

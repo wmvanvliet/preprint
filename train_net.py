@@ -45,8 +45,8 @@ parser.add_argument('-b', '--batch-size', default=256, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 parser.add_argument('--lr', '--learning-rate', default=0.1, type=float,
                     metavar='LR', help='initial learning rate')
-parser.add_argument('--drop-lr', '--drop-learning-rate', default=30, type=int,
-                    metavar='N', help='drop learning rate after this many epochs.')
+parser.add_argument('--drop-lr', '--drop-learning-rate', default=10, type=int,
+                    metavar='N', help='drop learning rate after this many epochs (default: 10)')
 parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                     help='momentum')
 parser.add_argument('--weight-decay', '--wd', default=1e-4, type=float,
@@ -111,7 +111,7 @@ def main():
     # create model
     print("=> creating model '{}'".format(args.arch))
     #model = networks.__dict__[args.arch](num_classes=target_num_classes)
-    model = networks.__dict__[args.arch](num_classes=400)
+    model = networks.__dict__[args.arch](num_classes=553)
 
     if args.gpu is not None:
         device = torch.device(args.gpu)
