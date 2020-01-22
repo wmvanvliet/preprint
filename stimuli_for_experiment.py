@@ -5,10 +5,11 @@
 90 Symbol string trials of 1.5 seconds: 135 seconds
 60 Question trials of 1 second: 60 seconds
 
-1050 trials in total
+1080 trials in total
 540 words
 270 consonant strings
 270 symbol strings
+
 180 question trials
 
 stimulus length: 3-5 letters
@@ -25,21 +26,44 @@ import numpy as np
 from tqdm import tqdm
 import itertools
 from scipy.io import loadmat
+from scipy.spatial import distance
+from libvoikko import Voikko
 
 # Use a very specific random generator with a specific seed so in the future,
 # this script will still generate the same stimuli.
 rng = np.random.Generator(np.random.PCG64(18420))
 
-# Load word2vec words. Filter for some desired properties
-m = loadmat('word2vec.mat')
-sel = np.array([np.all([l in 'abcdefghijklmnopqrstuvwxyzäöü' for l in word.strip()] + [3 <= len(word.strip()) <= 5])
-                for word in m['vocab']])
-vocab = [word.strip() for word in m['vocab'][sel]]
-vocab_sel_3 = np.flatnonzero([len(word) == 3 for word in vocab])
+# Setup Finnish and English dictionaries
+dict_fi = pd.read_csv('data/fi_full.txt', sep=' ', names=['word', 'freq'], dtype='str', keep_default_na=False, index_col=0, nrows=500_000)
+dict_en = pd.read_csv('data/en_full.txt', sep=' ', names=['word', 'freq'], dtype='str', keep_default_na=False, index_col=0)
+Voikko.setLibrarySearchPath('data/voikko')
+spell_dict_fi = Voikko('fi_FI', 'data/voikko')
+
+# Setup word2vec
+m = loadmat('data/word2vec.mat')
+w2v_vocab = {word.strip(): i for i, word in enumerate(m['vocab'])}
+
+alphabet = list('abcdefghijklmnopqrstuvwxyzäöü')
+consonants = list('bcdfghjklmnpqrstvwxz')
+
+# Filter Finnish words
+sel = np.array([np.all([
+    4 <= len(word) <= 6,
+    np.all([letter in alphabet for letter in word]),
+    word not in dict_en.index,
+    word in w2v_vocab,
+    spell_dict_fi.spell(word),
+]) for word in tqdm(dict_fi.index)])
+
+# Filter the word2vec data based on the selection defined above
+vocab = [word for i, word in enumerate(dict_fi.index) if sel[i]]
+freqs = dict_fi['freq'][sel].values.astype(int)
+vectors = m['vectors'][[w2v_vocab[w] for w in vocab]]
+
+# Create some selectors for different word lengths
 vocab_sel_4 = np.flatnonzero([len(word) == 4 for word in vocab])
 vocab_sel_5 = np.flatnonzero([len(word) == 5 for word in vocab])
-freqs = m['freqs'][0, sel]
-vectors = m['vectors'][sel]
+vocab_sel_6 = np.flatnonzero([len(word) == 6 for word in vocab])
 
 symbols = {
     's': '\u25FB', # Square
@@ -48,45 +72,89 @@ symbols = {
     'v': '\u25BD', # Triangle down
     'd': '\u25C7', # Diamond
 }
-consonants = list('bcdfghjklmnpqrstvwxz')
 
-rotations = [0, +15]
-fontsizes = [15, 30]
-noise_levels = [0.2, 0.5]
-fonts = ['Comic Sans MS', 'Times New Roman']
+rotations = [-15, 0, +15]
+fontsizes = [20, 30, 40]
+noise_levels = [0.2, 0.35, 0.5]
+fonts = ['Comic Sans MS', 'Impact', 'Times New Roman']
+
+def sel_words_w2v_dist(vocab_sel, n=60):
+    """Select words which are spread out in w2v space"""
+    sel = [vocab_sel[0]]
+    while len(sel) < n:
+        non_sel = np.setdiff1d(vocab_sel, sel)
+        # Distance to all the selected words in w2v space
+        vectors_sel = vectors[sel]
+        vectors_non_sel = vectors[non_sel]
+        next_sel = distance.cdist(vectors_sel, vectors_non_sel).sum(axis=0).argmax()
+        sel.append(non_sel[next_sel])
+    return np.array(sel)
 
 n_word_strings = 180
-word_strings = [vocab[i] for i in rng.choice(vocab_sel_3, 60)]
-word_strings += [vocab[i] for i in rng.choice(vocab_sel_4, 60)]
-word_strings += [vocab[i] for i in rng.choice(vocab_sel_5, 60)]
-rng.shuffle(word_strings)
+word_sel = np.hstack([sel_words_w2v_dist(vocab_sel_4, 60),
+                      sel_words_w2v_dist(vocab_sel_5, 60),
+                      sel_words_w2v_dist(vocab_sel_6, 60)])
+rng.shuffle(word_sel)
+word_strings = [vocab[i] for i in word_sel]
+word_freqs = freqs[word_sel]
+word_vectors = vectors[word_sel]
 
 n_symbol_strings = 90
-symbol_strings = [''.join(rng.choice(list(symbols.keys()), 3)) for _ in range(30)]
-symbol_strings += [''.join(rng.choice(list(symbols.keys()), 4)) for _ in range(30)]
-symbol_strings += [''.join(rng.choice(list(symbols.keys()), 5)) for _ in range(30)]
+symbol_strings = list(set(''.join(rng.choice(list(symbols.keys()), 4)) for _ in range(60)))[:30]
+symbol_strings += list(set(''.join(rng.choice(list(symbols.keys()), 5)) for _ in range(60)))[:30]
+symbol_strings += list(set(''.join(rng.choice(list(symbols.keys()), 6)) for _ in range(60)))[:30]
 rng.shuffle(symbol_strings)
 
-n_consonsant_strings = 90
-consonant_strings = [''.join(rng.choice(consonants, 3)) for _ in range(30)]
-consonant_strings += [''.join(rng.choice(consonants, 4)) for _ in range(30)]
-consonant_strings += [''.join(rng.choice(consonants, 5)) for _ in range(30)]
+n_consonant_strings = 90
+consonant_strings = list(set(''.join(rng.choice(consonants, 4)) for _ in range(60)))[:30]
+consonant_strings += list(set(''.join(rng.choice(consonants, 5)) for _ in range(60)))[:30]
+consonant_strings += list(set(''.join(rng.choice(consonants, 6)) for _ in range(60)))[:30]
 rng.shuffle(consonant_strings)
 
-types = (['word'] * n_word_strings) + (['symbols'] * n_symbol_strings) + (['consonants'] * n_consonsant_strings)
+types = (['word'] * n_word_strings) + (['symbols'] * n_symbol_strings) + (['consonants'] * n_consonant_strings)
+freqs = word_freqs.tolist() + ([np.nan] * n_symbol_strings) + ([np.nan] * n_consonant_strings)
+texts = word_strings + symbol_strings + consonant_strings
 
 stimuli = []
 stimuli_iter = zip(
-    types,
-    word_strings + symbol_strings + consonant_strings,
+    types, 
+    texts,
+    freqs,
     itertools.cycle(itertools.product(fonts, fontsizes, rotations, noise_levels)),
 )
-for type, text, (font, fontsize, rotation, noise_level) in stimuli_iter:
+for type, text, freq, (font, fontsize, rotation, noise_level) in stimuli_iter:
     if type == 'symbols':
         font = 'DejaVu Sans'  # Symbols only render correctly in this font
-    stimuli.append(dict(type=type, text=text, font=font, fontsize=fontsize, rotation=rotation, noise_level=noise_level))
-rng.shuffle(stimuli)
+    filename = f'{type}_{text}.png'
+    stimuli.append(dict(type=type, text=text, freq=freq, font=font, fontsize=fontsize, rotation=rotation, noise_level=noise_level, filename=filename))
 stimuli = pd.DataFrame(stimuli)
+
+def make_question(type, text, correct):
+    """Make a question to go with a stimulus."""
+    pos = rng.choice(range(len(text)))
+    slots = ['_'] * len(text)
+    if correct:
+        slots[pos] = text[pos]
+    else:
+        if type == 'word':
+            slots[pos] = rng.choice(np.setdiff1d(alphabet, [text[pos]]))
+        elif type == 'consonants':
+            slots[pos] = rng.choice(np.setdiff1d(consonants, [text[pos]]))
+        elif type == 'symbols':
+            slots[pos] = rng.choice(np.setdiff1d(list(symbols.keys()), [text[pos]]))
+        else:
+            raise ValueError('Invalid stimulus type')
+
+    return ' '.join(slots)
+
+corrects = rng.choice([True, False], len(stimuli))
+questions = [make_question(type, text, correct) for type, text, correct in zip(types, texts, corrects)]
+stimuli['question'] = questions
+stimuli['question_correct'] = corrects
+stimuli['question_filename'] = [f'{type}_{text}_question.png' for type, text in zip(types, texts)]
+
+assert len(np.unique(stimuli['text'])) == len(stimuli)
+stimuli.to_csv('data/presentation/stimuli.csv')
 
 # Create image files
 plt.close('all')
@@ -102,12 +170,16 @@ plt.plot([0.49, 0.51], [0.5, 0.5], color='black', linewidth=1)
 plt.plot([0.5, 0.5], [0.48, 0.52], color='black', linewidth=1)
 plt.xlim(0, 1)
 plt.ylim(0, 1)
-plt.savefig('data/presentation/stimuli/fixation_cross.JPEG')
+plt.savefig('data/presentation/stimuli/fixation_cross.png')
 
-def text_stimulus(type, text, font='DejaVu Sans', fontsize=30, rotation=0, noise_level=0):
+def plot_stimulus(type, text, filename, font='DejaVu Sans', fontsize=30, rotation=0, noise_level=0):
     plt.clf()
     ax = f.add_axes([0, 0, 1, 1])
     ax.set_facecolor((0.5, 0.5, 0.5))
+
+    if type == 'symbols':
+        for k, v in symbols.items():
+            text = text.replace(k, v)
 
     noise_level = noise_level
     noise = np.random.rand(width, height)
@@ -118,13 +190,59 @@ def text_stimulus(type, text, font='DejaVu Sans', fontsize=30, rotation=0, noise
 
     plt.xlim(0, 1)
     plt.ylim(0, 1)
-    plt.savefig(f'data/presentation/stimuli/{type}_{text}.JPEG')
+    plt.savefig(f'data/presentation/stimuli/{filename}')
+
+def plot_question(type, question, filename, font='DejaVu Sans', fontsize=30):
+    plt.clf()
+    ax = f.add_axes([0, 0, 1, 1])
+    ax.set_facecolor((0.5, 0.5, 0.5))
+
+    if type == 'symbols':
+        for k, v in symbols.items():
+            question = question.replace(k, v)
+
+    ax.text(0.5, 0.5, question, ha='center', va='center', family=font, fontsize=fontsize)
+
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+    plt.savefig(f'data/presentation/stimuli/{filename}')
 
 # Stimuli
 for i, stimulus in tqdm(stimuli.iterrows(), total=len(stimuli)):
-    if stimulus['type'] == 'symbols':
-        for k, v in symbols.items():
-            stimulus['text'] = stimulus['text'].replace(k, v)
-    text_stimulus(**stimulus)
+    plot_stimulus(type=stimulus['type'], text=stimulus['text'],
+                  filename=stimulus['filename'], font=stimulus['font'],
+                  fontsize=stimulus['fontsize'], rotation=stimulus['rotation'],
+                  noise_level=stimulus['noise_level'])
+    plot_question(type=stimulus['type'], question=stimulus['question'], filename=stimulus['question_filename'], font=stimulus['font'], fontsize=stimulus['fontsize'])
 
 plt.close()
+
+def build_run():
+    run = stimuli.iloc[rng.choice(np.arange(len(stimuli)), len(stimuli), replace=False)]
+    run = run.reset_index(drop=True)
+    question_every = len(stimuli) // 60
+    question_points = np.arange(0, len(stimuli), question_every) + rng.choice(np.arange(2, question_every), 60)
+    assert np.diff(question_points).min() > 2
+
+    output = ''
+    output += 'TEMPLATE "stimulus.tem" {\n'
+    output += 'word file;\n'
+    for i, stimulus in run.iterrows():
+        output += f'"{stimulus["text"]}" "{stimulus["filename"]}";\n'
+        if i in question_points:
+            output += '};\n'
+            output += '\n'
+            output += 'TEMPLATE "question.tem" {\n'
+            output += 'question file;\n'
+            output += f'"{stimulus["question"]}" "{stimulus["question_filename"]}";\n'
+            output += '};\n'
+            output += '\n'
+            output += 'TEMPLATE "stimulus.tem" {\n'
+            output += 'word file;\n'
+    output += '};\n'
+    return output
+
+with open('run.sce', 'w') as file:
+    output = build_run()
+    file.write(output)
+    print(output)
