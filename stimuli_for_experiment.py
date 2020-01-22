@@ -227,6 +227,9 @@ def build_run():
     question_points = np.arange(0, len(stimuli), question_every) + rng.choice(np.arange(2, question_every), 60)
     assert np.diff(question_points).min() > 2
 
+    run['question_asked'] = False
+    run.loc[question_points, 'question_asked'] = True
+
     output = """
         write_codes = true;
         active_buttons = 2;
@@ -256,21 +259,25 @@ def build_run():
             output += 'TEMPLATE "stimulus.tem" {\n'
             output += 'word file code;\n'
     output += '};\n'
-    return output
+    return output, run
 
 with open('run1.sce', 'w') as file:
-    output = build_run()
+    output, run = build_run()
     file.write(output)
     print(output)
+    run.to_csv('run1.csv')
 with open('run2.sce', 'w') as file:
-    output = build_run()
+    output, run = build_run()
     file.write(output)
     print(output)
+    run.to_csv('run2.csv')
 with open('run3.sce', 'w') as file:
-    output = build_run()
+    output, run = build_run()
     file.write(output)
     print(output)
+    run.to_csv('run3.csv')
 with open('practice.sce', 'w') as file:
-    output = build_run()
+    output, run = build_run()
     file.write(output)
     print(output)
+    run.to_csv('practice.csv')
