@@ -153,6 +153,9 @@ stimuli['question'] = questions
 stimuli['question_correct'] = corrects
 stimuli['question_filename'] = [f'{type}_{text}_question.png' for type, text in zip(types, texts)]
 
+event_ids = dict(word=10, consonants=20, symbols=30, question=40)
+stimuli['event_id'] = [event_ids[type] for type in stimuli['type']]
+
 assert len(np.unique(stimuli['text'])) == len(stimuli)
 stimuli.to_csv('data/presentation/stimuli.csv')
 
@@ -224,25 +227,50 @@ def build_run():
     question_points = np.arange(0, len(stimuli), question_every) + rng.choice(np.arange(2, question_every), 60)
     assert np.diff(question_points).min() > 2
 
-    output = ''
+    output = """
+        write_codes = true;
+        active_buttons = 2;
+        begin;
+
+        picture {
+           default_code = "fixation";
+           bitmap {
+                filename = "fixation_cross.png";
+           };
+           x = 0; y = 0;
+        } fixation;
+
+        """
     output += 'TEMPLATE "stimulus.tem" {\n'
-    output += 'word file;\n'
+    output += 'word file code;\n'
     for i, stimulus in run.iterrows():
-        output += f'"{stimulus["text"]}" "{stimulus["filename"]}";\n'
+        output += f'"{stimulus["text"]}" "{stimulus["filename"]}" {stimulus["event_id"]};\n'
         if i in question_points:
             output += '};\n'
             output += '\n'
             output += 'TEMPLATE "question.tem" {\n'
-            output += 'question file;\n'
-            output += f'"{stimulus["question"]}" "{stimulus["question_filename"]}";\n'
+            output += 'question file code;\n'
+            output += f'"{stimulus["question"]}" "{stimulus["question_filename"]}" {event_ids["question"]};\n'
             output += '};\n'
             output += '\n'
             output += 'TEMPLATE "stimulus.tem" {\n'
-            output += 'word file;\n'
+            output += 'word file code;\n'
     output += '};\n'
     return output
 
-with open('run.sce', 'w') as file:
+with open('run1.sce', 'w') as file:
+    output = build_run()
+    file.write(output)
+    print(output)
+with open('run2.sce', 'w') as file:
+    output = build_run()
+    file.write(output)
+    print(output)
+with open('run3.sce', 'w') as file:
+    output = build_run()
+    file.write(output)
+    print(output)
+with open('practice.sce', 'w') as file:
     output = build_run()
     file.write(output)
     print(output)

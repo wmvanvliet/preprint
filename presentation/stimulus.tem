@@ -1,0 +1,21 @@
+trial {
+	trial_duration = 1500;
+
+	picture fixation;
+	time = 0;
+	duration = 500;
+	
+	picture {
+		default_code = $word;
+		bitmap {
+			filename = $file;
+		};
+		x = 0; y = 0;
+	};
+	time = 500;
+	duration = 200;
+	port_code = $code;
+	
+	picture fixation;
+	time = 700;
+};
