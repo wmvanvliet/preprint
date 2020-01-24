@@ -1,20 +1,13 @@
 """
-3 blocks of 15 minutes each. 15 * 60 = 600 seconds
+4 blocks of 10.5 minutes each. 10.5 * 60 = 630 seconds
 180 Word trials of 1.5 seconds: 270 seconds
 90 Consonant string trials of 1.5 seconds: 135 seconds
 90 Symbol string trials of 1.5 seconds: 135 seconds
-60 Question trials of 1 second: 60 seconds
+60 Question trials of 1.5 second: 90 seconds
 
-1080 trials in total
-540 words
-270 consonant strings
-270 symbol strings
+stimulus length: 4-6 letters/symbols
 
-180 question trials
-
-stimulus length: 3-5 letters
-
-question: is the given symbol in the correct location?
+question: is the given letter/symbol in the correct location?
 stimulus: KOIRA
 question: _ O _ _ _ (correct)
           _ _ _ M _ (incorrect)
@@ -28,6 +21,7 @@ import itertools
 from scipy.io import loadmat
 from scipy.spatial import distance
 from libvoikko import Voikko
+from textwrap import dedent
 
 # Use a very specific random generator with a specific seed so in the future,
 # this script will still generate the same stimuli.
@@ -162,7 +156,7 @@ stimuli.to_csv('data/presentation/stimuli.csv')
 # Create image files
 plt.close('all')
 dpi = 96.
-width, height = 800, 400
+width, height = 400, 200
 f = plt.figure(figsize=(width / dpi, height / dpi), dpi=dpi)
 
 # Fixation cross
@@ -221,16 +215,18 @@ for i, stimulus in tqdm(stimuli.iterrows(), total=len(stimuli)):
 plt.close()
 
 def build_run():
+    """Construct a random stimulus and question sequence for a single run."""
     run = stimuli.iloc[rng.choice(np.arange(len(stimuli)), len(stimuli), replace=False)]
     run = run.reset_index(drop=True)
     question_every = len(stimuli) // 60
     question_points = np.arange(0, len(stimuli), question_every) + rng.choice(np.arange(2, question_every), 60)
     assert np.diff(question_points).min() > 2
-
     run['question_asked'] = False
     run.loc[question_points, 'question_asked'] = True
+    return run
 
-    output = """
+def build_presentation(run):
+    output = dedent("""
         write_codes = true;
         active_buttons = 2;
         begin;
@@ -243,12 +239,12 @@ def build_run():
            x = 0; y = 0;
         } fixation;
 
-        """
+        """)
     output += 'TEMPLATE "stimulus.tem" {\n'
     output += 'word file code;\n'
     for i, stimulus in run.iterrows():
         output += f'"{stimulus["text"]}" "{stimulus["filename"]}" {stimulus["event_id"]};\n'
-        if i in question_points:
+        if stimulus['question_asked']:
             output += '};\n'
             output += '\n'
             output += 'TEMPLATE "question.tem" {\n'
@@ -259,25 +255,18 @@ def build_run():
             output += 'TEMPLATE "stimulus.tem" {\n'
             output += 'word file code;\n'
     output += '};\n'
-    return output, run
+    return output
 
-with open('run1.sce', 'w') as file:
-    output, run = build_run()
-    file.write(output)
-    print(output)
-    run.to_csv('run1.csv')
-with open('run2.sce', 'w') as file:
-    output, run = build_run()
-    file.write(output)
-    print(output)
-    run.to_csv('run2.csv')
-with open('run3.sce', 'w') as file:
-    output, run = build_run()
-    file.write(output)
-    print(output)
-    run.to_csv('run3.csv')
+for i in [1, 2, 3, 4]:
+    with open(f'run{i:d}.sce', 'w') as file:
+        run = build_run()
+        output = build_presentation(run)
+        file.write(output)
+        print(output)
+        run.to_csv(f'run{i:d}.csv')
 with open('practice.sce', 'w') as file:
-    output, run = build_run()
+    run = build_run()
+    output = build_presentation(run)
     file.write(output)
     print(output)
     run.to_csv('practice.csv')

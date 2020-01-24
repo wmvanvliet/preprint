@@ -1,6 +1,6 @@
 trial {
 	trial_type = first_response;
-	trial_duration = 1000;
+	trial_duration = 1500;
 	picture {
 		default_code = $question;
 		bitmap {
@@ -9,6 +9,6 @@ trial {
 		x = 0; y = 0;
 	};
 	time = 0;
-	duration = 1000;
+	duration = 1500;
 	port_code = $code;
 };

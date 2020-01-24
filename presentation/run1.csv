@@ -1,361 +1,361 @@
 ,type,text,freq,font,fontsize,rotation,noise_level,filename,question,question_correct,question_filename,event_id,question_asked
-0,symbols,svsod,,DejaVu Sans,30,0,0.35,symbols_svsod.png,_ _ s _ _,True,symbols_svsod_question.png,30,False
-1,consonants,cnwh,,Impact,30,-15,0.35,consonants_cnwh.png,_ n _ _,True,consonants_cnwh_question.png,20,False
-2,symbols,v^v^,,DejaVu Sans,30,0,0.35,symbols_v^v^.png,_ ^ _ _,True,symbols_v^v^_question.png,30,True
-3,symbols,s^o^^v,,DejaVu Sans,40,15,0.35,symbols_s^o^^v.png,_ _ _ _ ^ _,True,symbols_s^o^^v_question.png,30,False
-4,symbols,dvsvos,,DejaVu Sans,40,-15,0.2,symbols_dvsvos.png,_ _ _ d _ _,False,symbols_dvsvos_question.png,30,False
-5,word,orpo,798.0,Comic Sans MS,30,-15,0.2,word_orpo.png,_ ö _ _,False,word_orpo_question.png,10,False
-6,symbols,vodv^^,,DejaVu Sans,40,-15,0.35,symbols_vodv^^.png,_ v _ _ _ _,False,symbols_vodv^^_question.png,30,False
-7,consonants,scgxmk,,Times New Roman,30,15,0.5,consonants_scgxmk.png,_ _ _ b _ _,False,consonants_scgxmk_question.png,20,False
-8,word,karies,7.0,Impact,30,15,0.35,word_karies.png,_ _ _ i _ _,True,word_karies_question.png,10,False
-9,word,tenä,5.0,Impact,40,-15,0.35,word_tenä.png,_ e _ _,True,word_tenä_question.png,10,True
-10,word,ampuja,2571.0,Impact,40,15,0.35,word_ampuja.png,_ _ _ u _ _,True,word_ampuja_question.png,10,False
-11,word,ässä,775.0,Comic Sans MS,20,-15,0.35,word_ässä.png,_ _ _ c,False,word_ässä_question.png,10,False
-12,symbols,vssov,,DejaVu Sans,30,-15,0.5,symbols_vssov.png,_ _ s _ _,True,symbols_vssov_question.png,30,False
+0,symbols,voo^o,,DejaVu Sans,40,15,0.35,symbols_voo^o.png,^ _ _ _ _,False,symbols_voo^o_question.png,30,False
+1,word,opaali,12.0,Impact,40,-15,0.5,word_opaali.png,o _ _ _ _ _,True,word_opaali_question.png,10,False
+2,consonants,dxfxv,,Impact,20,0,0.5,consonants_dxfxv.png,g _ _ _ _,False,consonants_dxfxv_question.png,20,False
+3,symbols,odos,,DejaVu Sans,30,15,0.2,symbols_odos.png,s _ _ _,False,symbols_odos_question.png,30,False
+4,word,siitos,12.0,Comic Sans MS,30,-15,0.2,word_siitos.png,i _ _ _ _ _,False,word_siitos_question.png,10,False
+5,symbols,d^sd,,DejaVu Sans,20,15,0.2,symbols_d^sd.png,d _ _ _,True,symbols_d^sd_question.png,30,True
+6,word,duuri,8.0,Impact,40,15,0.5,word_duuri.png,_ _ _ r _,True,word_duuri_question.png,10,False
+7,symbols,d^v^^,,DejaVu Sans,20,-15,0.35,symbols_d^v^^.png,_ ^ _ _ _,True,symbols_d^v^^_question.png,30,False
+8,word,lempo,61.0,Times New Roman,20,-15,0.35,word_lempo.png,_ e _ _ _,True,word_lempo_question.png,10,False
+9,word,nuha,140.0,Times New Roman,30,-15,0.2,word_nuha.png,_ _ _ u,False,word_nuha_question.png,10,False
+10,word,laukka,19.0,Comic Sans MS,20,15,0.5,word_laukka.png,_ _ u _ _ _,True,word_laukka_question.png,10,False
+11,word,jakaja,177.0,Comic Sans MS,20,15,0.2,word_jakaja.png,_ x _ _ _ _,False,word_jakaja_question.png,10,True
+12,word,räme,50.0,Comic Sans MS,20,0,0.35,word_räme.png,_ i _ _,False,word_räme_question.png,10,False
 13,word,kyhmy,97.0,Comic Sans MS,40,0,0.2,word_kyhmy.png,_ _ _ h _,False,word_kyhmy_question.png,10,False
-14,word,jänne,68.0,Times New Roman,20,-15,0.2,word_jänne.png,_ _ _ p _,False,word_jänne_question.png,10,False
-15,word,hormi,15.0,Comic Sans MS,30,0,0.2,word_hormi.png,_ _ r _ _,True,word_hormi_question.png,10,False
-16,consonants,bfkx,,Comic Sans MS,20,-15,0.2,consonants_bfkx.png,b _ _ _,True,consonants_bfkx_question.png,20,False
-17,symbols,sdsosv,,DejaVu Sans,20,0,0.5,symbols_sdsosv.png,s _ _ _ _ _,True,symbols_sdsosv_question.png,30,True
-18,symbols,d^^do,,DejaVu Sans,20,15,0.5,symbols_d^^do.png,_ ^ _ _ _,True,symbols_d^^do_question.png,30,False
-19,word,kihu,7.0,Impact,30,0,0.5,word_kihu.png,d _ _ _,False,word_kihu_question.png,10,False
-20,word,äänne,17.0,Comic Sans MS,20,-15,0.5,word_äänne.png,_ _ _ n _,True,word_äänne_question.png,10,False
-21,word,pidot,128.0,Comic Sans MS,30,15,0.35,word_pidot.png,_ _ d _ _,True,word_pidot_question.png,10,True
-22,word,uima,105.0,Impact,40,15,0.5,word_uima.png,u _ _ _,True,word_uima_question.png,10,False
-23,word,ääriin,271.0,Comic Sans MS,30,-15,0.35,word_ääriin.png,_ ö _ _ _ _,False,word_ääriin_question.png,10,False
-24,symbols,^dso,,DejaVu Sans,20,0,0.5,symbols_^dso.png,_ d _ _,True,symbols_^dso_question.png,30,False
-25,consonants,rkgpjs,,Impact,20,-15,0.35,consonants_rkgpjs.png,_ _ _ m _ _,False,consonants_rkgpjs_question.png,20,False
-26,symbols,^vdovd,,DejaVu Sans,30,-15,0.35,symbols_^vdovd.png,_ v _ _ _ _,True,symbols_^vdovd_question.png,30,False
-27,consonants,gxqtx,,Impact,30,-15,0.5,consonants_gxqtx.png,_ _ _ t _,True,consonants_gxqtx_question.png,20,False
-28,word,äänes,18.0,Comic Sans MS,40,15,0.2,word_äänes.png,_ ä _ _ _,True,word_äänes_question.png,10,False
-29,word,älytä,26.0,Impact,30,-15,0.35,word_älytä.png,_ _ _ _ ä,True,word_älytä_question.png,10,True
-30,symbols,sodo,,DejaVu Sans,30,-15,0.35,symbols_sodo.png,d _ _ _,False,symbols_sodo_question.png,30,False
-31,consonants,wvxw,,Impact,40,15,0.5,consonants_wvxw.png,_ _ k _,False,consonants_wvxw_question.png,20,False
-32,word,kustos,7.0,Comic Sans MS,30,0,0.5,word_kustos.png,_ _ ü _ _ _,False,word_kustos_question.png,10,True
-33,word,köli,27.0,Comic Sans MS,20,-15,0.2,word_köli.png,_ _ _ d,False,word_köli_question.png,10,False
-34,word,tämä,575732.0,Comic Sans MS,30,-15,0.35,word_tämä.png,_ ä _ _,True,word_tämä_question.png,10,False
-35,symbols,vvovov,,DejaVu Sans,40,0,0.5,symbols_vvovov.png,_ ^ _ _ _ _,False,symbols_vvovov_question.png,30,False
-36,word,solmio,761.0,Impact,40,-15,0.2,word_solmio.png,_ _ l _ _ _,True,word_solmio_question.png,10,False
-37,word,tyvi,8.0,Comic Sans MS,40,15,0.35,word_tyvi.png,_ d _ _,False,word_tyvi_question.png,10,False
-38,word,estyä,6.0,Impact,20,0,0.35,word_estyä.png,e _ _ _ _,True,word_estyä_question.png,10,False
-39,symbols,os^ood,,DejaVu Sans,30,15,0.35,symbols_os^ood.png,_ _ _ d _ _,False,symbols_os^ood_question.png,30,False
-40,word,salaus,155.0,Times New Roman,30,15,0.2,word_salaus.png,_ a _ _ _ _,True,word_salaus_question.png,10,True
-41,symbols,^vvsvv,,DejaVu Sans,40,-15,0.5,symbols_^vvsvv.png,_ _ _ _ v _,True,symbols_^vvsvv_question.png,30,False
-42,symbols,odsoo^,,DejaVu Sans,40,15,0.35,symbols_odsoo^.png,_ _ s _ _ _,True,symbols_odsoo^_question.png,30,False
-43,word,vipu,167.0,Impact,30,-15,0.5,word_vipu.png,_ _ p _,True,word_vipu_question.png,10,False
-44,symbols,^d^oos,,DejaVu Sans,30,15,0.5,symbols_^d^oos.png,_ _ _ _ o _,True,symbols_^d^oos_question.png,30,False
-45,consonants,tkcqd,,Impact,20,15,0.35,consonants_tkcqd.png,_ _ _ _ d,True,consonants_tkcqd_question.png,20,False
-46,consonants,txhs,,Comic Sans MS,20,15,0.35,consonants_txhs.png,_ _ h _,True,consonants_txhs_question.png,20,False
-47,symbols,vvvd,,DejaVu Sans,30,-15,0.5,symbols_vvvd.png,^ _ _ _,False,symbols_vvvd_question.png,30,True
-48,word,isyys,88.0,Comic Sans MS,30,15,0.35,word_isyys.png,_ _ x _ _,False,word_isyys_question.png,10,False
-49,word,shiia,9.0,Comic Sans MS,20,15,0.2,word_shiia.png,z _ _ _ _,False,word_shiia_question.png,10,False
-50,word,itää,179.0,Comic Sans MS,30,15,0.5,word_itää.png,_ t _ _,True,word_itää_question.png,10,False
-51,word,piip,264.0,Comic Sans MS,30,15,0.2,word_piip.png,_ i _ _,True,word_piip_question.png,10,False
-52,symbols,osdod^,,DejaVu Sans,40,-15,0.5,symbols_osdod^.png,_ _ _ _ s _,False,symbols_osdod^_question.png,30,True
-53,word,emätin,57.0,Impact,30,15,0.5,word_emätin.png,c _ _ _ _ _,False,word_emätin_question.png,10,False
-54,consonants,vwrptk,,Times New Roman,40,-15,0.2,consonants_vwrptk.png,_ _ _ _ m _,False,consonants_vwrptk_question.png,20,False
-55,word,ositus,12.0,Times New Roman,20,-15,0.35,word_ositus.png,ö _ _ _ _ _,False,word_ositus_question.png,10,False
-56,consonants,rtsgdh,,Times New Roman,40,0,0.5,consonants_rtsgdh.png,r _ _ _ _ _,True,consonants_rtsgdh_question.png,20,False
-57,word,korren,100.0,Comic Sans MS,20,0,0.2,word_korren.png,_ _ _ w _ _,False,word_korren_question.png,10,True
-58,consonants,jqdsmj,,Impact,40,-15,0.5,consonants_jqdsmj.png,_ _ _ _ _ m,False,consonants_jqdsmj_question.png,20,False
-59,word,juhta,15.0,Times New Roman,20,15,0.35,word_juhta.png,_ _ o _ _,False,word_juhta_question.png,10,False
-60,word,poru,12.0,Times New Roman,20,0,0.2,word_poru.png,_ _ _ u,True,word_poru_question.png,10,False
-61,symbols,vodds,,DejaVu Sans,40,0,0.5,symbols_vodds.png,_ v _ _ _,False,symbols_vodds_question.png,30,False
-62,symbols,o^v^,,DejaVu Sans,40,15,0.5,symbols_o^v^.png,_ _ _ s,False,symbols_o^v^_question.png,30,True
-63,consonants,gchqcz,,Times New Roman,30,-15,0.35,consonants_gchqcz.png,_ n _ _ _ _,False,consonants_gchqcz_question.png,20,False
-64,word,uuni,372.0,Impact,40,0,0.35,word_uuni.png,n _ _ _,False,word_uuni_question.png,10,False
-65,consonants,qpvbs,,Impact,40,-15,0.35,consonants_qpvbs.png,_ _ v _ _,True,consonants_qpvbs_question.png,20,False
-66,consonants,tcfwdr,,Comic Sans MS,30,0,0.2,consonants_tcfwdr.png,_ r _ _ _ _,False,consonants_tcfwdr_question.png,20,False
-67,consonants,zsgj,,Comic Sans MS,40,-15,0.2,consonants_zsgj.png,_ _ g _,True,consonants_zsgj_question.png,20,False
-68,word,hioa,318.0,Times New Roman,40,0,0.2,word_hioa.png,_ _ p _,False,word_hioa_question.png,10,False
-69,word,nieriä,5.0,Times New Roman,20,0,0.2,word_nieriä.png,_ i _ _ _ _,True,word_nieriä_question.png,10,False
-70,symbols,vvosod,,DejaVu Sans,30,15,0.2,symbols_vvosod.png,_ _ _ _ _ d,True,symbols_vvosod_question.png,30,True
-71,consonants,gnxd,,Comic Sans MS,40,0,0.35,consonants_gnxd.png,b _ _ _,False,consonants_gnxd_question.png,20,False
-72,consonants,spmb,,Times New Roman,20,0,0.5,consonants_spmb.png,q _ _ _,False,consonants_spmb_question.png,20,False
-73,word,osuma,1083.0,Times New Roman,40,-15,0.5,word_osuma.png,_ q _ _ _,False,word_osuma_question.png,10,False
-74,word,afasia,31.0,Impact,20,-15,0.2,word_afasia.png,_ _ _ _ _ z,False,word_afasia_question.png,10,False
-75,consonants,zkwnr,,Times New Roman,40,-15,0.35,consonants_zkwnr.png,z _ _ _ _,True,consonants_zkwnr_question.png,20,True
-76,symbols,svvd,,DejaVu Sans,20,-15,0.5,symbols_svvd.png,_ v _ _,True,symbols_svvd_question.png,30,False
-77,word,rulla,88.0,Comic Sans MS,30,15,0.5,word_rulla.png,_ _ w _ _,False,word_rulla_question.png,10,False
-78,symbols,^o^so,,DejaVu Sans,30,0,0.5,symbols_^o^so.png,_ _ o _ _,False,symbols_^o^so_question.png,30,False
-79,word,itiö,17.0,Comic Sans MS,40,15,0.5,word_itiö.png,_ _ _ ö,True,word_itiö_question.png,10,False
-80,word,kytkin,500.0,Times New Roman,40,-15,0.2,word_kytkin.png,_ _ _ g _ _,False,word_kytkin_question.png,10,False
-81,consonants,czkdbs,,Times New Roman,30,15,0.2,consonants_czkdbs.png,_ z _ _ _ _,True,consonants_czkdbs_question.png,20,False
-82,word,luusto,86.0,Times New Roman,30,15,0.2,word_luusto.png,p _ _ _ _ _,False,word_luusto_question.png,10,False
-83,word,uuma,5.0,Comic Sans MS,40,0,0.2,word_uuma.png,_ u _ _,True,word_uuma_question.png,10,True
-84,symbols,vsv^,,DejaVu Sans,20,15,0.5,symbols_vsv^.png,_ s _ _,True,symbols_vsv^_question.png,30,False
-85,word,urut,54.0,Times New Roman,40,0,0.5,word_urut.png,u _ _ _,True,word_urut_question.png,10,False
-86,word,silaus,76.0,Impact,40,15,0.35,word_silaus.png,_ _ _ d _ _,False,word_silaus_question.png,10,False
-87,consonants,jdfjs,,Comic Sans MS,20,15,0.5,consonants_jdfjs.png,_ _ _ k _,False,consonants_jdfjs_question.png,20,True
-88,word,myyty,1849.0,Times New Roman,20,15,0.35,word_myyty.png,m _ _ _ _,True,word_myyty_question.png,10,False
-89,consonants,lblxm,,Impact,20,15,0.5,consonants_lblxm.png,_ _ x _ _,False,consonants_lblxm_question.png,20,False
-90,symbols,s^dv^,,DejaVu Sans,20,0,0.35,symbols_s^dv^.png,_ _ d _ _,True,symbols_s^dv^_question.png,30,False
-91,symbols,ovo^s,,DejaVu Sans,20,15,0.35,symbols_ovo^s.png,_ d _ _ _,False,symbols_ovo^s_question.png,30,False
-92,word,eliö,148.0,Comic Sans MS,30,15,0.5,word_eliö.png,_ _ i _,True,word_eliö_question.png,10,False
-93,word,arpoa,35.0,Comic Sans MS,30,15,0.2,word_arpoa.png,_ _ _ o _,True,word_arpoa_question.png,10,False
-94,symbols,d^v^^,,DejaVu Sans,20,-15,0.2,symbols_d^v^^.png,d _ _ _ _,True,symbols_d^v^^_question.png,30,False
-95,word,sarake,21.0,Impact,20,15,0.2,word_sarake.png,ä _ _ _ _ _,False,word_sarake_question.png,10,True
-96,consonants,bgrzd,,Impact,20,0,0.2,consonants_bgrzd.png,b _ _ _ _,True,consonants_bgrzd_question.png,20,False
-97,consonants,zpcqc,,Impact,20,0,0.5,consonants_zpcqc.png,f _ _ _ _,False,consonants_zpcqc_question.png,20,False
-98,consonants,gnbtn,,Impact,30,15,0.5,consonants_gnbtn.png,_ n _ _ _,True,consonants_gnbtn_question.png,20,True
-99,symbols,sovo,,DejaVu Sans,40,0,0.35,symbols_sovo.png,_ _ v _,True,symbols_sovo_question.png,30,False
-100,word,uoma,17.0,Comic Sans MS,20,15,0.35,word_uoma.png,_ o _ _,True,word_uoma_question.png,10,False
-101,consonants,xgtt,,Impact,20,15,0.5,consonants_xgtt.png,_ _ t _,True,consonants_xgtt_question.png,20,False
-102,symbols,ssods,,DejaVu Sans,20,-15,0.35,symbols_ssods.png,_ s _ _ _,True,symbols_ssods_question.png,30,False
-103,symbols,vvv^v,,DejaVu Sans,30,15,0.5,symbols_vvv^v.png,v _ _ _ _,True,symbols_vvv^v_question.png,30,False
-104,consonants,sclc,,Times New Roman,30,0,0.5,consonants_sclc.png,_ _ l _,True,consonants_sclc_question.png,20,False
-105,consonants,dwmdd,,Comic Sans MS,30,15,0.35,consonants_dwmdd.png,_ _ _ _ d,True,consonants_dwmdd_question.png,20,False
-106,word,ratamo,5.0,Comic Sans MS,30,0,0.35,word_ratamo.png,_ _ t _ _ _,True,word_ratamo_question.png,10,True
-107,word,ilmi,3063.0,Impact,20,15,0.35,word_ilmi.png,_ _ _ i,True,word_ilmi_question.png,10,False
-108,word,ajos,8.0,Impact,30,0,0.2,word_ajos.png,a _ _ _,True,word_ajos_question.png,10,False
-109,consonants,qmncn,,Impact,20,-15,0.2,consonants_qmncn.png,_ m _ _ _,True,consonants_qmncn_question.png,20,False
-110,consonants,ltqrr,,Comic Sans MS,40,15,0.2,consonants_ltqrr.png,l _ _ _ _,True,consonants_ltqrr_question.png,20,True
-111,consonants,gkzpg,,Comic Sans MS,20,0,0.35,consonants_gkzpg.png,g _ _ _ _,True,consonants_gkzpg_question.png,20,False
-112,word,nisä,7.0,Comic Sans MS,30,-15,0.5,word_nisä.png,_ _ _ y,False,word_nisä_question.png,10,False
-113,word,lohi,218.0,Times New Roman,30,0,0.35,word_lohi.png,_ _ q _,False,word_lohi_question.png,10,False
-114,symbols,vovvvv,,DejaVu Sans,30,0,0.2,symbols_vovvvv.png,_ _ ^ _ _ _,False,symbols_vovvvv_question.png,30,False
-115,consonants,zkxtf,,Impact,20,0,0.35,consonants_zkxtf.png,_ _ b _ _,False,consonants_zkxtf_question.png,20,False
-116,consonants,wcjrjq,,Impact,20,0,0.5,consonants_wcjrjq.png,w _ _ _ _ _,True,consonants_wcjrjq_question.png,20,True
-117,word,syaani,10.0,Times New Roman,20,-15,0.5,word_syaani.png,s _ _ _ _ _,True,word_syaani_question.png,10,False
-118,consonants,rjfcdx,,Impact,20,15,0.35,consonants_rjfcdx.png,r _ _ _ _ _,True,consonants_rjfcdx_question.png,20,False
-119,symbols,^s^vds,,DejaVu Sans,40,0,0.35,symbols_^s^vds.png,^ _ _ _ _ _,True,symbols_^s^vds_question.png,30,False
-120,consonants,hjqc,,Impact,40,0,0.5,consonants_hjqc.png,_ j _ _,True,consonants_hjqc_question.png,20,False
-121,symbols,^vod,,DejaVu Sans,30,15,0.2,symbols_^vod.png,s _ _ _,False,symbols_^vod_question.png,30,False
-122,consonants,rmmrh,,Impact,30,0,0.35,consonants_rmmrh.png,_ m _ _ _,True,consonants_rmmrh_question.png,20,False
-123,word,salvaa,90.0,Impact,40,0,0.5,word_salvaa.png,u _ _ _ _ _,False,word_salvaa_question.png,10,False
-124,word,kiuas,9.0,Times New Roman,30,15,0.35,word_kiuas.png,_ _ _ _ s,True,word_kiuas_question.png,10,False
-125,symbols,vdod^,,DejaVu Sans,40,15,0.2,symbols_vdod^.png,_ _ _ d _,True,symbols_vdod^_question.png,30,True
-126,consonants,vtkdtx,,Comic Sans MS,30,0,0.35,consonants_vtkdtx.png,_ _ c _ _ _,False,consonants_vtkdtx_question.png,20,False
-127,symbols,dod^os,,DejaVu Sans,40,15,0.35,symbols_dod^os.png,_ _ _ _ v _,False,symbols_dod^os_question.png,30,False
-128,word,torium,12.0,Comic Sans MS,40,-15,0.35,word_torium.png,_ _ _ _ _ m,True,word_torium_question.png,10,False
-129,word,someen,14.0,Comic Sans MS,40,0,0.35,word_someen.png,_ c _ _ _ _,False,word_someen_question.png,10,False
-130,word,häkä,88.0,Impact,20,-15,0.35,word_häkä.png,h _ _ _,True,word_häkä_question.png,10,False
-131,symbols,^s^^,,DejaVu Sans,40,15,0.5,symbols_^s^^.png,_ _ ^ _,True,symbols_^s^^_question.png,30,True
-132,symbols,ssdvo^,,DejaVu Sans,40,15,0.2,symbols_ssdvo^.png,s _ _ _ _ _,True,symbols_ssdvo^_question.png,30,False
-133,word,pamppu,197.0,Comic Sans MS,20,0,0.35,word_pamppu.png,_ _ _ _ q _,False,word_pamppu_question.png,10,False
-134,word,stoola,8.0,Impact,20,15,0.2,word_stoola.png,_ t _ _ _ _,True,word_stoola_question.png,10,False
-135,word,erkani,27.0,Impact,30,-15,0.2,word_erkani.png,_ _ _ a _ _,True,word_erkani_question.png,10,True
-136,consonants,tdgw,,Times New Roman,20,0,0.2,consonants_tdgw.png,_ z _ _,False,consonants_tdgw_question.png,20,False
-137,consonants,xggtw,,Times New Roman,20,-15,0.2,consonants_xggtw.png,_ _ _ _ w,True,consonants_xggtw_question.png,20,False
-138,word,jäte,91.0,Comic Sans MS,30,0,0.35,word_jäte.png,_ ä _ _,True,word_jäte_question.png,10,False
-139,word,räntä,11.0,Comic Sans MS,40,0,0.35,word_räntä.png,r _ _ _ _,True,word_räntä_question.png,10,False
-140,symbols,sddo,,DejaVu Sans,20,-15,0.5,symbols_sddo.png,_ v _ _,False,symbols_sddo_question.png,30,False
-141,consonants,lgtjb,,Comic Sans MS,30,15,0.2,consonants_lgtjb.png,_ _ _ _ z,False,consonants_lgtjb_question.png,20,False
-142,word,räme,50.0,Comic Sans MS,20,0,0.35,word_räme.png,_ i _ _,False,word_räme_question.png,10,True
-143,symbols,vv^^,,DejaVu Sans,30,15,0.5,symbols_vv^^.png,_ o _ _,False,symbols_vv^^_question.png,30,False
-144,word,rukki,10.0,Times New Roman,30,-15,0.2,word_rukki.png,_ _ _ _ i,True,word_rukki_question.png,10,False
-145,word,kolvi,10.0,Impact,30,0,0.35,word_kolvi.png,_ ü _ _ _,False,word_kolvi_question.png,10,False
-146,consonants,dfdzj,,Times New Roman,30,-15,0.5,consonants_dfdzj.png,_ m _ _ _,False,consonants_dfdzj_question.png,20,False
-147,symbols,vvv^,,DejaVu Sans,30,-15,0.2,symbols_vvv^.png,v _ _ _,True,symbols_vvv^_question.png,30,False
-148,word,näkö,506.0,Times New Roman,30,-15,0.5,word_näkö.png,n _ _ _,True,word_näkö_question.png,10,False
-149,word,sikhi,15.0,Comic Sans MS,30,0,0.2,word_sikhi.png,h _ _ _ _,False,word_sikhi_question.png,10,True
-150,word,katodi,6.0,Comic Sans MS,30,-15,0.35,word_katodi.png,_ ü _ _ _ _,False,word_katodi_question.png,10,False
-151,word,tyrä,65.0,Comic Sans MS,30,0,0.2,word_tyrä.png,u _ _ _,False,word_tyrä_question.png,10,False
-152,word,pesula,230.0,Times New Roman,30,0,0.5,word_pesula.png,_ _ l _ _ _,False,word_pesula_question.png,10,True
-153,word,nirso,270.0,Impact,40,15,0.2,word_nirso.png,_ d _ _ _,False,word_nirso_question.png,10,False
-154,word,seimi,25.0,Comic Sans MS,30,15,0.35,word_seimi.png,_ _ _ m _,True,word_seimi_question.png,10,False
-155,word,jaos,288.0,Times New Roman,40,0,0.2,word_jaos.png,_ _ c _,False,word_jaos_question.png,10,False
-156,consonants,qwjvhz,,Impact,30,-15,0.2,consonants_qwjvhz.png,_ _ _ _ _ q,False,consonants_qwjvhz_question.png,20,False
-157,consonants,hqzll,,Impact,20,-15,0.2,consonants_hqzll.png,_ q _ _ _,True,consonants_hqzll_question.png,20,False
-158,word,kaapia,67.0,Comic Sans MS,20,15,0.5,word_kaapia.png,k _ _ _ _ _,True,word_kaapia_question.png,10,False
-159,symbols,^osd,,DejaVu Sans,40,0,0.2,symbols_^osd.png,_ _ d _,False,symbols_^osd_question.png,30,False
-160,consonants,sqdq,,Impact,20,0,0.2,consonants_sqdq.png,_ _ _ q,True,consonants_sqdq_question.png,20,False
-161,word,häät,4190.0,Impact,20,15,0.5,word_häät.png,_ _ _ l,False,word_häät_question.png,10,True
-162,symbols,^s^d,,DejaVu Sans,40,-15,0.35,symbols_^s^d.png,^ _ _ _,True,symbols_^s^d_question.png,30,False
-163,symbols,o^ss,,DejaVu Sans,40,-15,0.2,symbols_o^ss.png,_ _ _ s,True,symbols_o^ss_question.png,30,False
-164,consonants,grgdd,,Comic Sans MS,30,-15,0.5,consonants_grgdd.png,_ x _ _ _,False,consonants_grgdd_question.png,20,True
-165,word,säle,18.0,Comic Sans MS,30,15,0.2,word_säle.png,_ _ _ v,False,word_säle_question.png,10,False
-166,word,vuoka,20.0,Times New Roman,20,0,0.35,word_vuoka.png,v _ _ _ _,True,word_vuoka_question.png,10,False
-167,word,tykö,1696.0,Times New Roman,20,15,0.5,word_tykö.png,_ _ h _,False,word_tykö_question.png,10,False
-168,symbols,vs^oo,,DejaVu Sans,20,-15,0.35,symbols_vs^oo.png,_ s _ _ _,True,symbols_vs^oo_question.png,30,False
-169,symbols,vvsod,,DejaVu Sans,40,-15,0.5,symbols_vvsod.png,_ _ _ o _,True,symbols_vvsod_question.png,30,False
-170,symbols,^ooso,,DejaVu Sans,40,15,0.35,symbols_^ooso.png,d _ _ _ _,False,symbols_^ooso_question.png,30,False
-171,word,nurin,1001.0,Times New Roman,20,-15,0.5,word_nurin.png,_ _ _ _ l,False,word_nurin_question.png,10,False
-172,consonants,wqghh,,Impact,40,0,0.35,consonants_wqghh.png,_ _ _ _ h,True,consonants_wqghh_question.png,20,True
-173,consonants,vlptrn,,Times New Roman,20,-15,0.35,consonants_vlptrn.png,_ _ _ c _ _,False,consonants_vlptrn_question.png,20,False
-174,word,harjus,5.0,Times New Roman,20,15,0.2,word_harjus.png,h _ _ _ _ _,True,word_harjus_question.png,10,False
-175,symbols,voov^v,,DejaVu Sans,30,15,0.35,symbols_voov^v.png,_ _ _ _ ^ _,True,symbols_voov^v_question.png,30,False
-176,word,känsä,12.0,Impact,30,-15,0.35,word_känsä.png,a _ _ _ _,False,word_känsä_question.png,10,True
-177,consonants,lcrzjb,,Times New Roman,40,0,0.2,consonants_lcrzjb.png,_ _ r _ _ _,True,consonants_lcrzjb_question.png,20,False
-178,consonants,mths,,Times New Roman,30,0,0.2,consonants_mths.png,_ _ _ h,False,consonants_mths_question.png,20,False
-179,word,diodi,8.0,Times New Roman,40,15,0.35,word_diodi.png,_ _ o _ _,True,word_diodi_question.png,10,False
-180,symbols,dv^o,,DejaVu Sans,40,0,0.35,symbols_dv^o.png,_ _ _ o,True,symbols_dv^o_question.png,30,False
-181,symbols,ovvds,,DejaVu Sans,20,-15,0.5,symbols_ovvds.png,_ v _ _ _,True,symbols_ovvds_question.png,30,False
-182,symbols,^d^vs,,DejaVu Sans,20,0,0.5,symbols_^d^vs.png,_ _ d _ _,False,symbols_^d^vs_question.png,30,False
-183,word,faksi,269.0,Times New Roman,20,0,0.5,word_faksi.png,_ _ p _ _,False,word_faksi_question.png,10,False
-184,word,kortti,2634.0,Impact,20,0,0.2,word_kortti.png,_ _ _ t _ _,True,word_kortti_question.png,10,True
-185,word,duuri,8.0,Impact,40,15,0.5,word_duuri.png,_ _ _ r _,True,word_duuri_question.png,10,False
-186,word,fotoni,56.0,Comic Sans MS,30,-15,0.5,word_fotoni.png,e _ _ _ _ _,False,word_fotoni_question.png,10,False
-187,word,häpy,33.0,Impact,30,-15,0.2,word_häpy.png,_ z _ _,False,word_häpy_question.png,10,False
-188,word,menijä,27.0,Comic Sans MS,20,15,0.2,word_menijä.png,_ _ u _ _ _,False,word_menijä_question.png,10,True
-189,symbols,oo^v,,DejaVu Sans,40,15,0.2,symbols_oo^v.png,o _ _ _,True,symbols_oo^v_question.png,30,False
-190,word,särkyä,94.0,Impact,20,15,0.5,word_särkyä.png,j _ _ _ _ _,False,word_särkyä_question.png,10,False
-191,word,oinas,74.0,Comic Sans MS,30,-15,0.2,word_oinas.png,o _ _ _ _,True,word_oinas_question.png,10,False
-192,word,motata,156.0,Times New Roman,30,15,0.5,word_motata.png,x _ _ _ _ _,False,word_motata_question.png,10,False
-193,word,silsa,13.0,Impact,40,0,0.5,word_silsa.png,_ p _ _ _,False,word_silsa_question.png,10,False
-194,consonants,dzvxq,,Comic Sans MS,40,15,0.5,consonants_dzvxq.png,_ _ _ _ q,True,consonants_dzvxq_question.png,20,True
-195,symbols,sdsdoo,,DejaVu Sans,30,0,0.2,symbols_sdsdoo.png,^ _ _ _ _ _,False,symbols_sdsdoo_question.png,30,False
-196,symbols,voo^o,,DejaVu Sans,40,0,0.5,symbols_voo^o.png,_ o _ _ _,True,symbols_voo^o_question.png,30,False
-197,word,jymy,7.0,Comic Sans MS,40,-15,0.35,word_jymy.png,_ _ _ y,True,word_jymy_question.png,10,False
-198,consonants,gqpkfs,,Times New Roman,20,-15,0.5,consonants_gqpkfs.png,w _ _ _ _ _,False,consonants_gqpkfs_question.png,20,False
-199,symbols,sdosd,,DejaVu Sans,20,15,0.2,symbols_sdosd.png,_ _ _ _ s,False,symbols_sdosd_question.png,30,False
-200,symbols,ddvsd,,DejaVu Sans,40,0,0.2,symbols_ddvsd.png,_ _ ^ _ _,False,symbols_ddvsd_question.png,30,False
-201,consonants,nczkbj,,Times New Roman,20,15,0.35,consonants_nczkbj.png,d _ _ _ _ _,False,consonants_nczkbj_question.png,20,False
-202,word,ripeä,50.0,Impact,30,15,0.35,word_ripeä.png,_ _ p _ _,True,word_ripeä_question.png,10,False
-203,word,hihna,249.0,Comic Sans MS,20,-15,0.2,word_hihna.png,_ _ _ ü _,False,word_hihna_question.png,10,True
-204,symbols,^s^s,,DejaVu Sans,40,15,0.5,symbols_^s^s.png,_ _ ^ _,True,symbols_^s^s_question.png,30,False
-205,symbols,vd^s,,DejaVu Sans,20,15,0.5,symbols_vd^s.png,v _ _ _,True,symbols_vd^s_question.png,30,False
-206,symbols,dsdoo^,,DejaVu Sans,40,15,0.2,symbols_dsdoo^.png,_ _ _ _ _ d,False,symbols_dsdoo^_question.png,30,False
-207,consonants,qckq,,Times New Roman,20,0,0.35,consonants_qckq.png,_ _ _ q,True,consonants_qckq_question.png,20,True
-208,consonants,qvkjt,,Times New Roman,40,15,0.5,consonants_qvkjt.png,_ _ _ b _,False,consonants_qvkjt_question.png,20,False
-209,consonants,xnbrh,,Times New Roman,40,-15,0.5,consonants_xnbrh.png,x _ _ _ _,True,consonants_xnbrh_question.png,20,False
-210,word,kussa,7.0,Comic Sans MS,30,0,0.35,word_kussa.png,_ _ _ ü _,False,word_kussa_question.png,10,False
-211,symbols,v^s^vd,,DejaVu Sans,30,-15,0.2,symbols_v^s^vd.png,_ _ _ s _ _,False,symbols_v^s^vd_question.png,30,False
-212,word,sävy,345.0,Impact,30,0,0.2,word_sävy.png,_ _ e _,False,word_sävy_question.png,10,True
-213,consonants,zkbwm,,Comic Sans MS,40,0,0.2,consonants_zkbwm.png,z _ _ _ _,True,consonants_zkbwm_question.png,20,False
-214,consonants,blkxwz,,Comic Sans MS,40,0,0.5,consonants_blkxwz.png,b _ _ _ _ _,True,consonants_blkxwz_question.png,20,False
-215,word,psalmi,81.0,Comic Sans MS,30,0,0.5,word_psalmi.png,q _ _ _ _ _,False,word_psalmi_question.png,10,False
-216,word,kysta,76.0,Times New Roman,40,0,0.35,word_kysta.png,_ _ _ ü _,False,word_kysta_question.png,10,False
-217,word,terska,7.0,Comic Sans MS,20,-15,0.35,word_terska.png,_ _ _ _ c _,False,word_terska_question.png,10,False
-218,symbols,oo^vdv,,DejaVu Sans,40,0,0.35,symbols_oo^vdv.png,_ _ o _ _ _,False,symbols_oo^vdv_question.png,30,False
-219,word,druidi,116.0,Comic Sans MS,40,-15,0.5,word_druidi.png,_ _ r _ _ _,False,word_druidi_question.png,10,False
-220,consonants,lldk,,Comic Sans MS,20,0,0.2,consonants_lldk.png,_ l _ _,True,consonants_lldk_question.png,20,False
-221,word,siitos,12.0,Comic Sans MS,30,-15,0.2,word_siitos.png,i _ _ _ _ _,False,word_siitos_question.png,10,True
-222,consonants,fwgntw,,Impact,30,0,0.2,consonants_fwgntw.png,_ _ j _ _ _,False,consonants_fwgntw_question.png,20,False
-223,symbols,vovso,,DejaVu Sans,40,0,0.2,symbols_vovso.png,_ v _ _ _,False,symbols_vovso_question.png,30,False
-224,consonants,dlgt,,Impact,20,15,0.2,consonants_dlgt.png,_ _ x _,False,consonants_dlgt_question.png,20,False
-225,word,äimä,6.0,Times New Roman,40,-15,0.35,word_äimä.png,e _ _ _,False,word_äimä_question.png,10,True
-226,word,huorin,43.0,Times New Roman,30,0,0.5,word_huorin.png,g _ _ _ _ _,False,word_huorin_question.png,10,False
-227,word,uute,13.0,Times New Roman,40,0,0.5,word_uute.png,_ _ t _,True,word_uute_question.png,10,False
-228,word,sopu,74.0,Impact,40,0,0.2,word_sopu.png,_ c _ _,False,word_sopu_question.png,10,False
-229,consonants,hnxf,,Times New Roman,40,15,0.2,consonants_hnxf.png,_ k _ _,False,consonants_hnxf_question.png,20,False
-230,word,tyköä,13.0,Impact,20,0,0.5,word_tyköä.png,z _ _ _ _,False,word_tyköä_question.png,10,True
-231,symbols,vsd^o,,DejaVu Sans,20,15,0.35,symbols_vsd^o.png,_ s _ _ _,True,symbols_vsd^o_question.png,30,False
-232,symbols,dovv^,,DejaVu Sans,20,0,0.35,symbols_dovv^.png,_ _ _ v _,True,symbols_dovv^_question.png,30,False
-233,consonants,ndsvw,,Times New Roman,30,0,0.35,consonants_ndsvw.png,z _ _ _ _,False,consonants_ndsvw_question.png,20,False
-234,word,pyörö,5.0,Impact,20,0,0.5,word_pyörö.png,_ _ t _ _,False,word_pyörö_question.png,10,False
-235,consonants,gsdx,,Impact,40,0,0.2,consonants_gsdx.png,_ _ _ x,True,consonants_gsdx_question.png,20,False
-236,word,ylkä,6.0,Comic Sans MS,20,0,0.35,word_ylkä.png,_ _ k _,True,word_ylkä_question.png,10,False
-237,symbols,^vvdv,,DejaVu Sans,30,-15,0.2,symbols_^vvdv.png,_ v _ _ _,True,symbols_^vvdv_question.png,30,True
-238,word,tuohus,5.0,Comic Sans MS,20,0,0.2,word_tuohus.png,_ _ _ u _ _,False,word_tuohus_question.png,10,False
-239,word,kohu,172.0,Times New Roman,30,0,0.2,word_kohu.png,_ _ _ u,True,word_kohu_question.png,10,False
-240,word,riimu,70.0,Comic Sans MS,20,15,0.35,word_riimu.png,_ _ i _ _,True,word_riimu_question.png,10,False
-241,consonants,zfjxqk,,Comic Sans MS,40,-15,0.5,consonants_zfjxqk.png,z _ _ _ _ _,True,consonants_zfjxqk_question.png,20,False
-242,consonants,xmpt,,Times New Roman,40,0,0.35,consonants_xmpt.png,_ _ p _,True,consonants_xmpt_question.png,20,False
-243,symbols,dodv,,DejaVu Sans,30,-15,0.35,symbols_dodv.png,_ _ _ v,True,symbols_dodv_question.png,30,False
-244,word,loraus,56.0,Impact,20,-15,0.2,word_loraus.png,_ o _ _ _ _,True,word_loraus_question.png,10,True
-245,symbols,v^vsov,,DejaVu Sans,40,0,0.5,symbols_v^vsov.png,_ _ d _ _ _,False,symbols_v^vsov_question.png,30,False
-246,word,laukka,19.0,Comic Sans MS,20,15,0.5,word_laukka.png,_ _ u _ _ _,True,word_laukka_question.png,10,False
-247,word,syöpyä,10.0,Comic Sans MS,20,15,0.35,word_syöpyä.png,_ a _ _ _ _,False,word_syöpyä_question.png,10,False
-248,word,pokeri,160.0,Times New Roman,40,-15,0.5,word_pokeri.png,_ _ _ _ _ z,False,word_pokeri_question.png,10,False
-249,consonants,ttjglk,,Comic Sans MS,20,-15,0.35,consonants_ttjglk.png,_ t _ _ _ _,True,consonants_ttjglk_question.png,20,False
-250,word,klaava,357.0,Comic Sans MS,40,15,0.35,word_klaava.png,_ e _ _ _ _,False,word_klaava_question.png,10,False
-251,word,kyteä,8.0,Impact,40,15,0.2,word_kyteä.png,_ _ _ _ ä,True,word_kyteä_question.png,10,True
-252,symbols,^s^sso,,DejaVu Sans,20,0,0.2,symbols_^s^sso.png,_ _ _ o _ _,False,symbols_^s^sso_question.png,30,False
-253,word,uuhi,17.0,Impact,40,0,0.2,word_uuhi.png,_ _ _ z,False,word_uuhi_question.png,10,False
-254,word,kuje,36.0,Times New Roman,20,-15,0.2,word_kuje.png,_ _ z _,False,word_kuje_question.png,10,False
-255,word,jaardi,12.0,Comic Sans MS,40,-15,0.5,word_jaardi.png,_ _ _ _ _ e,False,word_jaardi_question.png,10,True
-256,symbols,sdsvs,,DejaVu Sans,40,15,0.5,symbols_sdsvs.png,_ d _ _ _,True,symbols_sdsvs_question.png,30,False
-257,consonants,hxjlgq,,Impact,20,-15,0.5,consonants_hxjlgq.png,_ _ _ _ _ x,False,consonants_hxjlgq_question.png,20,False
-258,consonants,gmrq,,Times New Roman,40,15,0.35,consonants_gmrq.png,_ z _ _,False,consonants_gmrq_question.png,20,False
-259,word,pitäen,748.0,Comic Sans MS,20,-15,0.2,word_pitäen.png,_ _ _ a _ _,False,word_pitäen_question.png,10,False
-260,consonants,tcftcg,,Comic Sans MS,30,-15,0.35,consonants_tcftcg.png,_ _ _ n _ _,False,consonants_tcftcg_question.png,20,False
-261,consonants,ldtg,,Impact,40,-15,0.2,consonants_ldtg.png,_ _ _ g,True,consonants_ldtg_question.png,20,False
-262,symbols,sovssd,,DejaVu Sans,40,-15,0.5,symbols_sovssd.png,_ _ _ _ ^ _,False,symbols_sovssd_question.png,30,True
-263,consonants,zqshvj,,Comic Sans MS,20,15,0.2,consonants_zqshvj.png,_ _ _ m _ _,False,consonants_zqshvj_question.png,20,False
-264,consonants,gcfj,,Impact,20,0,0.35,consonants_gcfj.png,_ _ l _,False,consonants_gcfj_question.png,20,False
-265,word,säiky,55.0,Impact,20,-15,0.35,word_säiky.png,_ _ i _ _,True,word_säiky_question.png,10,False
-266,consonants,mpvl,,Comic Sans MS,40,15,0.35,consonants_mpvl.png,_ _ _ m,False,consonants_mpvl_question.png,20,False
-267,symbols,ds^^o,,DejaVu Sans,20,15,0.35,symbols_ds^^o.png,_ _ ^ _ _,True,symbols_ds^^o_question.png,30,False
-268,symbols,dsvvd,,DejaVu Sans,20,0,0.35,symbols_dsvvd.png,_ _ _ _ d,True,symbols_dsvvd_question.png,30,False
-269,word,hautua,74.0,Impact,30,15,0.5,word_hautua.png,_ _ u _ _ _,True,word_hautua_question.png,10,True
-270,consonants,mxnhh,,Impact,30,15,0.2,consonants_mxnhh.png,_ x _ _ _,True,consonants_mxnhh_question.png,20,False
-271,symbols,^dss,,DejaVu Sans,30,15,0.2,symbols_^dss.png,_ _ v _,False,symbols_^dss_question.png,30,False
-272,word,säie,38.0,Comic Sans MS,30,-15,0.5,word_säie.png,_ z _ _,False,word_säie_question.png,10,False
-273,consonants,ddjs,,Times New Roman,30,-15,0.2,consonants_ddjs.png,_ _ j _,True,consonants_ddjs_question.png,20,True
-274,consonants,bzhkd,,Impact,20,-15,0.5,consonants_bzhkd.png,_ _ _ _ d,True,consonants_bzhkd_question.png,20,False
-275,word,almu,39.0,Comic Sans MS,40,15,0.5,word_almu.png,a _ _ _,True,word_almu_question.png,10,False
-276,word,uivelo,6.0,Times New Roman,20,0,0.5,word_uivelo.png,_ _ _ _ _ o,True,word_uivelo_question.png,10,False
-277,word,nuha,140.0,Times New Roman,30,-15,0.2,word_nuha.png,_ _ _ u,False,word_nuha_question.png,10,False
-278,word,sysi,6.0,Impact,20,-15,0.5,word_sysi.png,_ g _ _,False,word_sysi_question.png,10,False
-279,symbols,^svs^,,DejaVu Sans,40,0,0.2,symbols_^svs^.png,_ _ _ d _,False,symbols_^svs^_question.png,30,False
-280,consonants,ksrwvk,,Impact,20,-15,0.35,consonants_ksrwvk.png,r _ _ _ _ _,False,consonants_ksrwvk_question.png,20,True
+14,symbols,ovo^s,,DejaVu Sans,20,15,0.35,symbols_ovo^s.png,_ d _ _ _,False,symbols_ovo^s_question.png,30,False
+15,symbols,vsd^ds,,DejaVu Sans,40,-15,0.2,symbols_vsd^ds.png,_ _ _ o _ _,False,symbols_vsd^ds_question.png,30,False
+16,word,huorin,43.0,Times New Roman,30,0,0.5,word_huorin.png,g _ _ _ _ _,False,word_huorin_question.png,10,False
+17,word,pidot,128.0,Comic Sans MS,30,15,0.35,word_pidot.png,_ _ d _ _,True,word_pidot_question.png,10,True
+18,consonants,jxfm,,Impact,40,15,0.5,consonants_jxfm.png,_ _ l _,False,consonants_jxfm_question.png,20,False
+19,consonants,vwrptk,,Comic Sans MS,40,-15,0.5,consonants_vwrptk.png,v _ _ _ _ _,True,consonants_vwrptk_question.png,20,False
+20,word,uuhi,17.0,Impact,40,0,0.2,word_uuhi.png,_ _ _ z,False,word_uuhi_question.png,10,False
+21,word,akti,34.0,Times New Roman,20,0,0.35,word_akti.png,_ _ t _,True,word_akti_question.png,10,False
+22,symbols,sdvdvd,,DejaVu Sans,40,0,0.35,symbols_sdvdvd.png,s _ _ _ _ _,True,symbols_sdvdvd_question.png,30,True
+23,word,tämä,575732.0,Comic Sans MS,30,-15,0.35,word_tämä.png,_ ä _ _,True,word_tämä_question.png,10,False
+24,consonants,rmmrh,,Impact,30,15,0.2,consonants_rmmrh.png,_ m _ _ _,True,consonants_rmmrh_question.png,20,False
+25,word,kussa,7.0,Comic Sans MS,30,0,0.35,word_kussa.png,_ _ _ ü _,False,word_kussa_question.png,10,False
+26,word,pamppu,197.0,Comic Sans MS,20,0,0.35,word_pamppu.png,_ _ _ _ q _,False,word_pamppu_question.png,10,True
+27,consonants,fbtsr,,Comic Sans MS,30,-15,0.5,consonants_fbtsr.png,_ x _ _ _,False,consonants_fbtsr_question.png,20,False
+28,consonants,vtkdtx,,Impact,30,0,0.2,consonants_vtkdtx.png,_ _ h _ _ _,False,consonants_vtkdtx_question.png,20,False
+29,consonants,rjfcdx,,Impact,20,15,0.2,consonants_rjfcdx.png,_ _ _ _ x _,False,consonants_rjfcdx_question.png,20,False
+30,word,tyköä,13.0,Impact,20,0,0.5,word_tyköä.png,z _ _ _ _,False,word_tyköä_question.png,10,False
+31,consonants,lxtgwm,,Impact,40,15,0.35,consonants_lxtgwm.png,_ _ _ _ _ k,False,consonants_lxtgwm_question.png,20,False
+32,consonants,jbntmc,,Times New Roman,40,0,0.2,consonants_jbntmc.png,_ _ n _ _ _,True,consonants_jbntmc_question.png,20,False
+33,consonants,xkfvmb,,Times New Roman,30,-15,0.35,consonants_xkfvmb.png,_ n _ _ _ _,False,consonants_xkfvmb_question.png,20,False
+34,symbols,sovo,,DejaVu Sans,40,0,0.35,symbols_sovo.png,_ _ v _,True,symbols_sovo_question.png,30,False
+35,consonants,ltqrr,,Comic Sans MS,20,15,0.5,consonants_ltqrr.png,_ _ _ j _,False,consonants_ltqrr_question.png,20,True
+36,consonants,tkcqd,,Impact,20,0,0.2,consonants_tkcqd.png,t _ _ _ _,True,consonants_tkcqd_question.png,20,False
+37,consonants,gljt,,Impact,40,0,0.2,consonants_gljt.png,_ _ _ t,True,consonants_gljt_question.png,20,False
+38,word,silaus,76.0,Impact,40,15,0.35,word_silaus.png,_ _ _ d _ _,False,word_silaus_question.png,10,True
+39,symbols,ovvds,,DejaVu Sans,20,-15,0.35,symbols_ovvds.png,_ v _ _ _,True,symbols_ovvds_question.png,30,False
+40,word,lähi,100.0,Comic Sans MS,20,-15,0.5,word_lähi.png,_ _ _ ö,False,word_lähi_question.png,10,False
+41,consonants,qgjwzq,,Times New Roman,20,-15,0.5,consonants_qgjwzq.png,w _ _ _ _ _,False,consonants_qgjwzq_question.png,20,False
+42,word,pitäen,748.0,Comic Sans MS,20,-15,0.2,word_pitäen.png,_ _ _ a _ _,False,word_pitäen_question.png,10,False
+43,word,lotja,18.0,Impact,30,-15,0.5,word_lotja.png,_ s _ _ _,False,word_lotja_question.png,10,False
+44,symbols,^so^d,,DejaVu Sans,20,-15,0.5,symbols_^so^d.png,_ s _ _ _,True,symbols_^so^d_question.png,30,True
+45,word,kiuas,9.0,Times New Roman,30,15,0.35,word_kiuas.png,_ _ _ _ s,True,word_kiuas_question.png,10,False
+46,consonants,tczhj,,Impact,40,-15,0.35,consonants_tczhj.png,_ _ z _ _,True,consonants_tczhj_question.png,20,False
+47,word,säie,38.0,Comic Sans MS,30,-15,0.5,word_säie.png,_ z _ _,False,word_säie_question.png,10,False
+48,word,ajos,8.0,Impact,30,0,0.2,word_ajos.png,a _ _ _,True,word_ajos_question.png,10,False
+49,consonants,grgdd,,Comic Sans MS,20,0,0.35,consonants_grgdd.png,g _ _ _ _,True,consonants_grgdd_question.png,20,False
+50,word,jymy,7.0,Comic Sans MS,40,-15,0.35,word_jymy.png,_ _ _ y,True,word_jymy_question.png,10,True
+51,word,almu,39.0,Comic Sans MS,40,15,0.5,word_almu.png,a _ _ _,True,word_almu_question.png,10,False
+52,consonants,mwgz,,Impact,20,15,0.2,consonants_mwgz.png,_ _ x _,False,consonants_mwgz_question.png,20,False
+53,consonants,tcftcg,,Times New Roman,30,15,0.2,consonants_tcftcg.png,_ c _ _ _ _,True,consonants_tcftcg_question.png,20,False
+54,consonants,rfclk,,Comic Sans MS,30,0,0.5,consonants_rfclk.png,_ _ _ _ k,True,consonants_rfclk_question.png,20,False
+55,consonants,xgtt,,Impact,20,0,0.35,consonants_xgtt.png,_ _ k _,False,consonants_xgtt_question.png,20,False
+56,word,oinas,74.0,Comic Sans MS,30,-15,0.2,word_oinas.png,o _ _ _ _,True,word_oinas_question.png,10,False
+57,word,pokeri,160.0,Times New Roman,40,-15,0.5,word_pokeri.png,_ _ _ _ _ z,False,word_pokeri_question.png,10,False
+58,consonants,wnnz,,Comic Sans MS,20,0,0.2,consonants_wnnz.png,_ n _ _,True,consonants_wnnz_question.png,20,True
+59,consonants,xwnh,,Impact,30,15,0.35,consonants_xwnh.png,q _ _ _,False,consonants_xwnh_question.png,20,False
+60,symbols,sovssd,,DejaVu Sans,40,0,0.35,symbols_sovssd.png,_ _ d _ _ _,False,symbols_sovssd_question.png,30,False
+61,consonants,whpw,,Times New Roman,40,0,0.35,consonants_whpw.png,_ _ p _,True,consonants_whpw_question.png,20,False
+62,word,ässä,775.0,Comic Sans MS,20,-15,0.35,word_ässä.png,_ _ _ c,False,word_ässä_question.png,10,False
+63,word,näppy,15.0,Impact,30,0,0.5,word_näppy.png,_ _ u _ _,False,word_näppy_question.png,10,True
+64,word,fotoni,56.0,Comic Sans MS,30,-15,0.5,word_fotoni.png,e _ _ _ _ _,False,word_fotoni_question.png,10,False
+65,symbols,d^dvdd,,DejaVu Sans,30,0,0.2,symbols_d^dvdd.png,_ _ ^ _ _ _,False,symbols_d^dvdd_question.png,30,False
+66,consonants,bhsx,,Times New Roman,20,0,0.5,consonants_bhsx.png,r _ _ _,False,consonants_bhsx_question.png,20,False
+67,word,sysi,6.0,Impact,20,-15,0.5,word_sysi.png,_ g _ _,False,word_sysi_question.png,10,False
+68,symbols,svvssv,,DejaVu Sans,30,0,0.35,symbols_svvssv.png,_ _ _ _ s _,True,symbols_svvssv_question.png,30,False
+69,word,uoma,17.0,Comic Sans MS,20,15,0.35,word_uoma.png,_ o _ _,True,word_uoma_question.png,10,False
+70,word,psalmi,81.0,Comic Sans MS,30,0,0.5,word_psalmi.png,q _ _ _ _ _,False,word_psalmi_question.png,10,False
+71,consonants,fwgntw,,Comic Sans MS,30,-15,0.2,consonants_fwgntw.png,_ w _ _ _ _,True,consonants_fwgntw_question.png,20,True
+72,consonants,dwzsrc,,Comic Sans MS,20,15,0.2,consonants_dwzsrc.png,_ _ _ l _ _,False,consonants_dwzsrc_question.png,20,False
+73,word,menijä,27.0,Comic Sans MS,20,15,0.2,word_menijä.png,_ _ u _ _ _,False,word_menijä_question.png,10,False
+74,word,rukki,10.0,Times New Roman,30,-15,0.2,word_rukki.png,_ _ _ _ i,True,word_rukki_question.png,10,False
+75,symbols,s^od,,DejaVu Sans,40,-15,0.35,symbols_s^od.png,_ _ o _,True,symbols_s^od_question.png,30,False
+76,word,nirso,270.0,Impact,40,15,0.2,word_nirso.png,_ d _ _ _,False,word_nirso_question.png,10,True
+77,symbols,sdosd,,DejaVu Sans,20,15,0.35,symbols_sdosd.png,_ d _ _ _,True,symbols_sdosd_question.png,30,False
+78,symbols,osvs^d,,DejaVu Sans,40,0,0.5,symbols_osvs^d.png,_ ^ _ _ _ _,False,symbols_osvs^d_question.png,30,False
+79,word,tyrä,65.0,Comic Sans MS,30,0,0.2,word_tyrä.png,u _ _ _,False,word_tyrä_question.png,10,False
+80,consonants,dqkcl,,Impact,30,15,0.5,consonants_dqkcl.png,_ q _ _ _,True,consonants_dqkcl_question.png,20,False
+81,symbols,^s^s,,DejaVu Sans,30,0,0.2,symbols_^s^s.png,^ _ _ _,True,symbols_^s^s_question.png,30,True
+82,symbols,dvsv,,DejaVu Sans,40,0,0.2,symbols_dvsv.png,_ _ d _,False,symbols_dvsv_question.png,30,False
+83,consonants,qpvbs,,Impact,20,-15,0.2,consonants_qpvbs.png,_ p _ _ _,True,consonants_qpvbs_question.png,20,False
+84,consonants,rwfcq,,Impact,20,15,0.5,consonants_rwfcq.png,_ _ x _ _,False,consonants_rwfcq_question.png,20,False
+85,word,iäti,265.0,Impact,30,0,0.35,word_iäti.png,_ _ _ i,True,word_iäti_question.png,10,False
+86,word,vipu,167.0,Impact,30,-15,0.5,word_vipu.png,_ _ p _,True,word_vipu_question.png,10,False
+87,word,odote,20.0,Comic Sans MS,20,0,0.5,word_odote.png,_ _ _ _ j,False,word_odote_question.png,10,False
+88,symbols,dsdoo^,,DejaVu Sans,30,0,0.5,symbols_dsdoo^.png,_ _ _ v _ _,False,symbols_dsdoo^_question.png,30,False
+89,consonants,tcfwdr,,Comic Sans MS,20,-15,0.35,consonants_tcfwdr.png,_ c _ _ _ _,True,consonants_tcfwdr_question.png,20,True
+90,consonants,czkdbs,,Comic Sans MS,40,0,0.5,consonants_czkdbs.png,c _ _ _ _ _,True,consonants_czkdbs_question.png,20,False
+91,symbols,vs^vds,,DejaVu Sans,40,15,0.35,symbols_vs^vds.png,_ _ _ _ d _,True,symbols_vs^vds_question.png,30,False
+92,word,hioa,318.0,Times New Roman,40,0,0.2,word_hioa.png,_ _ p _,False,word_hioa_question.png,10,False
+93,word,säle,18.0,Comic Sans MS,30,15,0.2,word_säle.png,_ _ _ v,False,word_säle_question.png,10,False
+94,consonants,gthb,,Times New Roman,30,0,0.2,consonants_gthb.png,_ _ _ j,False,consonants_gthb_question.png,20,False
+95,symbols,^sodvv,,DejaVu Sans,20,15,0.2,symbols_^sodvv.png,_ _ _ d _ _,True,symbols_^sodvv_question.png,30,True
+96,symbols,vs^oo,,DejaVu Sans,20,-15,0.2,symbols_vs^oo.png,v _ _ _ _,True,symbols_vs^oo_question.png,30,False
+97,word,kopio,1837.0,Times New Roman,30,15,0.35,word_kopio.png,_ _ _ _ o,True,word_kopio_question.png,10,False
+98,consonants,mxnhh,,Comic Sans MS,30,15,0.2,consonants_mxnhh.png,_ _ _ _ z,False,consonants_mxnhh_question.png,20,True
+99,word,kerubi,23.0,Times New Roman,20,15,0.2,word_kerubi.png,_ _ r _ _ _,True,word_kerubi_question.png,10,False
+100,word,katodi,6.0,Comic Sans MS,30,-15,0.35,word_katodi.png,_ ü _ _ _ _,False,word_katodi_question.png,10,False
+101,symbols,^vvs^s,,DejaVu Sans,40,15,0.2,symbols_^vvs^s.png,^ _ _ _ _ _,True,symbols_^vvs^s_question.png,30,False
+102,word,mäntä,66.0,Impact,20,15,0.35,word_mäntä.png,_ ä _ _ _,True,word_mäntä_question.png,10,False
+103,consonants,krvvpr,,Impact,40,-15,0.5,consonants_krvvpr.png,_ _ _ _ _ l,False,consonants_krvvpr_question.png,20,False
+104,consonants,jdfjs,,Times New Roman,30,0,0.35,consonants_jdfjs.png,z _ _ _ _,False,consonants_jdfjs_question.png,20,False
+105,consonants,wcjrjq,,Comic Sans MS,30,0,0.35,consonants_wcjrjq.png,_ _ c _ _ _,False,consonants_wcjrjq_question.png,20,True
+106,word,afasia,31.0,Impact,20,-15,0.2,word_afasia.png,_ _ _ _ _ z,False,word_afasia_question.png,10,False
+107,word,druidi,116.0,Comic Sans MS,40,-15,0.5,word_druidi.png,_ _ r _ _ _,False,word_druidi_question.png,10,False
+108,word,nurja,11.0,Times New Roman,30,-15,0.5,word_nurja.png,_ _ _ _ a,True,word_nurja_question.png,10,False
+109,word,viipyä,1043.0,Impact,40,-15,0.5,word_viipyä.png,g _ _ _ _ _,False,word_viipyä_question.png,10,False
+110,word,ositus,12.0,Times New Roman,20,-15,0.35,word_ositus.png,ö _ _ _ _ _,False,word_ositus_question.png,10,True
+111,symbols,dv^oo,,DejaVu Sans,40,15,0.2,symbols_dv^oo.png,_ _ _ o _,True,symbols_dv^oo_question.png,30,False
+112,consonants,bzhkd,,Times New Roman,30,-15,0.5,consonants_bzhkd.png,_ l _ _ _,False,consonants_bzhkd_question.png,20,False
+113,word,känsä,12.0,Impact,30,-15,0.35,word_känsä.png,a _ _ _ _,False,word_känsä_question.png,10,False
+114,word,kyteä,8.0,Impact,40,15,0.2,word_kyteä.png,_ _ _ _ ä,True,word_kyteä_question.png,10,False
+115,word,fuksi,142.0,Impact,40,-15,0.35,word_fuksi.png,_ _ _ z _,False,word_fuksi_question.png,10,False
+116,symbols,oo^vdv,,DejaVu Sans,40,-15,0.35,symbols_oo^vdv.png,o _ _ _ _ _,True,symbols_oo^vdv_question.png,30,False
+117,consonants,ksrwvk,,Comic Sans MS,40,-15,0.35,consonants_ksrwvk.png,_ _ _ _ _ z,False,consonants_ksrwvk_question.png,20,False
+118,symbols,dovv^,,DejaVu Sans,40,15,0.5,symbols_dovv^.png,_ o _ _ _,True,symbols_dovv^_question.png,30,True
+119,consonants,mgttwx,,Times New Roman,40,0,0.5,consonants_mgttwx.png,m _ _ _ _ _,True,consonants_mgttwx_question.png,20,False
+120,word,eliö,148.0,Comic Sans MS,30,15,0.5,word_eliö.png,_ _ i _,True,word_eliö_question.png,10,False
+121,word,puida,77.0,Comic Sans MS,20,-15,0.5,word_puida.png,_ _ _ t _,False,word_puida_question.png,10,False
+122,word,gongi,27.0,Comic Sans MS,40,-15,0.2,word_gongi.png,g _ _ _ _,True,word_gongi_question.png,10,False
+123,consonants,bfkx,,Times New Roman,30,15,0.35,consonants_bfkx.png,_ _ _ w,False,consonants_bfkx_question.png,20,False
+124,word,ylkä,6.0,Comic Sans MS,20,0,0.35,word_ylkä.png,_ _ k _,True,word_ylkä_question.png,10,True
+125,word,itää,179.0,Comic Sans MS,30,15,0.5,word_itää.png,_ t _ _,True,word_itää_question.png,10,False
+126,word,uuni,372.0,Impact,40,0,0.35,word_uuni.png,n _ _ _,False,word_uuni_question.png,10,False
+127,word,riimu,70.0,Comic Sans MS,20,15,0.35,word_riimu.png,_ _ i _ _,True,word_riimu_question.png,10,False
+128,symbols,^oddo,,DejaVu Sans,20,-15,0.2,symbols_^oddo.png,_ _ _ _ v,False,symbols_^oddo_question.png,30,False
+129,word,luusto,86.0,Times New Roman,30,15,0.2,word_luusto.png,p _ _ _ _ _,False,word_luusto_question.png,10,False
+130,word,tuohus,5.0,Comic Sans MS,20,0,0.2,word_tuohus.png,_ _ _ u _ _,False,word_tuohus_question.png,10,False
+131,symbols,odvs^,,DejaVu Sans,20,15,0.35,symbols_odvs^.png,_ _ v _ _,True,symbols_odvs^_question.png,30,True
+132,symbols,dssddd,,DejaVu Sans,40,-15,0.5,symbols_dssddd.png,_ _ _ _ ^ _,False,symbols_dssddd_question.png,30,False
+133,consonants,bwdz,,Comic Sans MS,40,-15,0.2,consonants_bwdz.png,_ _ d _,True,consonants_bwdz_question.png,20,False
+134,consonants,rrggj,,Impact,20,0,0.35,consonants_rrggj.png,_ _ b _ _,False,consonants_rrggj_question.png,20,False
+135,consonants,gxqtx,,Impact,20,15,0.35,consonants_gxqtx.png,_ _ _ _ x,True,consonants_gxqtx_question.png,20,True
+136,word,diodi,8.0,Times New Roman,40,15,0.35,word_diodi.png,_ _ o _ _,True,word_diodi_question.png,10,False
+137,word,ilmi,3063.0,Impact,20,15,0.35,word_ilmi.png,_ _ _ i,True,word_ilmi_question.png,10,False
+138,symbols,d^^do,,DejaVu Sans,20,0,0.35,symbols_d^^do.png,_ _ ^ _ _,True,symbols_d^^do_question.png,30,False
+139,consonants,xpfpj,,Impact,30,0,0.35,consonants_xpfpj.png,_ p _ _ _,True,consonants_xpfpj_question.png,20,False
+140,word,nieriä,5.0,Times New Roman,20,0,0.2,word_nieriä.png,_ i _ _ _ _,True,word_nieriä_question.png,10,False
+141,word,sikhi,15.0,Comic Sans MS,30,0,0.2,word_sikhi.png,h _ _ _ _,False,word_sikhi_question.png,10,True
+142,consonants,hqzll,,Times New Roman,40,15,0.5,consonants_hqzll.png,_ _ _ b _,False,consonants_hqzll_question.png,20,False
+143,word,kolvi,10.0,Impact,30,0,0.35,word_kolvi.png,_ ü _ _ _,False,word_kolvi_question.png,10,False
+144,consonants,kphwjz,,Comic Sans MS,30,-15,0.35,consonants_kphwjz.png,_ _ _ n _ _,False,consonants_kphwjz_question.png,20,False
+145,symbols,vovso,,DejaVu Sans,30,15,0.5,symbols_vovso.png,v _ _ _ _,True,symbols_vovso_question.png,30,False
+146,word,kihu,7.0,Impact,30,0,0.5,word_kihu.png,d _ _ _,False,word_kihu_question.png,10,False
+147,word,emätin,57.0,Impact,30,15,0.5,word_emätin.png,c _ _ _ _ _,False,word_emätin_question.png,10,True
+148,symbols,odo^,,DejaVu Sans,30,-15,0.35,symbols_odo^.png,d _ _ _,False,symbols_odo^_question.png,30,False
+149,consonants,pmxwht,,Impact,20,15,0.35,consonants_pmxwht.png,p _ _ _ _ _,True,consonants_pmxwht_question.png,20,False
+150,word,vaje,37.0,Times New Roman,40,15,0.5,word_vaje.png,_ a _ _,True,word_vaje_question.png,10,False
+151,consonants,qwjvhz,,Comic Sans MS,30,0,0.2,consonants_qwjvhz.png,_ q _ _ _ _,False,consonants_qwjvhz_question.png,20,False
+152,symbols,sdvsv,,DejaVu Sans,30,-15,0.2,symbols_sdvsv.png,_ d _ _ _,True,symbols_sdvsv_question.png,30,False
+153,symbols,^^svd,,DejaVu Sans,30,-15,0.5,symbols_^^svd.png,_ _ s _ _,True,symbols_^^svd_question.png,30,False
+154,word,solmio,761.0,Impact,40,-15,0.2,word_solmio.png,_ _ l _ _ _,True,word_solmio_question.png,10,False
+155,word,suippo,26.0,Times New Roman,40,-15,0.35,word_suippo.png,_ _ _ p _ _,True,word_suippo_question.png,10,True
+156,symbols,doosv,,DejaVu Sans,40,0,0.2,symbols_doosv.png,_ _ ^ _ _,False,symbols_doosv_question.png,30,False
+157,symbols,^ss^,,DejaVu Sans,30,15,0.5,symbols_^ss^.png,_ o _ _,False,symbols_^ss^_question.png,30,False
+158,word,piip,264.0,Comic Sans MS,30,15,0.2,word_piip.png,_ i _ _,True,word_piip_question.png,10,False
+159,word,motata,156.0,Times New Roman,30,15,0.5,word_motata.png,x _ _ _ _ _,False,word_motata_question.png,10,False
+160,symbols,voov^v,,DejaVu Sans,40,-15,0.5,symbols_voov^v.png,_ _ _ _ ^ _,True,symbols_voov^v_question.png,30,True
+161,consonants,dfdzj,,Impact,40,0,0.35,consonants_dfdzj.png,_ _ _ _ j,True,consonants_dfdzj_question.png,20,False
+162,symbols,^^^os,,DejaVu Sans,20,15,0.5,symbols_^^^os.png,_ ^ _ _ _,True,symbols_^^^os_question.png,30,False
+163,consonants,jqdsmj,,Times New Roman,40,-15,0.2,consonants_jqdsmj.png,_ _ _ _ n _,False,consonants_jqdsmj_question.png,20,False
+164,word,ilkiö,29.0,Times New Roman,30,0,0.2,word_ilkiö.png,_ _ _ _ ö,True,word_ilkiö_question.png,10,False
+165,symbols,oo^v,,DejaVu Sans,30,-15,0.2,symbols_oo^v.png,o _ _ _,True,symbols_oo^v_question.png,30,False
+166,symbols,d^oood,,DejaVu Sans,20,0,0.5,symbols_d^oood.png,d _ _ _ _ _,True,symbols_d^oood_question.png,30,False
+167,consonants,tvzdg,,Impact,30,-15,0.5,consonants_tvzdg.png,_ _ _ d _,True,consonants_tvzdg_question.png,20,True
+168,word,ähky,19.0,Impact,40,-15,0.2,word_ähky.png,_ d _ _,False,word_ähky_question.png,10,False
+169,word,lakea,42.0,Times New Roman,30,15,0.5,word_lakea.png,_ _ _ e _,True,word_lakea_question.png,10,False
+170,symbols,ovdvd,,DejaVu Sans,20,15,0.2,symbols_ovdvd.png,_ _ _ _ s,False,symbols_ovdvd_question.png,30,True
+171,word,kolhia,32.0,Times New Roman,20,15,0.5,word_kolhia.png,_ _ _ _ _ i,False,word_kolhia_question.png,10,False
+172,consonants,lgtjb,,Times New Roman,20,-15,0.2,consonants_lgtjb.png,_ _ _ _ b,True,consonants_lgtjb_question.png,20,False
+173,word,yöpyä,875.0,Times New Roman,40,-15,0.2,word_yöpyä.png,y _ _ _ _,True,word_yöpyä_question.png,10,False
+174,word,jäte,91.0,Comic Sans MS,30,0,0.35,word_jäte.png,_ ä _ _,True,word_jäte_question.png,10,False
+175,consonants,dvqdj,,Comic Sans MS,40,15,0.5,consonants_dvqdj.png,_ _ _ _ j,True,consonants_dvqdj_question.png,20,False
+176,word,kuje,36.0,Times New Roman,20,-15,0.2,word_kuje.png,_ _ z _,False,word_kuje_question.png,10,False
+177,symbols,oosvsd,,DejaVu Sans,40,-15,0.35,symbols_oosvsd.png,_ v _ _ _ _,False,symbols_oosvsd_question.png,30,True
+178,word,häpy,33.0,Impact,30,-15,0.2,word_häpy.png,_ z _ _,False,word_häpy_question.png,10,False
+179,symbols,^ddv,,DejaVu Sans,40,0,0.35,symbols_^ddv.png,_ _ _ v,True,symbols_^ddv_question.png,30,False
+180,word,räntä,11.0,Comic Sans MS,40,0,0.35,word_räntä.png,r _ _ _ _,True,word_räntä_question.png,10,False
+181,word,klaava,357.0,Comic Sans MS,40,15,0.35,word_klaava.png,_ e _ _ _ _,False,word_klaava_question.png,10,False
+182,consonants,lblxm,,Comic Sans MS,40,15,0.2,consonants_lblxm.png,l _ _ _ _,True,consonants_lblxm_question.png,20,False
+183,word,ampuja,2571.0,Impact,40,15,0.35,word_ampuja.png,_ _ _ u _ _,True,word_ampuja_question.png,10,False
+184,symbols,s^^d,,DejaVu Sans,20,0,0.5,symbols_s^^d.png,_ ^ _ _,True,symbols_s^^d_question.png,30,False
+185,word,kaapia,67.0,Comic Sans MS,20,15,0.5,word_kaapia.png,k _ _ _ _ _,True,word_kaapia_question.png,10,True
+186,word,otsoni,17.0,Times New Roman,30,0,0.35,word_otsoni.png,_ _ _ _ ü _,False,word_otsoni_question.png,10,False
+187,symbols,s^vds^,,DejaVu Sans,30,15,0.5,symbols_s^vds^.png,_ _ _ _ s _,True,symbols_s^vds^_question.png,30,False
+188,symbols,^dso,,DejaVu Sans,20,-15,0.5,symbols_^dso.png,_ d _ _,True,symbols_^dso_question.png,30,True
+189,word,ahjo,29.0,Times New Roman,40,15,0.5,word_ahjo.png,_ h _ _,True,word_ahjo_question.png,10,False
+190,symbols,vssd,,DejaVu Sans,20,-15,0.5,symbols_vssd.png,_ v _ _,False,symbols_vssd_question.png,30,False
+191,word,miten,321956.0,Times New Roman,30,-15,0.35,word_miten.png,_ _ _ e _,True,word_miten_question.png,10,False
+192,consonants,bxhl,,Comic Sans MS,20,-15,0.2,consonants_bxhl.png,b _ _ _,True,consonants_bxhl_question.png,20,False
+193,word,faksi,269.0,Times New Roman,20,0,0.5,word_faksi.png,_ _ p _ _,False,word_faksi_question.png,10,False
+194,consonants,zfjxqk,,Times New Roman,20,15,0.35,consonants_zfjxqk.png,d _ _ _ _ _,False,consonants_zfjxqk_question.png,20,False
+195,word,erkani,27.0,Impact,30,-15,0.2,word_erkani.png,_ _ _ a _ _,True,word_erkani_question.png,10,False
+196,word,lohi,218.0,Times New Roman,30,0,0.35,word_lohi.png,_ _ q _,False,word_lohi_question.png,10,False
+197,word,syöpyä,10.0,Comic Sans MS,20,15,0.35,word_syöpyä.png,_ a _ _ _ _,False,word_syöpyä_question.png,10,True
+198,word,möly,10.0,Comic Sans MS,40,0,0.5,word_möly.png,_ _ _ y,True,word_möly_question.png,10,False
+199,symbols,ssss,,DejaVu Sans,30,15,0.2,symbols_ssss.png,_ _ v _,False,symbols_ssss_question.png,30,False
+200,word,uute,13.0,Times New Roman,40,0,0.5,word_uute.png,_ _ t _,True,word_uute_question.png,10,True
+201,word,salvaa,90.0,Impact,40,0,0.5,word_salvaa.png,u _ _ _ _ _,False,word_salvaa_question.png,10,False
+202,symbols,vdvv,,DejaVu Sans,40,-15,0.35,symbols_vdvv.png,v _ _ _,True,symbols_vdvv_question.png,30,False
+203,consonants,ztlrlf,,Times New Roman,20,-15,0.35,consonants_ztlrlf.png,_ _ _ c _ _,False,consonants_ztlrlf_question.png,20,False
+204,consonants,zsgj,,Comic Sans MS,40,15,0.35,consonants_zsgj.png,_ _ _ m,False,consonants_zsgj_question.png,20,False
+205,word,salaus,155.0,Times New Roman,30,15,0.2,word_salaus.png,_ a _ _ _ _,True,word_salaus_question.png,10,False
+206,word,tenä,5.0,Impact,40,-15,0.35,word_tenä.png,_ e _ _,True,word_tenä_question.png,10,False
+207,consonants,hmff,,Times New Roman,40,15,0.2,consonants_hmff.png,_ k _ _,False,consonants_hmff_question.png,20,False
+208,word,poru,12.0,Times New Roman,20,0,0.2,word_poru.png,_ _ _ u,True,word_poru_question.png,10,False
+209,word,kustos,7.0,Comic Sans MS,30,0,0.5,word_kustos.png,_ _ ü _ _ _,False,word_kustos_question.png,10,True
+210,symbols,dsovsd,,DejaVu Sans,40,15,0.2,symbols_dsovsd.png,_ _ _ _ _ ^,False,symbols_dsovsd_question.png,30,False
+211,word,loraus,56.0,Impact,20,-15,0.2,word_loraus.png,_ o _ _ _ _,True,word_loraus_question.png,10,False
+212,word,syaani,10.0,Times New Roman,20,-15,0.5,word_syaani.png,s _ _ _ _ _,True,word_syaani_question.png,10,True
+213,word,nurin,1001.0,Times New Roman,20,-15,0.5,word_nurin.png,_ _ _ _ l,False,word_nurin_question.png,10,False
+214,word,isyys,88.0,Comic Sans MS,30,15,0.35,word_isyys.png,_ _ x _ _,False,word_isyys_question.png,10,False
+215,word,harjus,5.0,Times New Roman,20,15,0.2,word_harjus.png,h _ _ _ _ _,True,word_harjus_question.png,10,False
+216,word,osinko,6.0,Times New Roman,30,-15,0.35,word_osinko.png,_ _ _ y _ _,False,word_osinko_question.png,10,False
+217,word,kysta,76.0,Times New Roman,40,0,0.35,word_kysta.png,_ _ _ ü _,False,word_kysta_question.png,10,False
+218,word,pesula,230.0,Times New Roman,30,0,0.5,word_pesula.png,_ _ l _ _ _,False,word_pesula_question.png,10,True
+219,word,älytä,26.0,Impact,30,-15,0.35,word_älytä.png,_ _ _ _ ä,True,word_älytä_question.png,10,False
+220,symbols,s^s^s,,DejaVu Sans,40,0,0.5,symbols_s^s^s.png,_ v _ _ _,False,symbols_s^s^s_question.png,30,False
+221,word,silsa,13.0,Impact,40,0,0.5,word_silsa.png,_ p _ _ _,False,word_silsa_question.png,10,False
+222,symbols,vvosod,,DejaVu Sans,40,0,0.5,symbols_vvosod.png,_ _ d _ _ _,False,symbols_vvosod_question.png,30,False
+223,symbols,vdod^,,DejaVu Sans,30,0,0.35,symbols_vdod^.png,_ _ o _ _,True,symbols_vdod^_question.png,30,False
+224,consonants,bjwqk,,Times New Roman,40,-15,0.35,consonants_bjwqk.png,b _ _ _ _,True,consonants_bjwqk_question.png,20,False
+225,consonants,blkxwz,,Impact,30,0,0.5,consonants_blkxwz.png,_ _ _ _ w _,True,consonants_blkxwz_question.png,20,True
+226,word,tykö,1696.0,Times New Roman,20,15,0.5,word_tykö.png,_ _ h _,False,word_tykö_question.png,10,False
+227,word,äimä,6.0,Times New Roman,40,-15,0.35,word_äimä.png,e _ _ _,False,word_äimä_question.png,10,False
+228,consonants,sqdq,,Comic Sans MS,40,0,0.35,consonants_sqdq.png,b _ _ _,False,consonants_sqdq_question.png,20,False
+229,symbols,osdod^,,DejaVu Sans,30,-15,0.35,symbols_osdod^.png,_ s _ _ _ _,True,symbols_osdod^_question.png,30,False
+230,symbols,s^o^^v,,DejaVu Sans,30,15,0.35,symbols_s^o^^v.png,_ _ _ _ ^ _,True,symbols_s^o^^v_question.png,30,False
+231,word,urut,54.0,Times New Roman,40,0,0.5,word_urut.png,u _ _ _,True,word_urut_question.png,10,True
+232,symbols,v^v^,,DejaVu Sans,20,15,0.5,symbols_v^v^.png,_ ^ _ _,True,symbols_v^v^_question.png,30,False
+233,word,näkö,506.0,Times New Roman,30,-15,0.5,word_näkö.png,n _ _ _,True,word_näkö_question.png,10,False
+234,symbols,dovdd,,DejaVu Sans,20,-15,0.2,symbols_dovdd.png,_ _ o _ _,False,symbols_dovdd_question.png,30,False
+235,symbols,dvsvos,,DejaVu Sans,40,15,0.35,symbols_dvsvos.png,_ _ s _ _ _,True,symbols_dvsvos_question.png,30,False
+236,word,ripsi,23.0,Impact,20,0,0.35,word_ripsi.png,r _ _ _ _,True,word_ripsi_question.png,10,False
+237,word,myyty,1849.0,Times New Roman,20,15,0.35,word_myyty.png,m _ _ _ _,True,word_myyty_question.png,10,False
+238,word,tyvi,8.0,Comic Sans MS,40,15,0.35,word_tyvi.png,_ d _ _,False,word_tyvi_question.png,10,False
+239,symbols,s^dv^,,DejaVu Sans,40,0,0.2,symbols_s^dv^.png,_ v _ _ _,False,symbols_s^dv^_question.png,30,True
+240,consonants,dfszzp,,Impact,40,15,0.2,consonants_dfszzp.png,_ _ s _ _ _,True,consonants_dfszzp_question.png,20,False
+241,consonants,dlgt,,Times New Roman,40,15,0.35,consonants_dlgt.png,_ z _ _,False,consonants_dlgt_question.png,20,False
+242,word,rulla,88.0,Comic Sans MS,30,15,0.5,word_rulla.png,_ _ w _ _,False,word_rulla_question.png,10,False
+243,word,uima,105.0,Impact,40,15,0.5,word_uima.png,u _ _ _,True,word_uima_question.png,10,False
+244,symbols,s^vo,,DejaVu Sans,40,15,0.5,symbols_s^vo.png,_ _ v _,True,symbols_s^vo_question.png,30,False
+245,word,äänes,18.0,Comic Sans MS,40,15,0.2,word_äänes.png,_ ä _ _ _,True,word_äänes_question.png,10,True
+246,word,noppa,85.0,Comic Sans MS,40,0,0.5,word_noppa.png,_ _ _ ü _,False,word_noppa_question.png,10,False
+247,consonants,mkfz,,Impact,30,-15,0.35,consonants_mkfz.png,_ k _ _,True,consonants_mkfz_question.png,20,False
+248,word,korren,100.0,Comic Sans MS,20,0,0.2,word_korren.png,_ _ _ w _ _,False,word_korren_question.png,10,False
+249,word,estyä,6.0,Impact,20,0,0.35,word_estyä.png,e _ _ _ _,True,word_estyä_question.png,10,False
+250,symbols,^osd,,DejaVu Sans,30,-15,0.5,symbols_^osd.png,d _ _ _,False,symbols_^osd_question.png,30,False
+251,word,uivelo,6.0,Times New Roman,20,0,0.5,word_uivelo.png,_ _ _ _ _ o,True,word_uivelo_question.png,10,True
+252,consonants,rrwj,,Times New Roman,30,-15,0.2,consonants_rrwj.png,_ _ w _,True,consonants_rrwj_question.png,20,False
+253,symbols,svvd,,DejaVu Sans,30,0,0.35,symbols_svvd.png,_ v _ _,True,symbols_svvd_question.png,30,False
+254,word,orpo,798.0,Comic Sans MS,30,-15,0.2,word_orpo.png,_ ö _ _,False,word_orpo_question.png,10,False
+255,word,hamaan,86.0,Comic Sans MS,20,0,0.5,word_hamaan.png,_ _ _ _ ä _,False,word_hamaan_question.png,10,False
+256,word,juhta,15.0,Times New Roman,20,15,0.35,word_juhta.png,_ _ o _ _,False,word_juhta_question.png,10,False
+257,consonants,xxqhnz,,Impact,30,-15,0.2,consonants_xxqhnz.png,_ _ _ _ _ q,False,consonants_xxqhnz_question.png,20,True
+258,consonants,spmb,,Impact,20,15,0.5,consonants_spmb.png,_ _ m _,True,consonants_spmb_question.png,20,False
+259,symbols,^svs^,,DejaVu Sans,40,0,0.2,symbols_^svs^.png,_ _ _ d _,False,symbols_^svs^_question.png,30,False
+260,word,köli,27.0,Comic Sans MS,20,-15,0.2,word_köli.png,_ _ _ d,False,word_köli_question.png,10,False
+261,symbols,v^vsov,,DejaVu Sans,20,0,0.2,symbols_v^vsov.png,_ _ _ _ _ d,False,symbols_v^vsov_question.png,30,False
+262,word,terska,7.0,Comic Sans MS,20,-15,0.35,word_terska.png,_ _ _ _ c _,False,word_terska_question.png,10,False
+263,symbols,s^od^,,DejaVu Sans,20,0,0.5,symbols_s^od^.png,_ _ ^ _ _,False,symbols_s^od^_question.png,30,True
+264,consonants,hxjlgq,,Impact,20,-15,0.5,consonants_hxjlgq.png,_ _ _ _ _ x,False,consonants_hxjlgq_question.png,20,False
+265,symbols,do^d,,DejaVu Sans,40,15,0.5,symbols_do^d.png,_ _ _ s,False,symbols_do^d_question.png,30,False
+266,word,vuoka,20.0,Times New Roman,20,0,0.35,word_vuoka.png,v _ _ _ _,True,word_vuoka_question.png,10,False
+267,word,kortti,2634.0,Impact,20,0,0.2,word_kortti.png,_ _ _ t _ _,True,word_kortti_question.png,10,False
+268,consonants,zpcqc,,Comic Sans MS,30,15,0.35,consonants_zpcqc.png,_ _ _ _ c,True,consonants_zpcqc_question.png,20,True
+269,word,päkiä,5.0,Impact,40,0,0.35,word_päkiä.png,t _ _ _ _,False,word_päkiä_question.png,10,False
+270,word,kytkin,500.0,Times New Roman,40,-15,0.2,word_kytkin.png,_ _ _ g _ _,False,word_kytkin_question.png,10,False
+271,consonants,qckq,,Impact,40,-15,0.2,consonants_qckq.png,_ _ _ q,True,consonants_qckq_question.png,20,False
+272,consonants,zztr,,Times New Roman,20,0,0.2,consonants_zztr.png,_ x _ _,False,consonants_zztr_question.png,20,False
+273,symbols,^d^vs,,DejaVu Sans,30,0,0.5,symbols_^d^vs.png,_ _ o _ _,False,symbols_^d^vs_question.png,30,False
+274,consonants,tlzr,,Comic Sans MS,20,-15,0.5,consonants_tlzr.png,_ l _ _,True,consonants_tlzr_question.png,20,False
+275,word,sävy,345.0,Impact,30,0,0.2,word_sävy.png,_ _ e _,False,word_sävy_question.png,10,True
+276,consonants,gchqcz,,Impact,20,0,0.5,consonants_gchqcz.png,g _ _ _ _ _,True,consonants_gchqcz_question.png,20,False
+277,consonants,zdvv,,Impact,20,0,0.2,consonants_zdvv.png,_ _ _ v,True,consonants_zdvv_question.png,20,False
+278,symbols,voss,,DejaVu Sans,20,-15,0.35,symbols_voss.png,_ _ _ s,True,symbols_voss_question.png,30,False
+279,word,hihna,249.0,Comic Sans MS,20,-15,0.2,word_hihna.png,_ _ _ ü _,False,word_hihna_question.png,10,False
+280,word,rämä,52.0,Impact,30,15,0.2,word_rämä.png,_ h _ _,False,word_rämä_question.png,10,True
 281,word,kopina,7.0,Times New Roman,40,0,0.35,word_kopina.png,_ _ _ f _ _,False,word_kopina_question.png,10,False
-282,symbols,s^od,,DejaVu Sans,30,-15,0.5,symbols_s^od.png,_ _ _ o,False,symbols_s^od_question.png,30,False
-283,consonants,rfrqfp,,Comic Sans MS,30,-15,0.2,consonants_rfrqfp.png,_ f _ _ _ _,True,consonants_rfrqfp_question.png,20,False
-284,symbols,osdoo^,,DejaVu Sans,30,0,0.35,symbols_osdoo^.png,_ _ _ _ o _,True,symbols_osdoo^_question.png,30,True
-285,word,täällä,399497.0,Comic Sans MS,30,0,0.5,word_täällä.png,_ _ _ _ _ ü,False,word_täällä_question.png,10,False
-286,word,hamaan,86.0,Comic Sans MS,20,0,0.5,word_hamaan.png,_ _ _ _ ä _,False,word_hamaan_question.png,10,False
-287,symbols,soov,,DejaVu Sans,30,15,0.35,symbols_soov.png,_ _ _ s,False,symbols_soov_question.png,30,False
-288,word,ähky,19.0,Impact,40,-15,0.2,word_ähky.png,_ d _ _,False,word_ähky_question.png,10,False
-289,word,gongi,27.0,Comic Sans MS,40,-15,0.2,word_gongi.png,g _ _ _ _,True,word_gongi_question.png,10,False
-290,word,mäntä,66.0,Impact,20,15,0.35,word_mäntä.png,_ ä _ _ _,True,word_mäntä_question.png,10,False
-291,word,pöty,11.0,Comic Sans MS,20,15,0.5,word_pöty.png,_ j _ _,False,word_pöty_question.png,10,False
-292,word,suti,37.0,Times New Roman,40,15,0.35,word_suti.png,_ z _ _,False,word_suti_question.png,10,True
-293,consonants,zdvv,,Times New Roman,20,15,0.2,consonants_zdvv.png,l _ _ _,False,consonants_zdvv_question.png,20,False
-294,word,noppa,85.0,Comic Sans MS,40,0,0.5,word_noppa.png,_ _ _ ü _,False,word_noppa_question.png,10,False
-295,word,viipyä,1043.0,Impact,40,-15,0.5,word_viipyä.png,g _ _ _ _ _,False,word_viipyä_question.png,10,False
-296,word,osinko,6.0,Times New Roman,30,-15,0.35,word_osinko.png,_ _ _ y _ _,False,word_osinko_question.png,10,False
-297,consonants,brsjjh,,Impact,40,15,0.35,consonants_brsjjh.png,_ _ _ _ _ l,False,consonants_brsjjh_question.png,20,True
-298,symbols,do^s,,DejaVu Sans,20,15,0.2,symbols_do^s.png,d _ _ _,True,symbols_do^s_question.png,30,False
-299,consonants,lhqt,,Times New Roman,20,15,0.5,consonants_lhqt.png,_ _ _ t,True,consonants_lhqt_question.png,20,False
-300,consonants,xxqhnz,,Comic Sans MS,40,-15,0.35,consonants_xxqhnz.png,_ _ _ _ _ x,False,consonants_xxqhnz_question.png,20,False
-301,word,lähi,100.0,Comic Sans MS,20,-15,0.5,word_lähi.png,_ _ _ ö,False,word_lähi_question.png,10,False
-302,symbols,sv^vvs,,DejaVu Sans,40,-15,0.35,symbols_sv^vvs.png,s _ _ _ _ _,True,symbols_sv^vvs_question.png,30,False
-303,word,uiva,29.0,Times New Roman,40,15,0.2,word_uiva.png,d _ _ _,False,word_uiva_question.png,10,False
-304,word,puida,77.0,Comic Sans MS,20,-15,0.5,word_puida.png,_ _ _ t _,False,word_puida_question.png,10,False
-305,word,pesin,596.0,Impact,20,-15,0.5,word_pesin.png,_ _ _ _ n,True,word_pesin_question.png,10,True
-306,word,hajan,28.0,Impact,20,0,0.2,word_hajan.png,_ _ _ _ n,True,word_hajan_question.png,10,False
-307,word,kerubi,23.0,Times New Roman,20,15,0.2,word_kerubi.png,_ _ r _ _ _,True,word_kerubi_question.png,10,False
-308,word,rämä,52.0,Impact,30,15,0.2,word_rämä.png,_ h _ _,False,word_rämä_question.png,10,False
-309,symbols,s^v^s,,DejaVu Sans,20,-15,0.2,symbols_s^v^s.png,_ _ o _ _,False,symbols_s^v^s_question.png,30,False
-310,word,nide,11.0,Comic Sans MS,40,15,0.2,word_nide.png,_ _ _ m,False,word_nide_question.png,10,True
-311,word,lakea,42.0,Times New Roman,30,15,0.5,word_lakea.png,_ _ _ e _,True,word_lakea_question.png,10,False
-312,consonants,jxfm,,Times New Roman,30,15,0.35,consonants_jxfm.png,_ _ _ x,False,consonants_jxfm_question.png,20,False
-313,word,akti,34.0,Times New Roman,20,0,0.35,word_akti.png,_ _ t _,True,word_akti_question.png,10,False
-314,word,lempo,61.0,Times New Roman,20,-15,0.35,word_lempo.png,_ e _ _ _,True,word_lempo_question.png,10,True
-315,word,lemu,294.0,Comic Sans MS,20,-15,0.35,word_lemu.png,_ _ v _,False,word_lemu_question.png,10,False
-316,symbols,v^^^^,,DejaVu Sans,20,-15,0.2,symbols_v^^^^.png,_ _ _ _ v,False,symbols_v^^^^_question.png,30,False
-317,consonants,zjwhs,,Comic Sans MS,30,0,0.5,consonants_zjwhs.png,_ _ _ _ s,True,consonants_zjwhs_question.png,20,False
-318,word,opaali,12.0,Impact,40,-15,0.5,word_opaali.png,o _ _ _ _ _,True,word_opaali_question.png,10,False
-319,symbols,sovdvo,,DejaVu Sans,30,0,0.5,symbols_sovdvo.png,_ _ _ v _ _,False,symbols_sovdvo_question.png,30,False
-320,word,rapsi,5.0,Impact,30,15,0.2,word_rapsi.png,_ _ _ s _,True,word_rapsi_question.png,10,False
-321,word,iäti,265.0,Impact,30,0,0.35,word_iäti.png,_ _ _ i,True,word_iäti_question.png,10,False
-322,word,jakaja,177.0,Comic Sans MS,20,15,0.2,word_jakaja.png,_ x _ _ _ _,False,word_jakaja_question.png,10,False
-323,symbols,vvo^,,DejaVu Sans,40,-15,0.2,symbols_vvo^.png,_ _ _ ^,True,symbols_vvo^_question.png,30,True
-324,symbols,svds,,DejaVu Sans,20,0,0.2,symbols_svds.png,v _ _ _,False,symbols_svds_question.png,30,False
-325,word,möly,10.0,Comic Sans MS,40,0,0.5,word_möly.png,_ _ _ y,True,word_möly_question.png,10,False
-326,word,lotja,18.0,Impact,30,-15,0.5,word_lotja.png,_ s _ _ _,False,word_lotja_question.png,10,False
-327,symbols,sdvd^,,DejaVu Sans,30,0,0.5,symbols_sdvd^.png,_ _ d _ _,False,symbols_sdvd^_question.png,30,False
-328,consonants,qmff,,Comic Sans MS,30,15,0.5,consonants_qmff.png,_ m _ _,True,consonants_qmff_question.png,20,True
-329,word,säkä,279.0,Times New Roman,40,15,0.2,word_säkä.png,l _ _ _,False,word_säkä_question.png,10,False
-330,symbols,^o^o^v,,DejaVu Sans,40,-15,0.2,symbols_^o^o^v.png,_ _ _ _ _ d,False,symbols_^o^o^v_question.png,30,False
-331,consonants,zlln,,Comic Sans MS,20,-15,0.5,consonants_zlln.png,_ l _ _,True,consonants_zlln_question.png,20,False
-332,word,otsoni,17.0,Times New Roman,30,0,0.35,word_otsoni.png,_ _ _ _ ü _,False,word_otsoni_question.png,10,False
-333,consonants,jtltfj,,Impact,30,0,0.5,consonants_jtltfj.png,_ _ _ _ f _,True,consonants_jtltfj_question.png,20,False
-334,word,miten,321956.0,Times New Roman,30,-15,0.35,word_miten.png,_ _ _ e _,True,word_miten_question.png,10,False
-335,word,kaste,123.0,Comic Sans MS,20,0,0.5,word_kaste.png,_ a _ _ _,True,word_kaste_question.png,10,True
-336,word,ahjo,29.0,Times New Roman,40,15,0.5,word_ahjo.png,_ h _ _,True,word_ahjo_question.png,10,False
-337,symbols,^vd^vd,,DejaVu Sans,20,15,0.2,symbols_^vd^vd.png,_ _ _ ^ _ _,True,symbols_^vd^vd_question.png,30,False
-338,word,fuksi,142.0,Impact,40,-15,0.35,word_fuksi.png,_ _ _ z _,False,word_fuksi_question.png,10,True
-339,word,vahaus,61.0,Comic Sans MS,20,0,0.2,word_vahaus.png,_ _ _ _ _ s,True,word_vahaus_question.png,10,False
-340,consonants,rwfcq,,Comic Sans MS,20,0,0.5,consonants_rwfcq.png,_ _ _ c _,True,consonants_rwfcq_question.png,20,False
-341,word,kolhia,32.0,Times New Roman,20,15,0.5,word_kolhia.png,_ _ _ _ _ i,False,word_kolhia_question.png,10,False
-342,word,näppy,15.0,Impact,30,0,0.5,word_näppy.png,_ _ u _ _,False,word_näppy_question.png,10,False
-343,symbols,sodvds,,DejaVu Sans,20,0,0.2,symbols_sodvds.png,_ _ _ _ _ d,False,symbols_sodvds_question.png,30,False
-344,symbols,^ddv,,DejaVu Sans,20,-15,0.35,symbols_^ddv.png,_ _ _ v,True,symbols_^ddv_question.png,30,True
-345,consonants,svks,,Impact,30,15,0.35,consonants_svks.png,q _ _ _,False,consonants_svks_question.png,20,False
-346,consonants,xkfvmb,,Impact,20,15,0.2,consonants_xkfvmb.png,_ _ _ _ x _,False,consonants_xkfvmb_question.png,20,False
-347,word,suippo,26.0,Times New Roman,40,-15,0.35,word_suippo.png,_ _ _ p _ _,True,word_suippo_question.png,10,False
-348,consonants,nrxlzx,,Impact,40,15,0.2,consonants_nrxlzx.png,_ _ x _ _ _,True,consonants_nrxlzx_question.png,20,False
-349,word,ripsi,23.0,Impact,20,0,0.35,word_ripsi.png,r _ _ _ _,True,word_ripsi_question.png,10,False
-350,word,kopio,1837.0,Times New Roman,30,15,0.35,word_kopio.png,_ _ _ _ o,True,word_kopio_question.png,10,True
-351,word,vaje,37.0,Times New Roman,40,15,0.5,word_vaje.png,_ a _ _,True,word_vaje_question.png,10,False
-352,word,nurja,11.0,Times New Roman,30,-15,0.5,word_nurja.png,_ _ _ _ a,True,word_nurja_question.png,10,False
-353,word,ilkiö,29.0,Times New Roman,30,0,0.2,word_ilkiö.png,_ _ _ _ ö,True,word_ilkiö_question.png,10,False
-354,symbols,sovs,,DejaVu Sans,30,0,0.2,symbols_sovs.png,s _ _ _,True,symbols_sovs_question.png,30,False
-355,word,yöpyä,875.0,Times New Roman,40,-15,0.2,word_yöpyä.png,y _ _ _ _,True,word_yöpyä_question.png,10,False
-356,symbols,vsds,,DejaVu Sans,40,-15,0.35,symbols_vsds.png,_ _ d _,True,symbols_vsds_question.png,30,True
-357,word,päkiä,5.0,Impact,40,0,0.35,word_päkiä.png,t _ _ _ _,False,word_päkiä_question.png,10,False
-358,word,odote,20.0,Comic Sans MS,20,0,0.5,word_odote.png,_ _ _ _ j,False,word_odote_question.png,10,False
-359,word,kuskus,16.0,Comic Sans MS,40,-15,0.2,word_kuskus.png,k _ _ _ _ _,True,word_kuskus_question.png,10,False
+282,symbols,vdso,,DejaVu Sans,40,15,0.2,symbols_vdso.png,v _ _ _,True,symbols_vdso_question.png,30,False
+283,symbols,sv^vvs,,DejaVu Sans,40,-15,0.5,symbols_sv^vvs.png,_ _ _ _ o _,False,symbols_sv^vvs_question.png,30,False
+284,symbols,^vod,,DejaVu Sans,30,15,0.35,symbols_^vod.png,_ _ _ v,False,symbols_^vod_question.png,30,False
+285,word,torium,12.0,Comic Sans MS,40,-15,0.35,word_torium.png,_ _ _ _ _ m,True,word_torium_question.png,10,True
+286,consonants,hjqc,,Times New Roman,20,15,0.2,consonants_hjqc.png,m _ _ _,False,consonants_hjqc_question.png,20,False
+287,consonants,gsdx,,Comic Sans MS,30,15,0.5,consonants_gsdx.png,_ s _ _,True,consonants_gsdx_question.png,20,False
+288,consonants,txhs,,Impact,40,0,0.5,consonants_txhs.png,_ x _ _,True,consonants_txhs_question.png,20,False
+289,word,pyörö,5.0,Impact,20,0,0.5,word_pyörö.png,_ _ t _ _,False,word_pyörö_question.png,10,False
+290,word,uiva,29.0,Times New Roman,40,15,0.2,word_uiva.png,d _ _ _,False,word_uiva_question.png,10,True
+291,word,sarake,21.0,Impact,20,15,0.2,word_sarake.png,ä _ _ _ _ _,False,word_sarake_question.png,10,False
+292,symbols,^vovvs,,DejaVu Sans,40,15,0.35,symbols_^vovvs.png,_ _ _ _ s _,False,symbols_^vovvs_question.png,30,False
+293,word,hajan,28.0,Impact,20,0,0.2,word_hajan.png,_ _ _ _ n,True,word_hajan_question.png,10,False
+294,word,kohu,172.0,Times New Roman,30,0,0.2,word_kohu.png,_ _ _ u,True,word_kohu_question.png,10,False
+295,word,lemu,294.0,Comic Sans MS,20,-15,0.35,word_lemu.png,_ _ v _,False,word_lemu_question.png,10,False
+296,consonants,ndsvw,,Comic Sans MS,20,0,0.5,consonants_ndsvw.png,_ _ _ v _,True,consonants_ndsvw_question.png,20,True
+297,word,arpoa,35.0,Comic Sans MS,30,15,0.2,word_arpoa.png,_ _ _ o _,True,word_arpoa_question.png,10,False
+298,word,pöty,11.0,Comic Sans MS,20,15,0.5,word_pöty.png,_ j _ _,False,word_pöty_question.png,10,False
+299,word,häkä,88.0,Impact,20,-15,0.35,word_häkä.png,h _ _ _,True,word_häkä_question.png,10,False
+300,symbols,vovvvv,,DejaVu Sans,30,15,0.35,symbols_vovvvv.png,_ _ _ d _ _,False,symbols_vovvvv_question.png,30,False
+301,word,uuma,5.0,Comic Sans MS,40,0,0.2,word_uuma.png,_ u _ _,True,word_uuma_question.png,10,False
+302,symbols,ssods,,DejaVu Sans,40,-15,0.5,symbols_ssods.png,_ _ _ d _,True,symbols_ssods_question.png,30,True
+303,consonants,tdgw,,Times New Roman,20,15,0.5,consonants_tdgw.png,_ _ _ w,True,consonants_tdgw_question.png,20,False
+304,word,särkyä,94.0,Impact,20,15,0.5,word_särkyä.png,j _ _ _ _ _,False,word_särkyä_question.png,10,False
+305,word,häät,4190.0,Impact,20,15,0.5,word_häät.png,_ _ _ l,False,word_häät_question.png,10,False
+306,consonants,jtltfj,,Impact,20,-15,0.35,consonants_jtltfj.png,r _ _ _ _ _,False,consonants_jtltfj_question.png,20,False
+307,word,jaos,288.0,Times New Roman,40,0,0.2,word_jaos.png,_ _ c _,False,word_jaos_question.png,10,False
+308,word,ääriin,271.0,Comic Sans MS,30,-15,0.35,word_ääriin.png,_ ö _ _ _ _,False,word_ääriin_question.png,10,False
+309,symbols,vsd^,,DejaVu Sans,20,15,0.5,symbols_vsd^.png,v _ _ _,True,symbols_vsd^_question.png,30,True
+310,word,osuma,1083.0,Times New Roman,40,-15,0.5,word_osuma.png,_ q _ _ _,False,word_osuma_question.png,10,False
+311,consonants,btmk,,Times New Roman,30,0,0.5,consonants_btmk.png,_ _ m _,True,consonants_btmk_question.png,20,False
+312,word,itiö,17.0,Comic Sans MS,40,15,0.5,word_itiö.png,_ _ _ ö,True,word_itiö_question.png,10,False
+313,consonants,xggtw,,Impact,20,-15,0.5,consonants_xggtw.png,_ _ _ _ w,True,consonants_xggtw_question.png,20,False
+314,consonants,vzkt,,Comic Sans MS,20,15,0.35,consonants_vzkt.png,_ _ k _,True,consonants_vzkt_question.png,20,False
+315,consonants,lcrzjb,,Times New Roman,30,15,0.5,consonants_lcrzjb.png,_ _ _ b _ _,False,consonants_lcrzjb_question.png,20,True
+316,word,säiky,55.0,Impact,20,-15,0.35,word_säiky.png,_ _ i _ _,True,word_säiky_question.png,10,False
+317,symbols,^d^^d,,DejaVu Sans,30,0,0.5,symbols_^d^^d.png,_ _ o _ _,False,symbols_^d^^d_question.png,30,False
+318,word,ratamo,5.0,Comic Sans MS,30,0,0.35,word_ratamo.png,_ _ t _ _ _,True,word_ratamo_question.png,10,False
+319,word,hormi,15.0,Comic Sans MS,30,0,0.2,word_hormi.png,_ _ r _ _,True,word_hormi_question.png,10,False
+320,word,sopu,74.0,Impact,40,0,0.2,word_sopu.png,_ c _ _,False,word_sopu_question.png,10,True
+321,word,ripeä,50.0,Impact,30,15,0.35,word_ripeä.png,_ _ p _ _,True,word_ripeä_question.png,10,False
+322,symbols,vv^^,,DejaVu Sans,20,0,0.2,symbols_vv^^.png,s _ _ _,False,symbols_vv^^_question.png,30,False
+323,symbols,sodvdv,,DejaVu Sans,20,0,0.2,symbols_sodvdv.png,_ _ _ o _ _,False,symbols_sodvdv_question.png,30,False
+324,word,jaardi,12.0,Comic Sans MS,40,-15,0.5,word_jaardi.png,_ _ _ _ _ e,False,word_jaardi_question.png,10,False
+325,word,vahaus,61.0,Comic Sans MS,20,0,0.2,word_vahaus.png,_ _ _ _ _ s,True,word_vahaus_question.png,10,False
+326,word,kuskus,16.0,Comic Sans MS,40,-15,0.2,word_kuskus.png,k _ _ _ _ _,True,word_kuskus_question.png,10,False
+327,word,pesin,596.0,Impact,20,-15,0.5,word_pesin.png,_ _ _ _ n,True,word_pesin_question.png,10,False
+328,symbols,^vd^vd,,DejaVu Sans,40,-15,0.2,symbols_^vd^vd.png,_ _ _ _ _ o,False,symbols_^vd^vd_question.png,30,True
+329,symbols,ds^^o,,DejaVu Sans,40,0,0.5,symbols_ds^^o.png,_ s _ _ _,True,symbols_ds^^o_question.png,30,False
+330,symbols,o^ss,,DejaVu Sans,40,-15,0.2,symbols_o^ss.png,_ _ _ s,True,symbols_o^ss_question.png,30,False
+331,word,rapsi,5.0,Impact,30,15,0.2,word_rapsi.png,_ _ _ s _,True,word_rapsi_question.png,10,False
+332,consonants,gnbtn,,Comic Sans MS,40,0,0.2,consonants_gnbtn.png,g _ _ _ _,True,consonants_gnbtn_question.png,20,False
+333,word,hautua,74.0,Impact,30,15,0.5,word_hautua.png,_ _ u _ _ _,True,word_hautua_question.png,10,False
+334,symbols,os^ood,,DejaVu Sans,30,0,0.2,symbols_os^ood.png,^ _ _ _ _ _,False,symbols_os^ood_question.png,30,True
+335,symbols,vvo^,,DejaVu Sans,30,-15,0.35,symbols_vvo^.png,_ _ _ ^,True,symbols_vvo^_question.png,30,False
+336,symbols,so^^v,,DejaVu Sans,20,0,0.35,symbols_so^^v.png,_ _ _ ^ _,True,symbols_so^^v_question.png,30,False
+337,word,stoola,8.0,Impact,20,15,0.2,word_stoola.png,_ t _ _ _ _,True,word_stoola_question.png,10,False
+338,symbols,^^od,,DejaVu Sans,30,-15,0.5,symbols_^^od.png,_ _ _ o,False,symbols_^^od_question.png,30,False
+339,word,seimi,25.0,Comic Sans MS,30,15,0.35,word_seimi.png,_ _ _ m _,True,word_seimi_question.png,10,True
+340,symbols,vvvd,,DejaVu Sans,40,-15,0.2,symbols_vvvd.png,_ _ _ d,True,symbols_vvvd_question.png,30,False
+341,word,karies,7.0,Impact,30,15,0.35,word_karies.png,_ _ _ i _ _,True,word_karies_question.png,10,False
+342,consonants,ttjglk,,Impact,20,-15,0.35,consonants_ttjglk.png,_ _ _ n _ _,False,consonants_ttjglk_question.png,20,False
+343,word,äänne,17.0,Comic Sans MS,20,-15,0.5,word_äänne.png,_ _ _ n _,True,word_äänne_question.png,10,False
+344,word,suti,37.0,Times New Roman,40,15,0.35,word_suti.png,_ z _ _,False,word_suti_question.png,10,False
+345,symbols,vo^^,,DejaVu Sans,40,15,0.5,symbols_vo^^.png,_ _ ^ _,True,symbols_vo^^_question.png,30,False
+346,consonants,qvkjt,,Times New Roman,40,-15,0.5,consonants_qvkjt.png,q _ _ _ _,True,consonants_qvkjt_question.png,20,True
+347,symbols,^d^oos,,DejaVu Sans,30,-15,0.2,symbols_^d^oos.png,_ _ _ s _ _,False,symbols_^d^oos_question.png,30,False
+348,word,shiia,9.0,Comic Sans MS,20,15,0.2,word_shiia.png,z _ _ _ _,False,word_shiia_question.png,10,False
+349,consonants,zkwnr,,Impact,20,-15,0.2,consonants_zkwnr.png,_ k _ _ _,True,consonants_zkwnr_question.png,20,False
+350,word,kaste,123.0,Comic Sans MS,20,0,0.5,word_kaste.png,_ a _ _ _,True,word_kaste_question.png,10,False
+351,word,säkä,279.0,Times New Roman,40,15,0.2,word_säkä.png,l _ _ _,False,word_säkä_question.png,10,False
+352,word,jänne,68.0,Times New Roman,20,-15,0.2,word_jänne.png,_ _ _ p _,False,word_jänne_question.png,10,False
+353,word,nisä,7.0,Comic Sans MS,30,-15,0.5,word_nisä.png,_ _ _ y,False,word_nisä_question.png,10,True
+354,word,someen,14.0,Comic Sans MS,40,0,0.35,word_someen.png,_ c _ _ _ _,False,word_someen_question.png,10,False
+355,word,täällä,399497.0,Comic Sans MS,30,0,0.5,word_täällä.png,_ _ _ _ _ ü,False,word_täällä_question.png,10,False
+356,symbols,vovdsv,,DejaVu Sans,30,15,0.2,symbols_vovdsv.png,_ _ _ _ _ v,True,symbols_vovdsv_question.png,30,False
+357,word,nide,11.0,Comic Sans MS,40,15,0.2,word_nide.png,_ _ _ m,False,word_nide_question.png,10,False
+358,symbols,dv^od,,DejaVu Sans,20,0,0.35,symbols_dv^od.png,_ _ _ _ d,True,symbols_dv^od_question.png,30,False
+359,consonants,lhqt,,Times New Roman,20,0,0.35,consonants_lhqt.png,_ _ _ t,True,consonants_lhqt_question.png,20,True
