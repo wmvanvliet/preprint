@@ -68,7 +68,7 @@ symbols = {
 }
 
 rotations = [-15, 0, +15]
-fontsizes = [20, 30, 40]
+fontsizes = [40, 60, 80]
 noise_levels = [0.2, 0.35, 0.5]
 fonts = ['Comic Sans MS', 'Impact', 'Times New Roman']
 
@@ -156,7 +156,7 @@ stimuli.to_csv('data/presentation/stimuli.csv')
 # Create image files
 plt.close('all')
 dpi = 96.
-width, height = 400, 200
+width, height = 800, 400
 f = plt.figure(figsize=(width / dpi, height / dpi), dpi=dpi)
 
 # Fixation cross
