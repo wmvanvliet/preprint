@@ -4,7 +4,7 @@ http://pydoit.org
 
 All the filenames are defined in config.py
 """
-from config import fname, subjects
+from config import fname, subjects, n_runs
 
 # Configuration for the "doit" tool.
 DOIT_CONFIG = dict(
@@ -27,57 +27,34 @@ def task_check():
     )
 
 
-# This example task executes a single analysis script for each subject, giving
-# the subject as a command line parameter to the script.
-def task_example_step():
-    """Step 00: An example analysis step that is executed for each subject."""
-    # Run the example script for each subject in a sub-task.
+def task_filter():
+    """Step 01: Bandpass filter the data"""
     for subject in subjects:
         yield dict(
-            # This task should come after `task_check`
-            task_dep=['check'],
-
-            # A name for the sub-task: set to the name of the subject
-            name=subject,
-
-            # If any of these files change, the script needs to be re-run. Make
-            # sure that the script itself is part of this list!
-            file_dep=[fname.input(subject=subject), '00_example_step.py'],
-
-            # The files produced by the script
-            targets=[fname.output(subject=subject)],
-
-            # How the script needs to be called. Here we indicate it should
-            # have one command line parameter: the name of the subject.
-            actions=['python 00_example_step.py %s' % subject],
+            name=str(subject),
+            file_dep=[fname.raw(subject=subject, run=run + 1) for run in range(n_runs[subject])] + ['01_filter.py'],
+            targets=[fname.raw_filt(subject=subject)],
+            actions=[f'python 01_filter.py {subject}'],
         )
 
 
-# Here is another example task that averages across subjects.
-def task_example_summary():
-    """Step 01: Average across subjects."""
-    return dict(
-        task_dep=['example_step'],  # This task should come after `task_example_step`
-        file_dep=[fname.output(subject=s) for s in subjects] + ['01_grand_average.py'],
-        targets=[fname.grand_average],
-        actions=['python 01_grand_average.py'],
-    )
-
-
-def task_figures():
-    """Make all figures. Each figure is a sub-task."""
-    # Make figure 1
-    yield dict(
-        name='figure_example1',
-        file_dep=['figure_example1.py'],
-        targets=[fname.figure1],
-        actions=['python figure_example1.py'],
-    )
-
-    # Make figure 2
-    yield dict(
-        name='figure_grand_average',
-        file_dep=[fname.grand_average, 'figure_grand_average.py'],
-        targets=[fname.figure_grand_average],
-        actions=['python figure_grand_average.py'],
-    )
+def task_ica():
+    """Step 02: Fit ICA"""
+    for subject in subjects:
+        yield dict(
+            name=str(subject),
+            file_dep=[fname.raw_filt(subject=subject), '02_ica.py'],
+            targets=[fname.ica(subject=subject)],
+            actions=[f'python 02_ica.py {subject}'],
+        )
+         
+ 
+def task_epochs():
+    """Step 03: Cut epochs, apply ICA and make evokeds"""
+    for subject in subjects:
+        yield dict(
+            name=str(subject),
+            file_dep=[fname.raw_filt(subject=subject), fname.ica(subject=subject), '03_epochs.py'],
+            targets=[fname.epochs(subject=subject), fname.evoked(subject=subject)],
+            actions=[f'python 03_epochs.py {subject}'],
+        )

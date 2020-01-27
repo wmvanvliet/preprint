@@ -51,6 +51,8 @@ bads = {
     2: ['MEG2233', 'MEG1842', 'MEG2621'],
 }
 
+event_id = dict(word=10, consonants=20, symbols=30, question=40)
+
 ###############################################################################
 # Templates for filenames
 #
@@ -64,11 +66,12 @@ fname.add('raw_data_dir', raw_data_dir)
 
 # The data files that are used and produced by the analysis steps
 fname.add('raw', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_raw.fif')
-fname.add('log', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}.log')
+fname.add('log', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}-run{run:d}.log')
+fname.add('stimuli', '{raw_data_dir}/pilot{subject:d}/run{run:d}.csv')
 fname.add('raw_filt', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_filt_raw.fif')
 fname.add('ica', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_ica.fif')
-fname.add('epochs', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_epo.fif')
-fname.add('evoked', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_ave.fif')
+fname.add('epochs', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_epo.fif')
+fname.add('evoked', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_ave.fif')
 
 # Filenames for MNE reports
 fname.add('reports_dir', './reports/')

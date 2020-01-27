@@ -16,11 +16,11 @@ print('Processing subject:', subject)
 # Load the data, filter it and save the result
 raw = mne.concatenate_raws([mne.io.read_raw_fif(fname.raw(subject=subject, run=run + 1))
                             for run in range(n_runs[subject])]).load_data()
-raw.info['bads'] = bads
-psd_raw = raw.plot_psd(tmax=60, fmax=100)
+raw.info['bads'] = bads[subject]
+psd_raw = raw.plot_psd(tmax=60, fmax=100, show=False)
 
 raw = raw.filter(fmin, fmax, n_jobs=n_jobs)
-psd_filtered = raw.plot_psd(tmax=60, fmax=100)
+psd_filtered = raw.plot_psd(tmax=60, fmax=100, show=False)
 
 raw.save(fname.raw_filt(subject=subject), overwrite=True)
 
