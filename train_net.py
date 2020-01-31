@@ -21,7 +21,6 @@ import torchvision.datasets as datasets
 from tensorboardX import SummaryWriter
 
 import networks
-from h5_dataset import H5File
 
 model_names = sorted(name for name in networks.__dict__
     if name.islower() and not name.startswith("__")
@@ -96,7 +95,6 @@ def main():
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
-    #train_dataset = H5File(
     train_dataset = datasets.ImageFolder(
         args.data + '/train',
         transforms.Compose([
@@ -157,7 +155,6 @@ def main():
         num_workers=args.workers, pin_memory=True)
 
     val_loader = torch.utils.data.DataLoader(
-        #H5File(args.data + '/val.h5',
         datasets.ImageFolder(args.data + '/val',
             transforms.Compose([
                 #transforms.ToPILImage(mode='RGB'),

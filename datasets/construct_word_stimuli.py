@@ -20,7 +20,7 @@ sizes = np.linspace(7, 16, 21)
 fonts = ['courier new', 'dejavu sans mono', 'times new roman', 'arial',
          'arial black', 'verdana', 'comic sans ms', 'georgia',
          'liberation serif', 'impact', 'roboto condensed']
-noise_levels = [0.0, 0.25, 0.5]
+#noise_levels = [0.0, 0.25, 0.5]
 
 fonts = {
     'ubuntu mono': [None, '/u/45/vanvlm1/unix/.fonts/UbuntuMono-R.ttf'],
@@ -69,7 +69,7 @@ chosen_rotations = []
 chosen_sizes = []
 chosen_fonts = []
 chosen_words = []
-chosen_noise_levels = []
+#chosen_noise_levels = []
 
 plt.close('all')
 dpi = 96.
@@ -86,11 +86,13 @@ for word in tqdm(words, total=len(words)):
         font = rng.choice(list(fonts.keys()))
         fontfamily, fontfile = fonts[font]
         fontprop = fm.FontProperties(family=fontfamily, fname=fontfile)
-        noise_level = rng.choice(noise_levels)
-        noise = rng.rand(64, 64)
-        ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level)
+        #noise_level = rng.choice(noise_levels)
+        #noise = rng.rand(64, 64)
+        #ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level)
+        #ax.text(0.5, 0.5, word, ha='center', va='center',
+        #        rotation=rotation, fontsize=fontsize, fontproperties=fontprop, alpha=1 - noise_level)
         ax.text(0.5, 0.5, word, ha='center', va='center',
-                rotation=rotation, fontsize=fontsize, fontproperties=fontprop, alpha=1 - noise_level)
+                rotation=rotation, fontsize=fontsize, fontproperties=fontprop)
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
         plt.axis('off')
@@ -100,9 +102,9 @@ for word in tqdm(words, total=len(words)):
         chosen_rotations.append(rotation)
         chosen_sizes.append(fontsize)
         chosen_fonts.append(font)
-        chosen_noise_levels.append(noise_level)
+        #chosen_noise_levels.append(noise_level)
 plt.close()
 
 df = pd.DataFrame(dict(word=chosen_words, rotation=chosen_rotations,
-                       size=chosen_sizes, font=chosen_fonts, noise_level=chosen_noise_levels))
+                       size=chosen_sizes, font=chosen_fonts)) #, noise_level=chosen_noise_levels))
 df.to_csv(args.path + '/word_stimuli_%s.csv' % args.set)
