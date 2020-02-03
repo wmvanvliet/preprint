@@ -68,7 +68,7 @@ symbols = {
 }
 
 rotations = [-15, 0, +15]
-fontsizes = [40, 60, 80]
+fontsizes = [20, 30, 40]
 noise_levels = [0.2, 0.35, 0.5]
 fonts = ['Comic Sans MS', 'Impact', 'Times New Roman']
 
@@ -150,13 +150,15 @@ stimuli['question_filename'] = [f'{type}_{text}_question.png' for type, text in 
 event_ids = dict(word=10, consonants=20, symbols=30, question=40)
 stimuli['event_id'] = [event_ids[type] for type in stimuli['type']]
 
+stimuli['code'] = np.arange(len(stimuli))
+
 assert len(np.unique(stimuli['text'])) == len(stimuli)
 stimuli.to_csv('data/presentation/stimuli.csv')
 
 # Create image files
 plt.close('all')
 dpi = 96.
-width, height = 800, 400
+width, height = 400, 200
 f = plt.figure(figsize=(width / dpi, height / dpi), dpi=dpi)
 
 # Fixation cross

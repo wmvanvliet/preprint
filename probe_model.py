@@ -26,8 +26,6 @@ import networks
 
 model_name = 'quickdraw_image_redness1'
 
-stimuli = pd.read_csv('/l/vanvlm1/redness1/stimuli.csv', index_col=0)
-
 preproc = transforms.Compose([
     transforms.Resize(64),
     transforms.CenterCrop(60),
