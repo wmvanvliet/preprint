@@ -19,12 +19,17 @@ raw = mne.io.read_raw_fif(fname.raw_filt(subject=subject), preload=True)
 raw = raw.filter(1, None, n_jobs=n_jobs)
 ica = mne.preprocessing.ICA(0.9).fit(raw, decim=10)
 
-_, eog_scores = ica.find_bads_eog(raw)
-eog_bads = [i for i, s in enumerate(eog_scores[0]) if abs(s) > 0.2]
-eog_bads += [i for i, s in enumerate(eog_scores[1]) if abs(s) > 0.2]
+eog_epochs = mne.preprocessing.create_eog_epochs(raw)
+eog_bads, eog_scores = ica.find_bads_eog(eog_epochs)
 
-_, ecg_scores = ica.find_bads_ecg(raw)
-ecg_bads = [i for i, s in enumerate(ecg_scores) if abs(s) > 0.15]
+ecg_epochs = mne.preprocessing.create_ecg_epochs(raw)
+ecg_bads, ecg_scores = ica.find_bads_ecg(ecg_epochs)
+
+#eog_bads = [i for i, s in enumerate(eog_scores[0]) if abs(s) > 0.2]
+#eog_bads += [i for i, s in enumerate(eog_scores[1]) if abs(s) > 0.2]
+
+#_, ecg_scores = ica.find_bads_ecg(raw)
+#ecg_bads = [i for i, s in enumerate(ecg_scores) if abs(s) > 0.15]
 
 ica.exclude = list(set(eog_bads + ecg_bads))
 ica.save(fname.ica(subject=subject))
