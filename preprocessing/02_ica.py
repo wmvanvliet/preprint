@@ -13,17 +13,14 @@ args = parser.parse_args()
 subject = args.subject
 print('Processing subject:', subject)
 
-# Load the data, filter it and save the result
-raw = mne.io.read_raw_fif(fname.raw_filt(subject=subject), preload=True)
-
-raw = raw.filter(1, None, n_jobs=n_jobs)
+raw = mne.io.read_raw_fif(fname.raw_detrend(subject=subject), preload=True)
 ica = mne.preprocessing.ICA(0.9).fit(raw, decim=10)
 
-eog_epochs = mne.preprocessing.create_eog_epochs(raw)
-eog_bads, eog_scores = ica.find_bads_eog(eog_epochs)
+eog_epochs = mne.preprocessing.create_eog_epochs(raw).decimate(5)
+eog_bads, eog_scores = ica.find_bads_eog(eog_epochs, threshold=5)
 
-ecg_epochs = mne.preprocessing.create_ecg_epochs(raw)
-ecg_bads, ecg_scores = ica.find_bads_ecg(ecg_epochs)
+ecg_epochs = mne.preprocessing.create_ecg_epochs(raw).decimate(5)
+ecg_bads, ecg_scores = ica.find_bads_ecg(ecg_epochs, threshold=2)
 
 #eog_bads = [i for i, s in enumerate(eog_scores[0]) if abs(s) > 0.2]
 #eog_bads += [i for i, s in enumerate(eog_scores[1]) if abs(s) > 0.2]

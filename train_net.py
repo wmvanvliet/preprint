@@ -18,9 +18,8 @@ import torch.utils.data.distributed
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 
-from tensorboardX import SummaryWriter
-
 import networks
+import dataloaders
 
 model_names = sorted(name for name in networks.__dict__
     if name.islower() and not name.startswith("__")
@@ -60,8 +59,6 @@ parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 parser.add_argument('--gpu', default=None, type=str,
                     help='GPU id to use.')
-parser.add_argument('--log', '-l', metavar='FILE', default=None,
-                    help='filename to write the log to')
 parser.add_argument('--attach', action='store_true',
                     help='attach a word recognition classifier')
 
@@ -87,17 +84,15 @@ def main():
         warnings.warn('You have chosen a specific GPU. This will completely '
                       'disable data parallelism.')
 
-    if args.log is not None:
-        print('Writing tensorboard log to', args.log)
-        summary = SummaryWriter(args.log)
-
     # Data loading code
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
-    train_dataset = datasets.ImageFolder(
-        args.data + '/train',
-        transforms.Compose([
+    #train_dataset = datasets.ImageFolder(
+    train_dataset = dataloaders.PickledPNGs(
+        args.data,
+        train=True,
+        transform=transforms.Compose([
             #transforms.ToPILImage(mode='RGB'),
             #transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(60),
             transforms.CenterCrop(60),
@@ -155,11 +150,13 @@ def main():
         num_workers=args.workers, pin_memory=True)
 
     val_loader = torch.utils.data.DataLoader(
-        datasets.ImageFolder(args.data + '/val',
-            transforms.Compose([
+        #datasets.ImageFolder(args.data + '/val',
+        dataloaders.PickledPNGs(
+            args.data,
+            train=False,
+            transform=transforms.Compose([
                 #transforms.ToPILImage(mode='RGB'),
-                transforms.Resize(256) if args.arch == 'alexnet' else transforms.Resize(64),
-                transforms.CenterCrop(224) if args.arch == 'alexnet' else transforms.CenterCrop(60),
+                transforms.CenterCrop(60),
                 transforms.ToTensor(),
                 normalize,
             ])),
@@ -242,12 +239,6 @@ def train(train_loader, model, criterion, optimizer, epoch):
                   'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
                       epoch, i, len(train_loader), batch_time=batch_time,
                       data_time=data_time, loss=losses, top1=top1, top5=top5))
-
-        # Write tensorboard stuff
-        if args.log is not None:
-            summary.add_scalar('loss', losses.val, i)
-            summary.add_scalar('Prec@1', top1.val, i)
-            summary.add_scalar('Prec@5', top5.val, i)
 
 
 def validate(val_loader, model, criterion):
@@ -343,44 +334,13 @@ def accuracy(output, target, topk=(1,)):
 
 
 class Visual(nn.Module):
-    def __init__(self, base_model, layer=27, num_classes=200):
+    def __init__(self, base_model, num_classes=200):
         super().__init__()
 
-        # Copy features from base model
-        #modulelist = list(base_model.features.modules())
-        #self.features = nn.Sequential(*modulelist[1:layer+2])
-        #for p in self.features.parameters():
-        #    p.requires_grad = False
         self.features = base_model.features
-        #for p in self.features.parameters():
-        #    p.requires_grad = False
-
-        # classifier1 = nn.Linear(4608, 4096)
-        # classifier2 = nn.Linear(4096, 4096)
-        # classifier3 = nn.Linear(4096, num_classes)
-        # nn.init.normal_(classifier1.weight, 0, 0.01)
-        # nn.init.constant_(classifier1.bias, 0)
-        # nn.init.normal_(classifier2.weight, 0, 0.01)
-        # nn.init.constant_(classifier2.bias, 0)
-        # nn.init.normal_(classifier3.weight, 0, 0.01)
-        # nn.init.constant_(classifier3.bias, 0)
-        #
-        # self.classifier = nn.Sequential(
-        #     classifier1,
-        #     nn.ReLU(True),
-        #     nn.Dropout(),
-        #     classifier2,
-        #     nn.ReLU(True),
-        #     nn.Dropout(),
-        #     classifier3,
-        # )
-
 
         # Attach new classifier
         modulelist = list(base_model.classifier.modules())[1:]
-        #modulelist[0].requires_grad=False
-        #for module in modulelist:
-        #    module.requires_grad = False
         modulelist.pop()
         classifier3 = nn.Linear(4096, num_classes)
         nn.init.normal_(classifier3.weight, 0, 0.01)

@@ -27,6 +27,9 @@ elif host == 'nbe-024.org.aalto.fi' and user == 'vanvlm1':
     # My workstation
     raw_data_dir = '/m/nbe/scratch/reading_models/pilot_data'
     n_jobs = 8  # My workstation has 8 cores
+elif host == 'ECIT01472U':
+    raw_data_dir = '../data/pilot_data'
+    n_jobs = 4
 else:
     raise ValueError('Please add your system to config.py')
 
@@ -69,6 +72,7 @@ fname.add('raw', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_ra
 fname.add('log', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}-run{run:d}.log')
 fname.add('stimuli', '{raw_data_dir}/pilot{subject:d}/run{run:d}.csv')
 fname.add('raw_filt', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_filt_raw.fif')
+fname.add('raw_detrend', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_detrend_raw.fif')
 fname.add('ica', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_ica.fif')
 fname.add('epochs', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_epo.fif')
 fname.add('evoked', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_ave.fif')

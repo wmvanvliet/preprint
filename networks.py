@@ -60,7 +60,7 @@ class ThreeLayerNet(nn.Module):
 
 
 class VGG16(nn.Module):
-    def __init__(self, image_size=64, num_channels=3, num_classes=200):
+    def __init__(self, image_size=64, num_channels=3, num_classes=200, classifier_size=4096):
         super().__init__()
 
         self.features = nn.Sequential(
@@ -98,13 +98,13 @@ class VGG16(nn.Module):
         )
 
         self.classifier = nn.Sequential(
-            nn.Linear(512 * 3 * 3, 4096),
+            nn.Linear(512 * 3 * 3, classifier_size),
             nn.ReLU(True),
             nn.Dropout(),
-            nn.Linear(4096, 4096),
+            nn.Linear(classifier_size, classifier_size),
             nn.ReLU(True),
             nn.Dropout(),
-            nn.Linear(4096, num_classes),
+            nn.Linear(classifier_size, num_classes),
         )
 
         self.initialize_weights()

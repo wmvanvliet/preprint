@@ -24,7 +24,8 @@ os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
-model_name = 'quickdraw_image_redness1'
+model_name = 'quickdraw_redness1_image'
+#model_name = 'vgg_tiny_redness1_image'
 
 preproc = transforms.Compose([
     transforms.Resize(64),
@@ -40,13 +41,13 @@ dpi = 96.
 f = Figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
 canvas = FigureCanvasAgg(f)
 
-def make_image(word='koira', rotation=0, size=16, family='arial', fname=None, noise=0):
+def make_image(word='koira', rotation=0, size=16, family='dejavu sans', fname=None, noise=0):
+    noise_image = np.random.randn(64, 64)
     f.clf()
     ax = f.add_axes([0, 0, 1, 1])
     fontprop = fm.FontProperties(family=family, fname=fname)
     background = plt.Rectangle((0, 0), 64, 64, facecolor=(0.5, 0.5, 0.5, 1.0), zorder=0)
     ax.add_patch(background)
-    noise_image = np.random.randn(64, 64)
     ax.imshow(noise_image, extent=[0, 1, 0, 1], cmap='gray', alpha=noise, zorder=1)
     ax.text(0.5, 0.5, word, ha='center', va='center',
             rotation=rotation, fontsize=size, fontproperties=fontprop, alpha=1 - noise, zorder=2)
@@ -69,13 +70,16 @@ for noise in np.arange(0, 1.0, 0.01):
     images.append(make_image(word='koira', noise=noise))
 images = torch.cat(images, 0)
 
-plt.figure()
+plt.figure(figsize=(10, 10))
 plt.imshow(make_grid(images/5 + 0.5, nrow=10).numpy().transpose(1, 2, 0))
+plt.axis('off')
+plt.tight_layout()
 
 checkpoint = torch.load('models/%s.pth.tar' % model_name, map_location='cpu')
 num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
+classifier_size = checkpoint['state_dict']['classifier.6.weight'].shape[1]
 #num_classes = checkpoint['state_dict']['classifier.weight'].shape[0]
-model = networks.vgg(num_classes=num_classes)
+model = networks.vgg(num_classes=num_classes, classifier_size=classifier_size)
 #model = networks.TwoLayerNet(num_classes=num_classes)
 model.load_state_dict(checkpoint['state_dict'])
 model.eval()
@@ -104,12 +108,26 @@ for i, layer in enumerate(model.classifier):
         classifier_outputs.append(out.detach().numpy().copy())
 #classifier_outputs.append(model.classifier(out).detach().numpy().copy())
 
-plt.figure()
-plt.subplot(221)
-plt.plot(np.abs(feature_outputs[0]).sum(axis=(1, 2, 3)), color='C0')
-plt.subplot(222)
-plt.plot(np.abs(feature_outputs[1]).sum(axis=(1, 2, 3)), color='C1')
-plt.subplot(223)
-plt.plot(np.abs(feature_outputs[2]).sum(axis=(1, 2, 3)), color='C2')
-plt.subplot(224)
-plt.plot(np.abs(feature_outputs[3]).sum(axis=(1, 2, 3)), color='C3')
+plt.figure(figsize=(12, 5))
+plt.subplot(241)
+plt.plot(np.abs(feature_outputs[0]).mean(axis=(1, 2, 3)), color='C0')
+plt.title('Feature 1')
+plt.subplot(242)
+plt.plot(np.abs(feature_outputs[1]).mean(axis=(1, 2, 3)), color='C1')
+plt.title('Feature 2')
+plt.subplot(243)
+plt.plot(np.abs(feature_outputs[2]).mean(axis=(1, 2, 3)), color='C2')
+plt.title('Feature 3')
+plt.subplot(244)
+plt.plot(np.abs(feature_outputs[3]).mean(axis=(1, 2, 3)), color='C3')
+plt.title('Feature 4')
+plt.subplot(245)
+plt.plot(np.abs(classifier_outputs[0]).mean(axis=1), color='C4')
+plt.title('Classifier 1')
+plt.subplot(246)
+plt.plot(np.abs(classifier_outputs[1]).mean(axis=1), color='C5')
+plt.title('Classifier 2')
+plt.subplot(247)
+plt.plot(np.abs(classifier_outputs[2]).mean(axis=1), color='C6')
+plt.title('Classifier 3')
+plt.tight_layout()

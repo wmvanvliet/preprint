@@ -2,11 +2,16 @@
 import argparse
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from matplotlib.figure import Figure
 from matplotlib import font_manager as fm
 import pandas as pd
 from os import makedirs
 import os.path as op
 from tqdm import tqdm
+import pickle
+from PIL import Image
+from io import BytesIO
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Generate text stimuli')
@@ -23,29 +28,29 @@ fonts = ['courier new', 'dejavu sans mono', 'times new roman', 'arial',
 #noise_levels = [0.0, 0.25, 0.5]
 
 fonts = {
-    'ubuntu mono': [None, '/u/45/vanvlm1/unix/.fonts/UbuntuMono-R.ttf'],
-    'courier': ['courier new', None],
-    'luxi mono regular': [None, '/u/45/vanvlm1/unix/.fonts/luximr.ttf'],
-    'lucida console': [None, '/u/45/vanvlm1/unix/.fonts/LucidaConsole-R.ttf'],
-    'lekton': [None, '/u/45/vanvlm1/unix/.fonts/Lekton-Regular.ttf'],
+    'ubuntu mono': [None, '../data/fonts/UbuntuMono-R.ttf'],
+    'courier': [None, '../data/fonts/courier.ttf'],
+    'luxi mono regular': [None, '../data/fonts/luximr.ttf'],
+    'lucida console': [None, '../data/fonts/LucidaConsole-R.ttf'],
+    'lekton': [None, '../data/fonts/Lekton-Regular.ttf'],
     'dejavu sans mono': ['dejavu sans mono', None],
-    'times new roman': ['times new roman', None],
-    'arial': ['arial', None],
-    'arial black': ['arial black', None],
-    'verdana': ['verdana', None],
-    'comic sans ms': ['comic sans ms', None],
-    'georgia': ['georgia', None],
+    'times new roman': [None, '../data/fonts/times.ttf'],
+    'arial': [None, '../data/fonts/arial.ttf'],
+    'arial black': [None, '../data/fonts/arialbd.ttf'],
+    'verdana': [None, '../data/fonts/verdana.ttf'],
+    'comic sans ms': [None, '../data/fonts/comic.ttf'],
+    'georgia': [None, '../data/fonts/georgia.ttf'],
     'liberation serif': ['liberation serif', None],
-    'impact': ['impact', None],
-    'roboto condensed': ['roboto condensed', None]
+    'impact': [None, '../data/fonts/impact.ttf'],
+    'roboto condensed': [None, '../data/fonts/Roboto-Light.ttf'],
 }
 
 # Use the redness1 list to select words to plot
-stimuli = pd.read_csv('/l/vanvlm1/redness1/stimuli.csv')
-words = stimuli['ITEM']
+stimuli = pd.read_csv('../data/pilot_data/pilot2/run1.csv', index_col=0).query('type=="word"')
+words = stimuli['text']
 
 # Add some common finnish words to pad the list to 200
-more_words = pd.read_csv('/m/nbe/project/corpora/FinnishParseBank/parsebank_v4_ud_scrambled.wordlist.txt', sep=' ', nrows=500, quoting=3, usecols=[1], header=None)
+more_words = pd.read_csv('../data/parsebank_v4_ud_scrambled.wordlist.txt', sep=' ', nrows=500, quoting=3, usecols=[1], header=None)
 more_words.columns = ['ITEM']
 
 # Select words between 2 and 6 letters long
@@ -71,15 +76,16 @@ chosen_fonts = []
 chosen_words = []
 #chosen_noise_levels = []
 
-plt.close('all')
+n = 500 if args.set == 'train' else 50
+data = []
+labels = np.zeros(len(words) * n, dtype=np.int)
+
 dpi = 96.
-f = plt.figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
-for word in tqdm(words, total=len(words)):
-    path = op.join(args.path, 'word-' + word)
-    makedirs(path)
-    n = 500 if args.set == 'train' else 50
+f = Figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
+canvas = FigureCanvasAgg(f)
+for label, word in tqdm(enumerate(words), total=len(words)):
     for i in range(n):
-        plt.clf()
+        f.clf()
         ax = f.add_axes([0, 0, 1, 1])
         rotation = rng.choice(rotations)
         fontsize = rng.choice(sizes)
@@ -95,16 +101,32 @@ for word in tqdm(words, total=len(words)):
                 rotation=rotation, fontsize=fontsize, fontproperties=fontprop)
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
-        plt.axis('off')
-        plt.savefig(path + '/%03d.JPEG' % i)
+        ax.set_axis_off()
+        #plt.savefig(path + '/%03d.JPEG' % i)
+        canvas.draw()
+        buffer, (width, height) = canvas.print_to_buffer()
+        image = np.frombuffer(buffer, np.uint8).reshape((height, width, 4))[:, :, :3]
 
         chosen_words.append(word)
         chosen_rotations.append(rotation)
         chosen_sizes.append(fontsize)
         chosen_fonts.append(font)
         #chosen_noise_levels.append(noise_level)
-plt.close()
+
+        buf = BytesIO()
+        Image.fromarray(image.astype(np.uint8)).save(buf, format='png')
+        img_compressed = buf.getvalue()
+
+        #data[label * n + i] = image
+        data.append(img_compressed)
+        labels[label * n + i] = label
 
 df = pd.DataFrame(dict(word=chosen_words, rotation=chosen_rotations,
-                       size=chosen_sizes, font=chosen_fonts)) #, noise_level=chosen_noise_levels))
-df.to_csv(args.path + '/word_stimuli_%s.csv' % args.set)
+                       size=chosen_sizes, font=chosen_fonts, label=labels)) #, noise_level=chosen_noise_levels))
+
+
+makedirs(args.path, exist_ok=True)
+
+df.to_csv(f'{args.path}/{args.set}.csv')
+with open(f'{args.path}/{args.set}', 'wb') as f:
+    pickle.dump(dict(data=data, labels=labels), f)
