@@ -103,8 +103,7 @@ def main():
 
     # create model
     print("=> creating model '{}'".format(args.arch))
-    #model = networks.__dict__[args.arch](num_classes=target_num_classes)
-    model = networks.__dict__[args.arch](num_classes=553)
+    model = networks.__dict__[args.arch](num_classes=target_num_classes)
 
     if args.gpu is not None:
         device = torch.device(args.gpu)

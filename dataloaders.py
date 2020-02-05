@@ -114,9 +114,6 @@ class PickledPNGs(VisionDataset):
             self.classes = meta['label_names']
         self.class_to_idx = {name: i for i, name in enumerate(self.classes)}
 
-        self.metadata = pd.read_csv(
-            op.join(root, 'train.csv' if train else 'test.csv'), index_col=0)
-
 
     def __getitem__(self, index):
         """
