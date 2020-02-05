@@ -45,7 +45,7 @@ fonts = {
     'roboto condensed': [None, '../data/fonts/Roboto-Light.ttf'],
 }
 
-# Use the redness1 list to select words to plot
+# Use the pilot stimulus list to select words to plot
 stimuli = pd.read_csv('../data/pilot_data/pilot2/run1.csv', index_col=0).query('type=="word"')
 words = stimuli['text']
 
