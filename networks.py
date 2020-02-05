@@ -227,4 +227,6 @@ class IACConv(nn.Module):
 
 twolayer = TwoLayerNet
 alexnet = models.alexnet
+vgg16 = models.vgg16
+resnet18 = models.resnet18
 vgg = VGG16
