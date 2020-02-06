@@ -56,8 +56,6 @@ parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 parser.add_argument('--gpu', default=None, type=str,
                     help='GPU id to use.')
-parser.add_argument('--attach', action='store_true',
-                    help='attach a word recognition classifier')
 
 best_prec1 = 0
 device = torch.device('cpu')
@@ -85,6 +83,7 @@ def main():
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
+    print("=> creating dataset using {}".format(' and '.join(args.data)))
     #train_dataset = datasets.ImageFolder(
     train_dataset = dataloaders.CombinedPickledPNGs(
         args.data,
@@ -98,9 +97,25 @@ def main():
         ]))
     target_num_classes = len(train_dataset.classes)
 
-    # create model
-    print("=> creating model '{}'".format(args.arch))
-    model = networks.__dict__[args.arch](num_classes=target_num_classes)
+    # optionally resume from a checkpoint
+    if args.resume:
+        if not os.path.isfile(args.resume):
+            raise ValueError("No checkpoint found at '{}'".format(args.resume))
+
+        print("=> loading checkpoint '{}'".format(args.resume))
+        checkpoint = torch.load(args.resume)
+        current_num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
+
+        # create model
+        print("=> creating model '{}'".format(args.arch))
+        model = networks.__dict__[args.arch](num_classes=current_num_classes)
+        model.load_state_dict(checkpoint['state_dict'])
+        if current_num_classes != target_num_classes:
+            print("=> changing number of classes from %d to %d" % (current_num_classes, target_num_classes))
+            model = attach_classifier(model, target_num_classes)
+    else:
+        print("=> creating model '{}'".format(args.arch))
+        model = networks.__dict__[args.arch](num_classes=target_num_classes)
 
     if args.gpu is not None:
         device = torch.device(args.gpu)
@@ -118,27 +133,13 @@ def main():
                                 momentum=args.momentum,
                                 weight_decay=args.weight_decay)
 
-    # optionally resume from a checkpoint
     if args.resume:
-        if os.path.isfile(args.resume):
-            print("=> loading checkpoint '{}'".format(args.resume))
-            checkpoint = torch.load(args.resume)
-            if(args.start_epoch) == -1:
-                args.start_epoch = checkpoint['epoch']
-            best_prec1 = checkpoint['best_prec1']
-            model.load_state_dict(checkpoint['state_dict'])
-            optimizer.load_state_dict(checkpoint['optimizer'])
-            print("=> loaded checkpoint '{}' (epoch {})"
-                  .format(args.resume, checkpoint['epoch']))
-            current_num_classes = num_classes(model)
-            if current_num_classes != target_num_classes:
-                print("=> changing number of classes from %d to %d" % (current_num_classes, target_num_classes))
-                model = attach_classifier(model, target_num_classes).cuda()
-            elif args.attach:
-                print("=> attaching word classifier")
-                model = attach_classifier(model, target_num_classes).cuda()
-        else:
-            print("=> no checkpoint found at '{}'".format(args.resume))
+        if(args.start_epoch) == -1:
+            args.start_epoch = checkpoint['epoch']
+        best_prec1 = checkpoint['best_prec1']
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        print("=> loaded checkpoint '{}' (epoch {})"
+              .format(args.resume, checkpoint['epoch']))
 
     cudnn.benchmark = True
 
