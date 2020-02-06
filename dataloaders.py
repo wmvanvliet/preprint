@@ -7,6 +7,7 @@ import torch.utils.data as data
 
 from PIL import Image
 import pandas as pd
+import numpy as np
 
 
 class VisionDataset(data.Dataset):
@@ -113,6 +114,65 @@ class PickledPNGs(VisionDataset):
             meta = pickle.load(f)
             self.classes = meta['label_names']
         self.class_to_idx = {name: i for i, name in enumerate(self.classes)}
+
+
+    def __getitem__(self, index):
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        img, target = self.data[index], self.targets[index]
+        img = Image.open(BytesIO(img))  # Decode the PNG bytes
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+
+        return img, target
+
+    def __len__(self):
+        return len(self.data)
+
+
+class CombinedPickledPNGs(VisionDataset):
+    """Reads and combined multiple datasets in the form of pickles lists of PNG bytes.
+
+    Args:
+        roots (list of string): Root directorys of multiple datasets
+        train (bool, optional): If True, creates dataset from training sets,
+            otherwise creates from test sets.
+        transform (callable, optional): A function/transform that takes in an
+            PIL image and returns a transformed version. E.g,
+            ``transforms.RandomCrop``
+        target_transform (callable, optional): A function/transform that takes
+            in the target and transforms it.
+    """
+    def __init__(self, roots, train=True, transform=None,
+                 target_transform=None):
+        super().__init__(', '.join(roots), transform=transform,
+                         target_transform=target_transform)
+
+        self.data = []
+        self.targets = []
+        self.classes = []
+        target_offset = 0
+        for root in roots:
+            with open(op.join(root, 'train' if train else 'test'), 'rb') as f:
+                dataset = pickle.load(f)
+                self.data.extend(dataset['data'])
+                self.targets.extend([l + target_offset for l in dataset['labels']])
+
+            with open(op.join(root, 'meta'), 'rb') as f:
+                meta = pickle.load(f)
+                self.classes.extend(meta['label_names'])
+            self.class_to_idx = {name: i + target_offset for i, name in enumerate(self.classes)}
+
+            target_offset = np.max(self.targets)
 
 
     def __getitem__(self, index):

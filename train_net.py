@@ -26,13 +26,10 @@ model_names = sorted(name for name in networks.__dict__
     and callable(networks.__dict__[name]))
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
-parser.add_argument('data', metavar='DIR',
-                    help='path to dataset')
+parser.add_argument('data', metavar='DIR', nargs='+', help='path to dataset(s)')
 parser.add_argument('--arch', '-a', metavar='ARCH', default='alexnet',
                     choices=model_names,
-                    help='model architecture: ' +
-                        ' | '.join(model_names) +
-                        ' (default: alexnet)')
+                    help='model architecture: ' + ' | '.join(model_names) + ' (default: alexnet)')
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--epochs', default=90, type=int, metavar='N',
@@ -89,7 +86,7 @@ def main():
                                      std=[0.229, 0.224, 0.225])
 
     #train_dataset = datasets.ImageFolder(
-    train_dataset = dataloaders.PickledPNGs(
+    train_dataset = dataloaders.CombinedPickledPNGs(
         args.data,
         train=True,
         transform=transforms.Compose([
@@ -109,6 +106,7 @@ def main():
         device = torch.device(args.gpu)
     else:
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        torch.set_num_threads(4)
 
     print("=> using device", device)
     model = model.to(device)
@@ -150,7 +148,7 @@ def main():
 
     val_loader = torch.utils.data.DataLoader(
         #datasets.ImageFolder(args.data + '/val',
-        dataloaders.PickledPNGs(
+        dataloaders.CombinedPickledPNGs(
             args.data,
             train=False,
             transform=transforms.Compose([
