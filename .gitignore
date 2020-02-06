@@ -2,6 +2,9 @@
 *.pth.tar
 *.csv
 *.zip
+*.log
+*.out
 __pycache__
 rsa
 models
+data
