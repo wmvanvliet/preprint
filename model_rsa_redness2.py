@@ -31,7 +31,7 @@ preproc = transforms.Compose([
 ])
 
 print('Reading epochs...', end='', flush=True)
-epochs = mne.read_epochs('/l/vanvlm1/redness2/all-epo.fif', preload=False)
+epochs = mne.read_epochs('data/redness2/all-epo.fif', preload=False)
 epochs = epochs['written']
 epochs.load_data()
 epochs.shift_time(-0.044)  # Compensate for projector delay
@@ -43,7 +43,7 @@ stimuli = epochs.metadata.query("modality=='wri'").groupby('label').aggregate('f
 
 images = []
 for label in stimuli.index:
-    image = Image.open('/l/vanvlm1/redness2/images/%s.JPEG' % label)
+    image = Image.open('data/redness2/images/%s.JPEG' % label)
     image = 2.64 - preproc(image).unsqueeze(0)
     if image.shape[1] == 1:
         image = image.repeat(1, 3, 1, 1)
@@ -52,7 +52,7 @@ images = torch.cat(images, 0)
 pixels = images.sum(dim=(1,2,3))[:, None].numpy()
 #images = images.repeat((1, 3, 1, 1))
 
-checkpoint = torch.load('models/%s.pth.tar' % model_name, map_location='cpu')
+checkpoint = torch.load('data/models/%s.pth.tar' % model_name, map_location='cpu')
 #checkpoint = torch.load('%s.pth.tar' % model_name)
 num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
 #num_classes = checkpoint['state_dict']['classifier.weight'].shape[0]
@@ -86,14 +86,14 @@ for i, layer in enumerate(model.classifier):
 #classifier_outputs.append(model.classifier(out).detach().numpy().copy())
 
 
-# Read in the word2vec vectors
-m = loadmat('/m/nbe/scratch/redness2/semantic_features/Ginter-300-5+5.mat')
-word2vec_words = [w[0][0] for w in m['sorted']['wordsNoscand'][0, 0]]
-#order = stimuli.index.get_indexer_for(word2vec_words)
-word2vec = m['sorted']['mat'][0, 0]
-sel = [word2vec_words.index(w) for w in stimuli.Noscand if w in word2vec_words]
-word2vec = word2vec[sel]
-word2vec_words = [word2vec_words[s] for s in sel]
+## Read in the word2vec vectors
+#m = loadmat('/m/nbe/scratch/redness2/semantic_features/Ginter-300-5+5.mat')
+#word2vec_words = [w[0][0] for w in m['sorted']['wordsNoscand'][0, 0]]
+##order = stimuli.index.get_indexer_for(word2vec_words)
+#word2vec = m['sorted']['mat'][0, 0]
+#sel = [word2vec_words.index(w) for w in stimuli.Noscand if w in word2vec_words]
+#word2vec = word2vec[sel]
+#word2vec_words = [word2vec_words[s] for s in sel]
 
 print('Computing model DSMs...', end='', flush=True)
 dsm_models = [
@@ -106,7 +106,7 @@ dsm_models = [
     rsa.compute_dsm(classifier_outputs[2], metric='correlation'),
     rsa.compute_dsm(pixels, metric='euclidean'),
     #rsa.compute_dsm(stimuli['letters'].values, metric='euclidean'),
-    rsa.compute_dsm(word2vec, metric='cosine'),
+    #rsa.compute_dsm(word2vec, metric='cosine'),
     #np.ones(44850),
 ]
 print('done.')
@@ -116,15 +116,18 @@ rsa_epochs = rsa.rsa_epochs(
     epochs,
     dsm_models,
     y=epochs.metadata.label,
-    spatial_radius=0.001,
+    #spatial_radius=0.001,
+    spatial_radius=0.04,
     temporal_radius=0.05,
     epochs_dsm_metric='sqeuclidean',
-    rsa_metric='spearman',
+    #epochs_dsm_metric='correlation',
+    #rsa_metric='spearman',
+    rsa_metric='kendall-tau-a',
     n_folds=5,
     n_jobs=2,
     verbose=True,
 )
-for e, comment in zip(rsa_epochs, ['feature layer 1', 'feature layer 2', 'feature layer 3', 'feature layer 4', 'classifier layer 1', 'classifier layer 2', 'classifier output', 'pixels', 'word2vec']):
+for e, comment in zip(rsa_epochs, ['feature layer 1', 'feature layer 2', 'feature layer 3', 'feature layer 4', 'classifier layer 1', 'classifier layer 2', 'classifier output', 'pixels']):
     e.comment = comment
 
 #np.save('models/rsa_%s.npy' % model_name, [e._data for e in rsa_epochs])

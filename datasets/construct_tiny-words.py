@@ -1,20 +1,25 @@
+"""
+Construct a dataset containing 64x64 pixel images of rendered words.  Uses the
+180 words used in the pilot study + 20 other frequently used Finnish words.
+
+Last run as:
+    python construct_word_stimuli.pi data/datasets/tiny-words
+"""
 # encoding: utf-8
 import argparse
 import numpy as np
-from matplotlib import pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 from matplotlib import font_manager as fm
 import pandas as pd
 from os import makedirs
-import os.path as op
 from tqdm import tqdm
 import pickle
 from PIL import Image
 from io import BytesIO
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description='Generate text stimuli')
+parser = argparse.ArgumentParser(description='Generate the tiny-words dataset')
 parser.add_argument('path', type=str, help='The path to write the dataset to.')
 parser.add_argument('set', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
 args = parser.parse_args()

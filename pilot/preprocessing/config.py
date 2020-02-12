@@ -66,11 +66,13 @@ fname = FileNames()
 
 # Some directories
 fname.add('raw_data_dir', raw_data_dir)
+fname.add('stimulus_dir', '{raw_data_dir}/pilot{subject:d}/stimuli')
 
 # The data files that are used and produced by the analysis steps
 fname.add('raw', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_raw.fif')
 fname.add('log', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}-run{run:d}.log')
 fname.add('stimuli', '{raw_data_dir}/pilot{subject:d}/run{run:d}.csv')
+fname.add('stimulus_image', '{stimulus_dir}/{stim_fname}')
 fname.add('raw_filt', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_filt_raw.fif')
 fname.add('raw_detrend', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_detrend_raw.fif')
 fname.add('eog_events', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_eog-eve.fif')
