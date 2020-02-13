@@ -21,14 +21,14 @@ host = getfqdn()  # Hostname of the machine running the scripts
 # You want to add your machine to this list
 if user == 'wmvan':
     # My laptop
-    raw_data_dir = '../data/pilot_data'
+    raw_data_dir = '../../data/pilot_data'
     n_jobs = 8  # My laptop has 8 cores
 elif host == 'nbe-024.org.aalto.fi' and user == 'vanvlm1':
     # My workstation
     raw_data_dir = '/m/nbe/scratch/reading_models/pilot_data'
     n_jobs = 8  # My workstation has 8 cores
 elif host == 'ECIT01472U':
-    raw_data_dir = '../data/pilot_data'
+    raw_data_dir = '../../data/pilot_data'
     n_jobs = 4
 else:
     raise ValueError('Please add your system to config.py')

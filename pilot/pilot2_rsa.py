@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import pickle
 
-epochs = mne.read_epochs('data/pilot_data/pilot2/pilot2_epo.fif')
+epochs = mne.read_epochs('../data/pilot_data/pilot2/pilot2_epo.fif')
 epochs = epochs[['word', 'symbols', 'consonants']]
 epochs.crop(0, 0.8).resample(100).pick_types(meg='grad')
 stimuli = epochs.metadata.groupby('text').agg('first').sort_values('event_id')

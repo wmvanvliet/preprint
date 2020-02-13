@@ -43,6 +43,13 @@ if subject == 1:
     metadata = [df.loc[df['Code'] != 'fixation'][:-1] for df in metadata]
     metadata = pd.concat(metadata, ignore_index=True)
     metadata = metadata.reset_index(drop=True)[['Code']]
+
+    # Clean up and add more columns
+    metadata.columns = ['text']
+    metadata['event_id'] = all_epochs.events[:, 2].astype(np.int)
+    inv_map = {v: k for k, v in event_id.items()}
+    metadata['type'] = [inv_map[code] for code in all_epochs.events[:, 2]]
+    metadata['filename'] = [f'{type}_{text}.png' for type, text in zip(metadata['type'], metadata['text'])]
 else:
     # Load metadata from stimulus csv files
     metadata = pd.concat([pd.read_csv(fname.stimuli(subject=subject, run=run + 1), index_col=0)

@@ -11,7 +11,7 @@ import pickle
 from matplotlib import pyplot as plt
 from scipy.spatial import distance
 
-epochs = mne.read_epochs('../data/pilot_data/pilot2/pilot2_epo.fif', preload=False)
+epochs = mne.read_epochs('../data/pilot_data/pilot1/pilot1_epo.fif', preload=False)
 epochs = epochs[['word', 'symbols', 'consonants']]
 stimuli = epochs.metadata.groupby('text').agg('first').sort_values('event_id')
 stimuli['y'] = np.arange(len(stimuli))
@@ -32,7 +32,7 @@ unnormalize = transforms.Normalize(mean=[-0.485, -0.456, -0.406],
 
 images = []
 for fname in tqdm(stimuli['filename'], desc='Reading images'):
-    with Image.open(f'../data/pilot_data/pilot2/stimuli/{fname}') as image:
+    with Image.open(f'../data/pilot_data/pilot1/stimuli/{fname}') as image:
         image = image.convert('RGB')
         image = preproc(image).unsqueeze(0)
         #image = transforms.ToTensor()(image)
@@ -72,13 +72,13 @@ for i, layer in enumerate(model.classifier):
         classifier_outputs.append(out.detach().numpy().copy())
 
 def words_only(x, y):
-    if (x != 'word' or y != 'word') and x != y:
+    if x != 'word' or y != 'word':
         return 1
     else:
         return 0
 
 def letters_only(x, y):
-    if (x == 'symbols' or y == 'symbols') and x != y:
+    if x == 'symbols' or y == 'symbols':
         return 1
     else:
         return 0
@@ -94,13 +94,12 @@ dsm_models = [
     rsa.compute_dsm(classifier_outputs[2], metric='correlation'),
     rsa.compute_dsm(stimuli[['type']], metric=words_only),
     rsa.compute_dsm(stimuli[['type']], metric=letters_only),
-    rsa.compute_dsm(stimuli[['noise_level']], metric='euclidean'),
     rsa.compute_dsm(images.numpy().reshape(len(images), -1), metric='euclidean'),
 ]
 dsm_names = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4', 'Classifier 1', 'Classifier 2', 'Classifier 3',
-             'Words only', 'Letters only', 'Noise level', 'Pixels']
+             'Words only', 'Letters only', 'Pixels']
 
-with open(f'../data/dsms/pilot2_{model_name}_dsms.pkl', 'wb') as f:
+with open(f'../data/dsms/pilot1_{model_name}_dsms.pkl', 'wb') as f:
     pickle.dump(dict(dsms=dsm_models, dsm_names=dsm_names), f)
 
 fig, ax = plt.subplots(3, 4, sharex='col', sharey='row', figsize=(10, 10))
@@ -111,4 +110,4 @@ for row in range(3):
             ax[row, col].imshow(distance.squareform(dsm_models[i]), cmap='magma')
             ax[row, col].set_title(dsm_names[i])
 plt.tight_layout()
-plt.savefig(f'../figures/pilot2_dsms_{model_name}.pdf')
+plt.savefig(f'../figures/pilot1_dsms_{model_name}.pdf')

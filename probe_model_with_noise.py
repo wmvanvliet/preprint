@@ -24,7 +24,7 @@ os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
-model_name = 'quickdraw_redness1_image'
+model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
 #model_name = 'vgg_tiny_redness1_image'
 
 preproc = transforms.Compose([
@@ -41,8 +41,8 @@ dpi = 96.
 f = Figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
 canvas = FigureCanvasAgg(f)
 
+noise_image = np.random.randn(64, 64)
 def make_image(word='koira', rotation=0, size=16, family='dejavu sans', fname=None, noise=0):
-    noise_image = np.random.randn(64, 64)
     f.clf()
     ax = f.add_axes([0, 0, 1, 1])
     fontprop = fm.FontProperties(family=family, fname=fname)
@@ -75,7 +75,7 @@ plt.imshow(make_grid(images/5 + 0.5, nrow=10).numpy().transpose(1, 2, 0))
 plt.axis('off')
 plt.tight_layout()
 
-checkpoint = torch.load('models/%s.pth.tar' % model_name, map_location='cpu')
+checkpoint = torch.load('data/models/%s.pth.tar' % model_name, map_location='cpu')
 num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
 classifier_size = checkpoint['state_dict']['classifier.6.weight'].shape[1]
 #num_classes = checkpoint['state_dict']['classifier.weight'].shape[0]
