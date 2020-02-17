@@ -25,6 +25,7 @@ rsa_results = rsa.rsa_epochs(
     spatial_radius=0.04,
     temporal_radius=0.05,
     epochs_dsm_metric='correlation',
+    rsa_metric='kendall-tau-a',
     verbose=True,
     n_jobs=8,
 )

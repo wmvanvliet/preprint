@@ -1,0 +1,27 @@
+from matplotlib import pyplot as plt
+from scipy.stats import pearsonr
+
+layers = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output']
+f = plt.figure(figsize=(8, 4))
+ax = f.subplots(1, 5, sharex=True, sharey=True)
+ax[0].bar(range(len(layers)), [abs(pearsonr(stimuli[l], stimuli['noise_level'])[0]) for l in layers])
+ax[0].set_xticks(range(len(layers)))
+ax[0].set_xticklabels(layers, rotation=90)
+ax[0].set_title('Noise level')
+ax[1].bar(range(len(layers)), [abs(pearsonr(stimuli[l], stimuli['rotation'])[0]) for l in layers])
+ax[1].set_xticks(range(len(layers)))
+ax[1].set_xticklabels(layers, rotation=90)
+ax[1].set_title('Rotation')
+ax[2].bar(range(len(layers)), [abs(pearsonr(stimuli[l], stimuli['fontsize'])[0]) for l in layers])
+ax[2].set_xticks(range(len(layers)))
+ax[2].set_xticklabels(layers, rotation=90)
+ax[2].set_title('Font size')
+ax[3].bar(range(len(layers)), [abs(pearsonr(stimuli[l], stimuli['visual_complexity'])[0]) for l in layers])
+ax[3].set_xticks(range(len(layers)))
+ax[3].set_xticklabels(layers, rotation=90)
+ax[3].set_title('Visual complexity')
+ax[4].bar(range(len(layers)), [abs(pearsonr(stimuli[l], stimuli['event_id'])[0]) for l in layers])
+ax[4].set_xticks(range(len(layers)))
+ax[4].set_xticklabels(layers, rotation=90)
+ax[4].set_title('Stimulus type')
+plt.tight_layout()

@@ -4,9 +4,11 @@ import rsa
 import mne
 import pandas as pd
 import numpy as np
+from os.path import getsize
 from PIL import Image
 from tqdm import tqdm
 import networks
+import editdistance
 import pickle
 from matplotlib import pyplot as plt
 from scipy.spatial import distance
@@ -30,8 +32,10 @@ preproc = transforms.Compose([
 unnormalize = transforms.Normalize(mean=[-0.485, -0.456, -0.406],
                                    std=[1 / 0.229, 1 / 0.224, 1 / 0.225])
 
+filesizes = []
 images = []
 for fname in tqdm(stimuli['filename'], desc='Reading images'):
+    filesizes.append(getsize(f'../data/pilot_data/pilot2/stimuli/{fname}'))
     with Image.open(f'../data/pilot_data/pilot2/stimuli/{fname}') as image:
         image = image.convert('RGB')
         image = preproc(image).unsqueeze(0)
@@ -40,6 +44,7 @@ for fname in tqdm(stimuli['filename'], desc='Reading images'):
             image = image.repeat(1, 3, 1, 1)
         images.append(image)
 images = torch.cat(images, 0)
+stimuli['visual_complexity'] = filesizes
 
 model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
 checkpoint = torch.load(f'../data/models/{model_name}.pth.tar', map_location=torch.device('cpu'))
@@ -83,6 +88,15 @@ def letters_only(x, y):
     else:
         return 0
 
+def str_equal(x, y):
+    if x == y:
+        return 1
+    else:
+        return 0
+
+def str_dist(x, y):
+    return editdistance.eval(x[0], y[0])
+
 print('Computing model DSMs...', end='', flush=True)
 dsm_models = [
     rsa.compute_dsm(feature_outputs[0], metric='correlation'),
@@ -95,16 +109,22 @@ dsm_models = [
     rsa.compute_dsm(stimuli[['type']], metric=words_only),
     rsa.compute_dsm(stimuli[['type']], metric=letters_only),
     rsa.compute_dsm(stimuli[['noise_level']], metric='euclidean'),
+    rsa.compute_dsm(stimuli[['visual_complexity']], metric='sqeuclidean'),
+    rsa.compute_dsm(stimuli[['font']], metric=str_equal),
+    rsa.compute_dsm(stimuli[['rotation']], metric='sqeuclidean'),
+    rsa.compute_dsm(stimuli[['fontsize']], metric='sqeuclidean'),
+    rsa.compute_dsm(stimuli.index.tolist(), metric=str_dist),
     rsa.compute_dsm(images.numpy().reshape(len(images), -1), metric='euclidean'),
+    rsa.compute_dsm(images.numpy().reshape(len(images), -1).sum(axis=1), metric='sqeuclidean'),
 ]
-dsm_names = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4', 'Classifier 1', 'Classifier 2', 'Classifier 3',
-             'Words only', 'Letters only', 'Noise level', 'Pixels']
+dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output',
+             'Words only', 'Letters only', 'Noise level', 'Visual complexity', 'Font', 'Rotation', 'Fontsize', 'Edit distance', 'Pixel distance', 'Pixel sum']
 
 with open(f'../data/dsms/pilot2_{model_name}_dsms.pkl', 'wb') as f:
     pickle.dump(dict(dsms=dsm_models, dsm_names=dsm_names), f)
 
-fig, ax = plt.subplots(3, 4, sharex='col', sharey='row', figsize=(10, 10))
-for row in range(3):
+fig, ax = plt.subplots(4, 4, sharex='col', sharey='row', figsize=(10, 10))
+for row in range(4):
     for col in range(4):
         i = row * 4 + col
         if i < len(dsm_models):

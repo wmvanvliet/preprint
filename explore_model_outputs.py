@@ -59,8 +59,7 @@ for fname in tqdm(stimuli['filename'], desc='Reading images'):
 images = torch.cat(images, 0)
 
 plt.figure(figsize=(10, 10))
-#plt.imshow(make_grid(images/5 + 0.5, nrow=20).numpy().transpose(1, 2, 0))
-plt.imshow(make_grid(unnormalize(images), nrow=20).numpy().transpose(1, 2, 0))
+plt.imshow(make_grid(images/5 + 0.5, nrow=20).numpy().transpose(1, 2, 0))
 plt.axis('off')
 plt.tight_layout()
 

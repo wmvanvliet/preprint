@@ -9,6 +9,7 @@ from os.path import getsize
 import pickle
 from matplotlib import pyplot as plt
 import rsa
+import editdistance
 import mkl
 mkl.set_num_threads(4)
 
@@ -111,6 +112,9 @@ def str_equal(x, y):
     else:
         return 0
 
+def str_dist(x, y):
+    return editdistance.eval(x[0], y[0])
+
 print('Computing DSMs...', end='', flush=True)
 dsms_network = [
     rsa.compute_dsm(feature_outputs[0], metric='correlation'),
@@ -129,23 +133,24 @@ dsms_model = [
     rsa.compute_dsm(stimuli[['font']], metric=str_equal),
     rsa.compute_dsm(stimuli[['rotation']], metric='sqeuclidean'),
     rsa.compute_dsm(stimuli[['fontsize']], metric='sqeuclidean'),
+    rsa.compute_dsm(stimuli.index.tolist(), metric=str_dist),
     rsa.compute_dsm(images.numpy().reshape(len(images), -1), metric='sqeuclidean'),
     rsa.compute_dsm(images.numpy().reshape(len(images), -1).sum(axis=1), metric='sqeuclidean'),
 ]
-dsms_names = ['Words only', 'Letters only', 'Noise level', 'Visual complexity', 'Font', 'Rotation', 'Scale', 'Pixel distance', 'Pixel count']
+dsms_names = ['Words only', 'Letters only', 'Noise level', 'Visual complexity', 'Font', 'Rotation', 'Fontsize', 'Edit distance', 'Pixel distance', 'Pixel count']
 
-rsa_results = rsa.rsa(dsms_model, dsms_network)
+rsa_results = rsa.rsa(dsms_model, dsms_network, metric='kendall-tau-a')
 n_models, n_layers = rsa_results.shape
 
-f = plt.figure(figsize=(8, 10))
-axs = f.subplots(int(np.ceil(n_models / 2)), 2, sharex=True, sharey=True)
+f = plt.figure(figsize=(8, 5))
+axs = f.subplots(int(np.ceil(n_models / 5)), 5, sharex=True, sharey=True)
 for i, (name, result) in enumerate(zip(dsms_names, rsa_results)):
-    ax = axs[i // 2, i % 2]
+    ax = axs[i // 5, i % 5]
     ax.bar(np.arange(n_layers), result)
     ax.axhline(0, color='black')
     ax.set_title(name)
-    if (i // 2) == len(axs) - 1:
+    if (i // 5) == len(axs) - 1:
         ax.set_xlabel('Network layer')
         ax.set_xticks(np.arange(n_layers))
-        ax.set_xticklabels(['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output'])
+        ax.set_xticklabels(['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output'], rotation=90)
 plt.tight_layout()
