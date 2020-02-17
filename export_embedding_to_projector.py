@@ -6,8 +6,7 @@ from tqdm import tqdm
 import mne
 import numpy as np
 import os
-import pickle
-from matplotlib import pyplot as plt
+import json
 import mkl
 mkl.set_num_threads(4)
 
@@ -26,15 +25,6 @@ epochs = epochs[['word', 'symbols', 'consonants']]
 stimuli = epochs.metadata.groupby('text').agg('first').sort_values('event_id')
 stimuli['y'] = np.arange(len(stimuli))
 
-with open('data/datasets/tiny-words/meta', 'rb') as f:
-    meta = pickle.load(f)
-labels = meta['label_names'].reset_index()
-labels.columns = ['class_index', 'text']
-labels = labels.set_index('text')
-stimuli = stimuli.join(labels)
-order = np.argsort(stimuli[:180]['class_index'])
-order = np.hstack([order, np.arange(180, 360)])
-
 preproc = transforms.Compose([
     transforms.CenterCrop(208),
     transforms.Resize(64),
@@ -47,6 +37,7 @@ preproc = transforms.Compose([
 unnormalize = transforms.Normalize(mean=[-0.485, -0.456, -0.406],
                                    std=[1 / 0.229, 1 / 0.224, 1 / 0.225])
 
+filesizes = []
 images = []
 for fname in tqdm(stimuli['filename'], desc='Reading images'):
     with Image.open(f'data/pilot_data/pilot2/stimuli/{fname}') as image:
@@ -58,12 +49,6 @@ for fname in tqdm(stimuli['filename'], desc='Reading images'):
         images.append(image)
 images = torch.cat(images, 0)
 
-plt.figure(figsize=(10, 10))
-#plt.imshow(make_grid(images/5 + 0.5, nrow=20).numpy().transpose(1, 2, 0))
-plt.imshow(make_grid(unnormalize(images), nrow=20).numpy().transpose(1, 2, 0))
-plt.axis('off')
-plt.tight_layout()
-
 checkpoint = torch.load('data/models/%s.pth.tar' % model_name, map_location='cpu')
 num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
 classifier_size = checkpoint['state_dict']['classifier.6.weight'].shape[1]
@@ -71,7 +56,7 @@ model = networks.vgg(num_classes=num_classes, classifier_size=classifier_size)
 model.load_state_dict(checkpoint['state_dict'])
 model.eval()
 
-feature_outputs = []
+outputs = []
 out = images
 for i, layer in enumerate(model.features):
     layer_out = []
@@ -81,10 +66,8 @@ for i, layer in enumerate(model.features):
     del layer_out
     print('layer %02d, output=%s' % (i, out.shape))
     if i in [4, 10, 17, 24]:
-        feature_outputs.append(out.detach().numpy().copy())
-classifier_outputs = []
+        outputs.append(out.detach().numpy().copy())
 out = out.view(out.size(0), -1)
-layer_out = []
 for i, layer in enumerate(model.classifier):
     layer_out = []
     for j in range(0, len(out), 128):
@@ -92,19 +75,35 @@ for i, layer in enumerate(model.classifier):
     out = torch.cat(layer_out, 0)
     print('layer %02d, output=%s' % (i, out.shape))
     if i in [1, 4, 6]:
-        classifier_outputs.append(out.detach().numpy().copy())
+        outputs.append(out.detach().numpy().copy())
 
-plt.figure()
-plt.imshow(classifier_outputs[-1][order])
-plt.axhline(180, color='black')
-plt.axhline(180 + 90, color='black')
-plt.axvline(200, color='black')
+names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output']
 
-outputs = np.argmax(classifier_outputs[-1][order], axis=1)
-test = np.zeros((360, 400))
-test[(range(360), outputs)] = 1
-plt.figure()
-plt.imshow(test)
-plt.axhline(180, color='black')
-plt.axhline(180 + 90, color='black')
-plt.axvline(200, color='black')
+# Save layer outputs to projector
+embeddings = []
+for name, out in zip(names[2:], outputs[2:]):
+    out = out.reshape(360, -1)
+    print(f'projector/{name}.tsv')
+    np.savetxt(f'projector/{name}.tsv', out, delimiter='\t')
+
+    embeddings.append(dict(
+        tensorName=name,
+        tensorShape=list(out.shape),
+        tensorPath=f'{name}.tsv',
+        metadataPath='metadata.tsv',
+        sprite=dict(
+            imagePath='thumbnails.png',
+            singleImageDim=[64, 64],
+        )
+    ))
+
+# Save metadata
+stimuli.to_csv('projector/metadata.tsv', sep='\t')
+
+# Save images to projector
+img = Image.fromarray((make_grid(images/5 + 0.5, nrow=20, padding=0).numpy().transpose(1, 2, 0) * 255).astype(np.uint8))
+img.save('projector/thumbnails.png', format='png')
+
+# Compile JSON describing the entire dataset
+with open(f'projector/{model_name}.json', 'w') as f:
+    json.dump(dict(embeddings=embeddings), f, indent=False)

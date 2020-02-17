@@ -1,13 +1,14 @@
 import torch
 import torchvision.transforms as transforms
-from torchvision.utils import make_grid
 from PIL import Image
 from tqdm import tqdm
 import mne
 import numpy as np
 import os
+from os.path import getsize
 import pickle
 from matplotlib import pyplot as plt
+import rsa
 import mkl
 mkl.set_num_threads(4)
 
@@ -47,8 +48,10 @@ preproc = transforms.Compose([
 unnormalize = transforms.Normalize(mean=[-0.485, -0.456, -0.406],
                                    std=[1 / 0.229, 1 / 0.224, 1 / 0.225])
 
+filesizes = []
 images = []
 for fname in tqdm(stimuli['filename'], desc='Reading images'):
+    filesizes.append(getsize(f'data/pilot_data/pilot2/stimuli/{fname}'))
     with Image.open(f'data/pilot_data/pilot2/stimuli/{fname}') as image:
         image = image.convert('RGB')
         image = preproc(image).unsqueeze(0)
@@ -58,11 +61,7 @@ for fname in tqdm(stimuli['filename'], desc='Reading images'):
         images.append(image)
 images = torch.cat(images, 0)
 
-plt.figure(figsize=(10, 10))
-#plt.imshow(make_grid(images/5 + 0.5, nrow=20).numpy().transpose(1, 2, 0))
-plt.imshow(make_grid(unnormalize(images), nrow=20).numpy().transpose(1, 2, 0))
-plt.axis('off')
-plt.tight_layout()
+stimuli['visual_complexity'] = filesizes
 
 checkpoint = torch.load('data/models/%s.pth.tar' % model_name, map_location='cpu')
 num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
@@ -94,17 +93,59 @@ for i, layer in enumerate(model.classifier):
     if i in [1, 4, 6]:
         classifier_outputs.append(out.detach().numpy().copy())
 
-plt.figure()
-plt.imshow(classifier_outputs[-1][order])
-plt.axhline(180, color='black')
-plt.axhline(180 + 90, color='black')
-plt.axvline(200, color='black')
+def words_only(x, y):
+    if (x != 'word' or y != 'word') and (x != y):
+        return 1
+    else:
+        return 0
 
-outputs = np.argmax(classifier_outputs[-1][order], axis=1)
-test = np.zeros((360, 400))
-test[(range(360), outputs)] = 1
-plt.figure()
-plt.imshow(test)
-plt.axhline(180, color='black')
-plt.axhline(180 + 90, color='black')
-plt.axvline(200, color='black')
+def letters_only(x, y):
+    if (x == 'symbols' or y == 'symbols') and (x != y):
+        return 1
+    else:
+        return 0
+
+def str_equal(x, y):
+    if x == y:
+        return 1
+    else:
+        return 0
+
+print('Computing DSMs...', end='', flush=True)
+dsms_network = [
+    rsa.compute_dsm(feature_outputs[0], metric='correlation'),
+    rsa.compute_dsm(feature_outputs[1], metric='correlation'),
+    rsa.compute_dsm(feature_outputs[2], metric='correlation'),
+    rsa.compute_dsm(feature_outputs[3], metric='correlation'),
+    rsa.compute_dsm(classifier_outputs[0], metric='correlation'),
+    rsa.compute_dsm(classifier_outputs[1], metric='correlation'),
+    rsa.compute_dsm(classifier_outputs[2], metric='correlation'),
+]
+dsms_model = [
+    rsa.compute_dsm(stimuli[['type']], metric=words_only),
+    rsa.compute_dsm(stimuli[['type']], metric=letters_only),
+    rsa.compute_dsm(stimuli[['noise_level']], metric='sqeuclidean'),
+    rsa.compute_dsm(stimuli[['visual_complexity']], metric='sqeuclidean'),
+    rsa.compute_dsm(stimuli[['font']], metric=str_equal),
+    rsa.compute_dsm(stimuli[['rotation']], metric='sqeuclidean'),
+    rsa.compute_dsm(stimuli[['fontsize']], metric='sqeuclidean'),
+    rsa.compute_dsm(images.numpy().reshape(len(images), -1), metric='sqeuclidean'),
+    rsa.compute_dsm(images.numpy().reshape(len(images), -1).sum(axis=1), metric='sqeuclidean'),
+]
+dsms_names = ['Words only', 'Letters only', 'Noise level', 'Visual complexity', 'Font', 'Rotation', 'Scale', 'Pixel distance', 'Pixel count']
+
+rsa_results = rsa.rsa(dsms_model, dsms_network)
+n_models, n_layers = rsa_results.shape
+
+f = plt.figure(figsize=(8, 10))
+axs = f.subplots(int(np.ceil(n_models / 2)), 2, sharex=True, sharey=True)
+for i, (name, result) in enumerate(zip(dsms_names, rsa_results)):
+    ax = axs[i // 2, i % 2]
+    ax.bar(np.arange(n_layers), result)
+    ax.axhline(0, color='black')
+    ax.set_title(name)
+    if (i // 2) == len(axs) - 1:
+        ax.set_xlabel('Network layer')
+        ax.set_xticks(np.arange(n_layers))
+        ax.set_xticklabels(['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output'])
+plt.tight_layout()
