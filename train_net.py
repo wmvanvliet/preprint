@@ -56,6 +56,8 @@ parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 parser.add_argument('--gpu', default=None, type=str,
                     help='GPU id to use.')
+parser.add_argument('-l', '--labels', default='int', type=str,
+                    help='Type of targets to use. Either "int" or "vector"')
 
 best_prec1 = 0
 device = torch.device('cpu')
@@ -94,8 +96,14 @@ def main():
             transforms.CenterCrop(60),
             transforms.ToTensor(),
             normalize,
-        ]))
-    target_num_classes = len(train_dataset.classes)
+        ]),
+        labels=args.labels)
+    if args.labels == 'int':
+        target_num_classes = len(train_dataset.classes)
+    elif args.labels == 'vector':
+        target_num_classes = len(train_dataset.targets[0])
+    else:
+        raise ValueError('`labels` parameter must be either "int" or "vector"')
 
     # optionally resume from a checkpoint
     if args.resume:
@@ -127,7 +135,10 @@ def main():
     model = model.to(device)
 
     # define loss function (criterion) and optimizer
-    criterion = nn.CrossEntropyLoss().cuda(args.gpu)
+    if args.labels == 'int':
+        criterion = nn.CrossEntropyLoss().cuda(args.gpu)
+    elif args.labels == 'vector':
+        criterion = nn.MSELoss().cuda(args.gpu)
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -157,7 +168,8 @@ def main():
                 transforms.CenterCrop(60),
                 transforms.ToTensor(),
                 normalize,
-            ])),
+            ]),
+            labels=args.labels),
         batch_size=args.batch_size, shuffle=False,
         num_workers=args.workers, pin_memory=True)
 
@@ -320,9 +332,12 @@ def accuracy(output, target, topk=(1,)):
         maxk = max(topk)
         batch_size = target.size(0)
 
-        _, pred = output.topk(maxk, 1, True, True)
-        pred = pred.t()
-        correct = pred.eq(target.view(1, -1).expand_as(pred))
+        if target.ndim == 1:
+            _, pred = output.topk(maxk, 1, True, True)
+            pred = pred.t()
+            correct = pred.eq(target.view(1, -1).expand_as(pred))
+        else:
+            return [torch.tensor([0])] * len(topk)
 
         res = []
         for k in topk:

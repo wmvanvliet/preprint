@@ -12,6 +12,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 from matplotlib import font_manager as fm
 import pandas as pd
+from scipy.io import loadmat
 from os import makedirs
 from tqdm import tqdm
 import pickle
@@ -72,6 +73,11 @@ more_words = more_words[~more_words.ITEM.str.contains('.', regex=False) & ~more_
 words = pd.concat([words, more_words['ITEM']], ignore_index=True)
 words = words.drop_duplicates()
 words = words[:200]
+
+# Get word2vec vectors for the words
+word2vec = loadmat('../data/word2vec.mat')
+vocab = [v.strip() for v in word2vec['vocab']]
+vectors = np.array([word2vec['vectors'][vocab.index(w)] for w in words])
 
 rng = np.random.RandomState(0)
 
@@ -138,4 +144,6 @@ with open(f'{args.path}/{args.set}', 'wb') as f:
     pickle.dump(dict(data=data, labels=labels), f)
 
 with open(f'{args.path}/meta', 'wb') as f:
-    pickle.dump(dict(label_names=chosen_words), f)
+    pickle.dump(dict(label_names=chosen_words, vectors=vectors), f)
+
+pd.DataFrame(vectors, index=chosen_words).to_csv(f'{args.path}/vectors.csv')
