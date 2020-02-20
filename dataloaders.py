@@ -165,15 +165,15 @@ class CombinedPickledPNGs(VisionDataset):
             with open(op.join(root, 'train' if train else 'test'), 'rb') as f:
                 dataset = pickle.load(f)
                 self.data.extend(dataset['data'])
-                if 'tiny-consonants' in root:
+                if 'tiny-words' in root:
                     self.targets.extend([target_offset + 1 for l in dataset['labels']])
                 else:
                     self.targets.extend([l + target_offset for l in dataset['labels']])
 
             with open(op.join(root, 'meta'), 'rb') as f:
                 meta = pickle.load(f)
-                if 'tiny-consonants' in root:
-                    self.classes.extend(['consonant_string'])
+                if 'tiny-words' in root:
+                    self.classes.extend(['valid_word'])
                 else:
                     self.classes.extend(meta['label_names'])
             self.class_to_idx = {name: i + target_offset for i, name in enumerate(self.classes)}
