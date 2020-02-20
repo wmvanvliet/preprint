@@ -46,8 +46,8 @@ for fname in tqdm(stimuli['filename'], desc='Reading images'):
 images = torch.cat(images, 0)
 stimuli['visual_complexity'] = filesizes
 
-#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
-model_name = 'vgg_imagenet64'
+model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+#model_name = 'vgg_imagenet64'
 checkpoint = torch.load(f'../data/models/{model_name}.pth.tar', map_location=torch.device('cpu'))
 num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
 model = networks.vgg(num_classes=num_classes)
