@@ -19,7 +19,7 @@ os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
 
 epochs = mne.read_epochs('data/pilot_data/pilot2/pilot2_epo.fif', preload=False)
 epochs = epochs[['word', 'symbols', 'consonants']]

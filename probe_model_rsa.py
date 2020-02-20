@@ -21,7 +21,7 @@ os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
 
 epochs = mne.read_epochs('data/pilot_data/pilot2/pilot2_epo.fif', preload=False)
 epochs = epochs[['word', 'symbols', 'consonants']]
@@ -106,11 +106,11 @@ def letters_only(x, y):
     else:
         return 0
 
-def str_equal(x, y):
+def str_not_equal(x, y):
     if x == y:
-        return 1
-    else:
         return 0
+    else:
+        return 1
 
 def str_dist(x, y):
     return editdistance.eval(x[0], y[0])
@@ -130,7 +130,7 @@ dsms_model = [
     rsa.compute_dsm(stimuli[['type']], metric=letters_only),
     rsa.compute_dsm(stimuli[['noise_level']], metric='sqeuclidean'),
     rsa.compute_dsm(stimuli[['visual_complexity']], metric='sqeuclidean'),
-    rsa.compute_dsm(stimuli[['font']], metric=str_equal),
+    rsa.compute_dsm(stimuli[['font']], metric=str_not_equal),
     rsa.compute_dsm(stimuli[['rotation']], metric='sqeuclidean'),
     rsa.compute_dsm(stimuli[['fontsize']], metric='sqeuclidean'),
     rsa.compute_dsm(stimuli.index.tolist(), metric=str_dist),

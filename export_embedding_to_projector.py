@@ -81,7 +81,7 @@ names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output']
 
 # Save layer outputs to projector
 embeddings = []
-for name, out in zip(names[2:], outputs[2:]):
+for name, out in zip(names, outputs):
     out = out.reshape(360, -1)
     print(f'projector/{name}.tsv')
     np.savetxt(f'projector/{name}.tsv', out, delimiter='\t')
@@ -106,4 +106,4 @@ img.save('projector/thumbnails.png', format='png')
 
 # Compile JSON describing the entire dataset
 with open(f'projector/{model_name}.json', 'w') as f:
-    json.dump(dict(embeddings=embeddings), f, indent=False)
+    json.dump(dict(embeddings=embeddings[::-1]), f, indent=False)
