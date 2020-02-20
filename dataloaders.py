@@ -166,7 +166,7 @@ class CombinedPickledPNGs(VisionDataset):
                 dataset = pickle.load(f)
                 self.data.extend(dataset['data'])
                 if 'tiny-consonants' in root:
-                    self.targets.extend([target_offset + 1])
+                    self.targets.extend([target_offset + 1 for l in dataset['labels']])
                 else:
                     self.targets.extend([l + target_offset for l in dataset['labels']])
 
