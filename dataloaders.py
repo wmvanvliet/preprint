@@ -117,6 +117,7 @@ class PickledPNGs(VisionDataset):
             self.targets = dataset['labels']
         elif labels == 'vector':
             self.targets = [meta['vectors'][l] for l in dataset['labels']]
+            self.vectors = meta['vectors']
         else:
             raise ValueError('`labels` should be either "int" or "vector"')
 
@@ -170,6 +171,7 @@ class CombinedPickledPNGs(VisionDataset):
         self.data = []
         self.targets = []
         self.classes = []
+        self.vectors = []
         target_offset = 0
         for root in roots:
             with open(op.join(root, 'train' if train else 'test'), 'rb') as f:
@@ -182,6 +184,7 @@ class CombinedPickledPNGs(VisionDataset):
                 self.targets.extend([l + target_offset for l in dataset['labels']])
             elif labels == 'vector':
                 self.targets.extend([meta['vectors'][l] for l in dataset['labels']])
+                self.vectors.extend(meta['vectors'])
             else:
                 raise ValueError('`labels` should be either "int" or "vector"')
             self.classes.extend(meta['label_names'])
