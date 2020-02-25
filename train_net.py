@@ -61,10 +61,11 @@ parser.add_argument('-l', '--labels', default='int', type=str,
 
 best_prec1 = 0
 device = torch.device('cpu')
+target_vectors = None
 
 
 def main():
-    global args, best_prec1, device, summary
+    global args, best_prec1, device, target_vectors
     args = parser.parse_args()
 
     if args.seed is not None:
@@ -102,6 +103,7 @@ def main():
         target_num_classes = len(train_dataset.classes)
     elif args.labels == 'vector':
         target_num_classes = len(train_dataset.targets[0])
+        target_vectors = torch.tensor(train_dataset.vectors)
     else:
         raise ValueError('`labels` parameter must be either "int" or "vector"')
 
@@ -138,7 +140,8 @@ def main():
     if args.labels == 'int':
         criterion = nn.CrossEntropyLoss().to(device)
     elif args.labels == 'vector':
-        criterion = nn.CosineEmbeddingLoss().to(device)
+        target_vectors = target_vectors.to(device)
+        criterion = nn.MSELoss().to(device)
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -223,7 +226,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         # compute output
         output = model(input)
-        loss = criterion(output, target, torch.ones(len(output)).to(device))
+        loss = criterion(output, target)
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output, target, topk=(1, 5))
@@ -241,14 +244,12 @@ def train(train_loader, model, criterion, optimizer, epoch):
         end = time.time()
 
         if i % args.print_freq == 0:
-            print('Epoch: [{0}][{1}/{2}]\t'
-                  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                  'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-                      epoch, i, len(train_loader), batch_time=batch_time,
-                      data_time=data_time, loss=losses, top1=top1, top5=top5))
+            print(f'Epoch: [{epoch}][{i:04d}/{len(train_loader):04d}] '
+                  f'Time {batch_time.val:.3f} ({batch_time.avg:.3f}) '
+                  f'Data {data_time.val:.3f} ({data_time.avg:.3f}) '
+                  f'Loss {losses.val:.4f} ({losses.avg:.4f}) '
+                  f'Prec@1 {top1.val:.3f} ({top1.avg:.3f}) '
+                  f'Prec@5 {top5.val:.3f} ({top5.avg:.3f})')
 
 
 def validate(val_loader, model, criterion):
@@ -268,7 +269,7 @@ def validate(val_loader, model, criterion):
 
             # compute output
             output = model(input)
-            loss = criterion(output, target, torch.ones(len(output)).to(device))
+            loss = criterion(output, target)
 
             # measure accuracy and record loss
             prec1, prec5 = accuracy(output, target, topk=(1, 5))
@@ -337,7 +338,9 @@ def accuracy(output, target, topk=(1,)):
             pred = pred.t()
             correct = pred.eq(target.view(1, -1).expand_as(pred))
         else:
-            return [torch.mean((output - target) ** 2).view(1)] * len(topk)
+            target_indices = torch.cdist(target, target_vectors).argsort()[:, 0]
+            pred = torch.cdist(output, target_vectors).argsort()[:, :maxk].t()
+        correct = pred.eq(target_indices.view(1, -1).expand_as(pred))
 
         res = []
         for k in topk:
