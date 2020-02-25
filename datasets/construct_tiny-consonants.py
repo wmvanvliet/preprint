@@ -134,4 +134,4 @@ with open(f'{args.path}/{args.set}', 'wb') as f:
     pickle.dump(dict(data=data, labels=labels), f)
 
 with open(f'{args.path}/meta', 'wb') as f:
-    pickle.dump(dict(label_names=chosen_words), f)
+    pickle.dump(dict(label_names=words, vectors=np.zeros((len(words), 300)), f)
