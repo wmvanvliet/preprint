@@ -55,8 +55,8 @@ fonts = {
 stimuli = pd.read_csv('../data/pilot_data/pilot2/run1.csv', index_col=0).query('type=="word"')
 words = stimuli['text']
 
-# Add some common finnish words to pad the list to 200
-more_words = pd.read_csv('../data/parsebank_v4_ud_scrambled.wordlist.txt', sep=' ', nrows=500, quoting=3, usecols=[1], header=None)
+# Add some common finnish words to pad the list to 10_000
+more_words = pd.read_csv('../data/parsebank_v4_ud_scrambled.wordlist.txt', sep=' ', nrows=1_000_000, quoting=3, usecols=[1], header=None)
 more_words.columns = ['ITEM']
 
 # Select words between 2 and 6 letters long
@@ -69,15 +69,16 @@ more_words = more_words[more_words.ITEM.str.lower() == more_words.ITEM]
 # Drop punctuation
 more_words = more_words[~more_words.ITEM.str.contains('.', regex=False) & ~more_words.ITEM.str.contains(',', regex=False)]
 
-# Pad the original word list up to 200 words
+# Pad the original word list up to 10_000 words
 words = pd.concat([words, more_words['ITEM']], ignore_index=True)
 words = words.drop_duplicates()
-words = words[:200]
+words = words[:10_000]
 
 # Get word2vec vectors for the words
 word2vec = loadmat('../data/word2vec.mat')
 vocab = [v.strip() for v in word2vec['vocab']]
 vectors = np.array([word2vec['vectors'][vocab.index(w)] for w in words])
+vectors -= vectors.mean(axis=1, keepdims=True)
 
 rng = np.random.RandomState(0)
 
@@ -87,7 +88,7 @@ chosen_fonts = []
 chosen_words = []
 chosen_noise_levels = []
 
-n = 500 if args.set == 'train' else 50
+n = 10 if args.set == 'train' else 1
 data = []
 labels = np.zeros(len(words) * n, dtype=np.int)
 
