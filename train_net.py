@@ -136,9 +136,9 @@ def main():
 
     # define loss function (criterion) and optimizer
     if args.labels == 'int':
-        criterion = nn.CrossEntropyLoss().cuda(args.gpu)
+        criterion = nn.CrossEntropyLoss().to(device)
     elif args.labels == 'vector':
-        criterion = nn.MSELoss().cuda(args.gpu)
+        criterion = nn.CosineEmbeddingLoss().to(device)
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -148,7 +148,7 @@ def main():
         if(args.start_epoch) == -1:
             args.start_epoch = checkpoint['epoch']
         best_prec1 = checkpoint['best_prec1']
-        optimizer.load_state_dict(checkpoint['optimizer'])
+        #optimizer.load_state_dict(checkpoint['optimizer'])
         print("=> loaded checkpoint '{}' (epoch {})"
               .format(args.resume, checkpoint['epoch']))
 
@@ -223,7 +223,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         # compute output
         output = model(input)
-        loss = criterion(output, target)
+        loss = criterion(output, target, torch.ones(len(output)).to(device))
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output, target, topk=(1, 5))
@@ -268,7 +268,7 @@ def validate(val_loader, model, criterion):
 
             # compute output
             output = model(input)
-            loss = criterion(output, target)
+            loss = criterion(output, target, torch.ones(len(output)).to(device))
 
             # measure accuracy and record loss
             prec1, prec5 = accuracy(output, target, topk=(1, 5))
@@ -332,12 +332,12 @@ def accuracy(output, target, topk=(1,)):
         maxk = max(topk)
         batch_size = target.size(0)
 
-        if target.ndim == 1:
+        if len(target.size()) == 1:
             _, pred = output.topk(maxk, 1, True, True)
             pred = pred.t()
             correct = pred.eq(target.view(1, -1).expand_as(pred))
         else:
-            return [torch.tensor([0])] * len(topk)
+            return [torch.mean((output - target) ** 2).view(1)] * len(topk)
 
         res = []
         for k in topk:
