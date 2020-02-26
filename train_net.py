@@ -27,9 +27,9 @@ model_names = sorted(name for name in networks.__dict__
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('data', metavar='DIR', nargs='+', help='path to dataset(s)')
-parser.add_argument('--arch', '-a', metavar='ARCH', default='alexnet',
+parser.add_argument('--arch', '-a', metavar='ARCH', default='vgg',
                     choices=model_names,
-                    help='model architecture: ' + ' | '.join(model_names) + ' (default: alexnet)')
+                    help='model architecture: ' + ' | '.join(model_names) + ' (default: vgg)')
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--epochs', default=90, type=int, metavar='N',
@@ -58,8 +58,10 @@ parser.add_argument('--gpu', default=None, type=str,
                     help='GPU id to use.')
 parser.add_argument('-l', '--labels', default='int', type=str,
                     help='Type of targets to use. Either "int" or "vector"')
-parser.add_argument('--freeze-conv', default=False, action='store_true',
-                    help='Freeze the convolution layers before training.')
+parser.add_argument('--attach', default=False, action='store_true',
+                    help='Attach a new output layer to the model, replacing the previous one.')
+parser.add_argument('--freeze', default=False, action='store_true',
+                    help='Freeze the model before attaching a new output layer.')
 
 best_prec1 = 0
 device = torch.device('cpu')
@@ -122,13 +124,13 @@ def main():
         print("=> creating model '{}'".format(args.arch))
         model = networks.__dict__[args.arch](num_classes=current_num_classes)
         model.load_state_dict(checkpoint['state_dict'])
-        if current_num_classes != target_num_classes:
-            print("=> changing number of classes from %d to %d" % (current_num_classes, target_num_classes))
+        if current_num_classes != target_num_classes or args.attach:
+            if args.freeze:
+                print("=> freezing model")
+                for param in model.parameters():
+                    param.requires_grad = False
+            print("=> attaching new output layer (size changed from %d to %d)" % (current_num_classes, target_num_classes))
             model = attach_classifier(model, target_num_classes)
-        if args.freeze_conv:
-            print("=> freezing convolution layers")
-            for param in model.features.parameters():
-                param.requires_grad = False
     else:
         print("=> creating model '{}'".format(args.arch))
         model = networks.__dict__[args.arch](num_classes=target_num_classes)
