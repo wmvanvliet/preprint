@@ -58,6 +58,8 @@ parser.add_argument('--gpu', default=None, type=str,
                     help='GPU id to use.')
 parser.add_argument('-l', '--labels', default='int', type=str,
                     help='Type of targets to use. Either "int" or "vector"')
+parser.add_argument('--freeze-conv', default=False, action='store_true',
+                    help='Freeze the convolution layers before training.')
 
 best_prec1 = 0
 device = torch.device('cpu')
@@ -113,7 +115,7 @@ def main():
             raise ValueError("No checkpoint found at '{}'".format(args.resume))
 
         print("=> loading checkpoint '{}'".format(args.resume))
-        checkpoint = torch.load(args.resume)
+        checkpoint = torch.load(args.resume, map_location=device)
         current_num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
 
         # create model
@@ -123,6 +125,10 @@ def main():
         if current_num_classes != target_num_classes:
             print("=> changing number of classes from %d to %d" % (current_num_classes, target_num_classes))
             model = attach_classifier(model, target_num_classes)
+        if args.freeze_conv:
+            print("=> freezing convolution layers")
+            for param in model.features.parameters():
+                param.requires_grad = False
     else:
         print("=> creating model '{}'".format(args.arch))
         model = networks.__dict__[args.arch](num_classes=target_num_classes)
