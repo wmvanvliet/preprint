@@ -149,7 +149,8 @@ def main():
         criterion = nn.CrossEntropyLoss().to(device)
     elif args.labels == 'vector':
         target_vectors = target_vectors.to(device)
-        criterion = nn.MSELoss().to(device)
+        #criterion = nn.MSELoss().to(device)
+        criterion = HingeRankLoss(margin=0.1, all_vectors=target_vectors).to(device)
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -387,6 +388,16 @@ def num_classes(model):
     final_layer = list(model.classifier.modules())[-1]
     num_classes = final_layer.weight.shape[0]
     return num_classes
+
+class HingeRankLoss(torch.nn.Module):
+    def __init__(self, all_vectors, margin=0.1):
+        super(HingeRankLoss, self).__init__()
+        self.all_vectors = all_vectors
+        self.margin = margin
+
+    def forward(self, input, target):
+        loss = (input @ self.all_vectors.T).sum(dim=1) - 2 * (input @ target.T).diag()
+        return torch.clamp_min(self.margin + loss, 0).sum()
 
 if __name__ == '__main__':
     main()
