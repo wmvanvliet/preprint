@@ -56,8 +56,8 @@ for fname in tqdm(stimuli['filename'], desc='Reading images'):
         images.append(image)
 images = torch.cat(images, 0)
 
-#model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_w2v'
+model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
 checkpoint = torch.load(f'data/models/{model_name}.pth.tar', map_location=torch.device('cpu'))
 num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
 model = networks.vgg(num_classes=num_classes)
@@ -88,10 +88,10 @@ for i, layer in enumerate(model.classifier):
         classifier_outputs.append(out.detach().numpy().copy())
 
 noise = np.random.randn(180, 300)
-noise2 = np.random.randn(360, 300)
+noise2 = np.random.randn(360, 400)
 
-#for noise_lvl in [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]:
-noise_lvl = 0
+#for noise_lvl in [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0]:
+noise_lvl = 0.1
 
 desired_word_vectors = word_vectors + 0 * noise
 desired_non_word_vectors = non_word_vectors + 0.1 * noise
@@ -137,9 +137,12 @@ ax[0].axhline(180, color='black')
 ax[0].axhline(180 + 90, color='black')
 ax[0].set_title('Desired output')
 f.colorbar(im1, ax=ax[0])
-im2 = ax[1].imshow(np.vstack((model_word_vectors, model_non_word_vectors)), cmap='RdBu_r', vmin=-0.1, vmax=0.1)
+im2 = ax[1].imshow(np.vstack((model_word_vectors, model_non_word_vectors)), cmap='RdBu_r', vmin=-1, vmax=1)
 ax[1].axhline(180, color='black')
 ax[1].axhline(180 + 90, color='black')
 ax[1].set_title('Actual model output')
 f.colorbar(im2, ax=ax[1])
 plt.tight_layout()
+
+plt.figure()
+plt.imshow(distance.squareform(d4))

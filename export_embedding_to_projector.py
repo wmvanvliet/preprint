@@ -18,7 +18,8 @@ os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words_w2v'
 
 epochs = mne.read_epochs('data/pilot_data/pilot2/pilot2_epo.fif', preload=False)
 epochs = epochs[['word', 'symbols', 'consonants']]
@@ -83,13 +84,13 @@ names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output']
 embeddings = []
 for name, out in zip(names, outputs):
     out = out.reshape(360, -1)
-    print(f'projector/{name}.tsv')
-    np.savetxt(f'projector/{name}.tsv', out, delimiter='\t')
+    print(f'projector/{model_name}_{name}.tsv')
+    np.savetxt(f'projector/{model_name}_{name}.tsv', out, delimiter='\t')
 
     embeddings.append(dict(
         tensorName=name,
         tensorShape=list(out.shape),
-        tensorPath=f'{name}.tsv',
+        tensorPath=f'{model_name}_{name}.tsv',
         metadataPath='metadata.tsv',
         sprite=dict(
             imagePath='thumbnails.png',

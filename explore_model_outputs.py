@@ -7,6 +7,7 @@ import mne
 import numpy as np
 import os
 import pickle
+import pandas as pd
 from matplotlib import pyplot as plt
 import mkl
 mkl.set_num_threads(4)
@@ -19,16 +20,19 @@ os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_w2v'
 
-epochs = mne.read_epochs('data/pilot_data/pilot2/pilot2_epo.fif', preload=False)
+epochs = mne.read_epochs('data/pilot_data/pilot2/pilot2_epo.fif', preload=True)
 epochs = epochs[['word', 'symbols', 'consonants']]
+epochs.crop(0, 0.8).resample(100).pick_types(meg='grad')
 stimuli = epochs.metadata.groupby('text').agg('first').sort_values('event_id')
 stimuli['y'] = np.arange(len(stimuli))
+epochs.metadata = pd.merge(epochs.metadata, stimuli[['y']], left_on='text', right_index=True).sort_index()
 
 with open('data/datasets/tiny-words/meta', 'rb') as f:
     meta = pickle.load(f)
-labels = meta['label_names'].reset_index()
+#labels = meta['label_names'].reset_index()
+labels = pd.DataFrame(meta['label_names']).reset_index()
 labels.columns = ['class_index', 'text']
 labels = labels.set_index('text')
 stimuli = stimuli.join(labels)
@@ -97,13 +101,13 @@ plt.figure()
 plt.imshow(classifier_outputs[-1][order])
 plt.axhline(180, color='black')
 plt.axhline(180 + 90, color='black')
-plt.axvline(200, color='black')
+#plt.axvline(201, color='black')
 
 outputs = np.argmax(classifier_outputs[-1][order], axis=1)
-test = np.zeros((360, 400))
+test = np.zeros((360, 300))
 test[(range(360), outputs)] = 1
 plt.figure()
 plt.imshow(test)
 plt.axhline(180, color='black')
 plt.axhline(180 + 90, color='black')
-plt.axvline(200, color='black')
+#plt.axvline(201, color='black')

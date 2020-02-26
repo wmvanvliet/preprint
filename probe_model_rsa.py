@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 import rsa
 import editdistance
 import mkl
+import pandas as pd
 mkl.set_num_threads(4)
 
 os.environ['MKL_NUM_THREADS'] = '4'
@@ -21,7 +22,8 @@ os.environ['OPENBLAS_NUM_THREADS'] = '4'
 
 import networks
 
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words_w2v'
 
 epochs = mne.read_epochs('data/pilot_data/pilot2/pilot2_epo.fif', preload=False)
 epochs = epochs[['word', 'symbols', 'consonants']]
@@ -30,7 +32,8 @@ stimuli['y'] = np.arange(len(stimuli))
 
 with open('data/datasets/tiny-words/meta', 'rb') as f:
     meta = pickle.load(f)
-labels = meta['label_names'].reset_index()
+#labels = meta['label_names'].reset_index()
+labels = pd.DataFrame(meta['label_names']).reset_index()
 labels.columns = ['class_index', 'text']
 labels = labels.set_index('text')
 stimuli = stimuli.join(labels)

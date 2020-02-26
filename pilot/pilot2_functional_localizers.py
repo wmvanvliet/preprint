@@ -100,7 +100,8 @@ plt.xticks([1, 2, 3, 4, 5, 6], ['noise=0.2', 'noise=0.35', 'noise=0.5', 'word', 
 # y_consonants = m.transform(make_X(epochs['consonants']))
 # y_symbols = m.transform(make_X(epochs['symbols']))
 
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words_w2v'
 with open(f'../data/dsms/pilot2_{model_name}_dsms.pkl', 'rb') as f:
     dsm_models = pickle.load(f)
     dsms = dsm_models['dsms']

@@ -21,17 +21,14 @@ word_vectors = []
 non_word_vectors = []
 for text, [type] in stimuli[['type']].iterrows():
     if type == 'word':
-        #word_vectors.append(word2vec['vectors'][vocab.index(text)])
-        vector = np.zeros(300)
-        vector[np.random.choice(np.arange(300), 20)] = 1
-        word_vectors.append(vector)
+        word_vectors.append(word2vec['vectors'][vocab.index(text)])
     else:
-        vector = np.random.randn(300) * 1
+        vector = np.zeros(300, dtype=word2vec['vectors'].dtype)
         non_word_vectors.append(vector)
-#word_vectors = np.array(word_vectors) - np.mean(word2vec['vectors'], axis=0)
-word_vectors = np.array(word_vectors) # - np.mean(word_vectors, axis=0)
+word_vectors = np.array(word_vectors)
 non_word_vectors = np.array(non_word_vectors)
 vectors = np.vstack((word_vectors, non_word_vectors))
+#vectors += np.random.randn(*vectors.shape) * 0.2
 
 def words1(x, y):
     if (x != 'word' or y != 'word'):
