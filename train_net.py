@@ -138,6 +138,7 @@ def main():
         target_vectors = target_vectors.to(device)
         criterion = nn.MSELoss().to(device)
         #criterion = HingeRankLoss(margin=0.1, all_vectors=target_vectors).to(device)
+        #criterion = cos_loss
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -385,6 +386,9 @@ class HingeRankLoss(torch.nn.Module):
     def forward(self, input, target):
         loss = (input @ self.all_vectors.T).sum(dim=1) - 2 * (input @ target.T).diag()
         return torch.clamp_min(self.margin + loss, 0).sum()
+
+def cos_loss(input, target):
+    return 1 - torch.nn.functional.cosine_similarity(input, target).mean()
 
 if __name__ == '__main__':
     main()
