@@ -119,21 +119,22 @@ class VGGSem(nn.Module):
         print(f'=> attaching semantic layer (going from {prev_num_classes} to {num_classes})')
         return cls(vis_model, num_classes)
 
-    def __init__(self, vis_network, num_classes=300):
+    def __init__(self, vis_network, num_classes=300, classifier_size=1024):
         super().__init__()
         self.vis = vis_network
         num_words = vis_network.classifier[-1].weight.shape[0]
 
         # Stack on some semantic layers
-        #self.semantics = nn.Sequential(
-        #    nn.Linear(num_words, classifier_size),
-        #    nn.ReLU(True),
-        #    nn.Dropout(),
-        #    nn.Linear(classifier_size, num_classes),
-        #)
-        self.semantics = nn.Linear(num_words, num_classes)
-        nn.init.normal_(self.semantics.weight, 0, 0.01)
-        nn.init.constant_(self.semantics.bias, 0)
+        self.semantics = nn.Sequential(
+            nn.Linear(num_words, classifier_size),
+            nn.ReLU(True),
+            nn.Dropout(),
+            nn.Linear(classifier_size, num_classes),
+        )
+        #self.semantics = nn.Linear(num_words, num_classes)
+        #nn.init.normal_(self.semantics.weight, 0, 0.01)
+        #nn.init.constant_(self.semantics.bias, 0)
+        self.initialize_semantic_weights()
 
     def initialize_semantic_weights(self):
         for m in self.semantics():
