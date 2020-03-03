@@ -137,9 +137,10 @@ class VGGSem(nn.Module):
         self.initialize_semantic_weights()
 
     def initialize_semantic_weights(self):
-        for m in self.semantics():
-            nn.init.normal_(m.weight, 0, 0.01)
-            nn.init.constant_(m.bias, 0)
+        for m in self.semantics.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
 
     def forward(self, X):
         out = self.vis(X)
