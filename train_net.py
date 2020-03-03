@@ -111,28 +111,15 @@ def main():
     else:
         raise ValueError('`labels` parameter must be either "int" or "vector"')
 
-    # optionally resume from a checkpoint
+    print("=> creating model '{}'".format(args.arch))
     if args.resume:
         if not os.path.isfile(args.resume):
             raise ValueError("No checkpoint found at '{}'".format(args.resume))
 
-        print("=> loading checkpoint '{}'".format(args.resume))
-        checkpoint = torch.load(args.resume, map_location=device)
-        current_num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
-
-        # create model
-        print("=> creating model '{}'".format(args.arch))
-        model = networks.__dict__[args.arch](num_classes=current_num_classes)
-        model.load_state_dict(checkpoint['state_dict'])
-        if current_num_classes != target_num_classes or args.attach:
-            if args.freeze:
-                print("=> freezing model")
-                for param in model.parameters():
-                    param.requires_grad = False
-            print("=> attaching new output layer (size changed from %d to %d)" % (current_num_classes, target_num_classes))
-            model = attach_classifier(model, target_num_classes)
+        print(f"=> loading checkpoint '{args.resume}'")
+        checkpoint = torch.load(args.resume, map_location='cpu')
+        model = networks.__dict__[args.arch].from_checkpoint(checkpoint, num_classes=target_num_classes, freeze=args.freeze)
     else:
-        print("=> creating model '{}'".format(args.arch))
         model = networks.__dict__[args.arch](num_classes=target_num_classes)
 
     if args.gpu is not None:
@@ -149,8 +136,8 @@ def main():
         criterion = nn.CrossEntropyLoss().to(device)
     elif args.labels == 'vector':
         target_vectors = target_vectors.to(device)
-        #criterion = nn.MSELoss().to(device)
-        criterion = HingeRankLoss(margin=0.1, all_vectors=target_vectors).to(device)
+        criterion = nn.MSELoss().to(device)
+        #criterion = HingeRankLoss(margin=0.1, all_vectors=target_vectors).to(device)
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -349,7 +336,7 @@ def accuracy(output, target, topk=(1,)):
         else:
             target_indices = torch.cdist(target, target_vectors).argsort()[:, 0]
             pred = torch.cdist(output, target_vectors).argsort()[:, :maxk].t()
-        correct = pred.eq(target_indices.view(1, -1).expand_as(pred))
+            correct = pred.eq(target_indices.view(1, -1).expand_as(pred))
 
         res = []
         for k in topk:
