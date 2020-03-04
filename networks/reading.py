@@ -48,6 +48,8 @@ class VGG16(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
+            nn.ReLU(True),
+            nn.LogSoftmax(),
         )
 
         self.initialize_weights()
@@ -130,6 +132,8 @@ class VGGSem(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
+            nn.ReLU(True),
+            nn.LogSoftmax(),
         )
         #self.semantics = nn.Linear(num_words, num_classes)
         #nn.init.normal_(self.semantics.weight, 0, 0.01)
