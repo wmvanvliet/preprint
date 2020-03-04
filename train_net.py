@@ -152,6 +152,8 @@ def main():
         print("=> loaded checkpoint '{}' (epoch {})"
               .format(args.resume, checkpoint['epoch']))
 
+    print(model)
+
     cudnn.benchmark = True
 
     train_loader = torch.utils.data.DataLoader(

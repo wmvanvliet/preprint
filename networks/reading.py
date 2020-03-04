@@ -91,13 +91,11 @@ class VGG16(nn.Module):
 
             print(f'=> attaching new output layer (size changed from {prev_num_classes} to {num_classes})')
             modulelist = list(model.classifier.modules())[1:]
-            print(model.classifier)
             classifier3 = nn.Linear(classifier_size, num_classes)
             nn.init.normal_(classifier3.weight, 0, 0.01)
             nn.init.constant_(classifier3.bias, 0)
             modulelist[-3] = classifier3
             model.classifier = nn.Sequential(*modulelist)
-            print(model.classifier)
 
         return model
 
