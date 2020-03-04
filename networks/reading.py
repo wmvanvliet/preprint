@@ -49,7 +49,7 @@ class VGG16(nn.Module):
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
             nn.ReLU(True),
-            nn.LogSoftmax(),
+            nn.LogSoftmax(1),
         )
 
         self.initialize_weights()
@@ -91,12 +91,13 @@ class VGG16(nn.Module):
 
             print(f'=> attaching new output layer (size changed from {prev_num_classes} to {num_classes})')
             modulelist = list(model.classifier.modules())[1:]
-            modulelist.pop()
+            print(model.classifier)
             classifier3 = nn.Linear(classifier_size, num_classes)
             nn.init.normal_(classifier3.weight, 0, 0.01)
             nn.init.constant_(classifier3.bias, 0)
-            modulelist.append(classifier3)
+            modulelist[-3] = classifier3
             model.classifier = nn.Sequential(*modulelist)
+            print(model.classifier)
 
         return model
 
@@ -124,7 +125,7 @@ class VGGSem(nn.Module):
     def __init__(self, vis_network, num_classes=300, classifier_size=1024):
         super().__init__()
         self.vis = vis_network
-        num_words = vis_network.classifier[-1].weight.shape[0]
+        num_words = vis_network.classifier[-3].weight.shape[0]
 
         # Stack on some semantic layers
         self.semantics = nn.Sequential(
@@ -132,8 +133,8 @@ class VGGSem(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            nn.ReLU(True),
-            nn.LogSoftmax(),
+            #nn.ReLU(True),
+            #nn.LogSoftmax(),
         )
         #self.semantics = nn.Linear(num_words, num_classes)
         #nn.init.normal_(self.semantics.weight, 0, 0.01)
