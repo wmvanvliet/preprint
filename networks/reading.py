@@ -49,7 +49,7 @@ class VGG16(nn.Module):
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
             nn.ReLU(True),
-            nn.LogSoftmax(1),
+            nn.Softmax(1),
         )
 
         self.initialize_weights()
@@ -72,6 +72,34 @@ class VGG16(nn.Module):
             elif isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.constant_(m.bias, 0)
+
+    def get_layer_activations(self, images):
+        self.eval()
+        batch_size = 128
+        feature_outputs = []
+        out = images
+        for i, layer in enumerate(self.features):
+            layer_out = []
+            for j in range(0, len(out), batch_size):
+                layer_out.append(layer(out[j:j + batch_size]))
+            out = torch.cat(layer_out, 0)
+            del layer_out
+            print('layer %02d, output=%s' % (i, out.shape))
+            if i in [5, 12, 19, 26]:
+                feature_outputs.append(out.detach().numpy().copy())
+        classifier_outputs = []
+        out = out.view(out.size(0), -1)
+        layer_out = []
+        for i, layer in enumerate(self.classifier):
+            layer_out = []
+            for j in range(0, len(out), batch_size):
+                layer_out.append(layer(out[j:j + batch_size]))
+            out = torch.cat(layer_out, 0)
+            print('layer %02d, output=%s' % (i, out.shape))
+            if i in [1, 4, 8]:
+                classifier_outputs.append(out.detach().numpy().copy())
+
+        return feature_outputs, classifier_outputs
 
     @classmethod
     def from_checkpoint(cls, checkpoint, num_classes=None, freeze=False):
@@ -128,9 +156,9 @@ class VGGSem(nn.Module):
         # Stack on some semantic layers
         self.semantics = nn.Sequential(
             nn.Linear(num_words, classifier_size),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(classifier_size, num_classes),
+            #nn.ReLU(True),
+            #nn.Dropout(),
+            #nn.Linear(classifier_size, num_classes),
             #nn.ReLU(True),
             #nn.LogSoftmax(),
         )
