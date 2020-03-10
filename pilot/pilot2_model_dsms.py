@@ -46,36 +46,14 @@ for fname in tqdm(stimuli['filename'], desc='Reading images'):
 images = torch.cat(images, 0)
 stimuli['visual_complexity'] = filesizes
 
-#model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_w2v'
-checkpoint = torch.load(f'../data/models/{model_name}.pth.tar', map_location=torch.device('cpu'))
-num_classes = checkpoint['state_dict']['classifier.6.weight'].shape[0]
-model = networks.vgg(num_classes=num_classes)
-model.load_state_dict(checkpoint['state_dict'])
-model.eval()
+model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_w2v'
+#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet_then_sem'
 
-feature_outputs = []
-out = images
-for i, layer in enumerate(model.features):
-    layer_out = []
-    for j in range(0, len(out), 128):
-        layer_out.append(layer(out[j:j + 128]))
-    out = torch.cat(layer_out, 0)
-    del layer_out
-    print('layer %02d, output=%s' % (i, out.shape))
-    if i in [4, 10, 17, 24]:
-        feature_outputs.append(out.detach().numpy().copy())
-classifier_outputs = []
-out = out.view(out.size(0), -1)
-layer_out = []
-for i, layer in enumerate(model.classifier):
-    layer_out = []
-    for j in range(0, len(out), 128):
-        layer_out.append(layer(out[j:j + 128]))
-    out = torch.cat(layer_out, 0)
-    print('layer %02d, output=%s' % (i, out.shape))
-    if i in [1, 4, 6]:
-        classifier_outputs.append(out.detach().numpy().copy())
+checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
+model = networks.vgg.from_checkpoint(checkpoint)
+feature_outputs, classifier_outputs = model.get_layer_activations(images)
 
 def words_only(x, y):
     if (x != 'word' or y != 'word'):
