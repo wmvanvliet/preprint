@@ -147,6 +147,7 @@ class VGGSem(nn.Module):
                 print('=> freezing feature and classifier parts of the model')
                 for param in vis_model.parameters():
                     param.requires_grad = False
+                vis_model.eval()
             print(f'=> attaching semantic layer (going from {prev_num_classes} to {num_classes})')
             model = cls(vis_model, num_classes)
         elif checkpoint['arch'] == 'vgg_sem':
@@ -156,6 +157,7 @@ class VGGSem(nn.Module):
                 print('=> freezing all parts of the model')
                 for param in model.parameters():
                     param.requires_grad = False
+                model.eval()
         else:
             raise ValueError(f"Invalid network architecture in checkpoint: {checkpoint['arch']}")
         return model
