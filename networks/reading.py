@@ -198,7 +198,6 @@ class VGGSem(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, X):
-        print('Training?', self.training, self.features[1].training)
         out = self.features(X)
         out = out.view(out.size(0), -1)
         out = self.classifier(out)
