@@ -86,7 +86,7 @@ class VGG16(nn.Module):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
             del layer_out
-            print('layer %02d, output=%s' % (i, out.shape))
+            print('feature layer %02d, output=%s' % (i, out.shape))
             if i in [5, 12, 19, 26]:
                 feature_outputs.append(out.detach().numpy().copy())
         classifier_outputs = []
@@ -97,7 +97,7 @@ class VGG16(nn.Module):
             for j in range(0, len(out), batch_size):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
-            print('layer %02d, output=%s' % (i, out.shape))
+            print('classifier layer %02d, output=%s' % (i, out.shape))
             if i in [1, 4, 8]:
                 classifier_outputs.append(out.detach().numpy().copy())
         return feature_outputs, classifier_outputs
@@ -118,6 +118,9 @@ class VGG16(nn.Module):
                 print('=> freezing model')
                 for param in model.parameters():
                     param.requires_grad = False
+                for m in model.modules():
+                    if isinstance(m, nn.BatchNorm2d):
+                        m.track_running_stats = False
 
             print(f'=> attaching new output layer (size changed from {prev_num_classes} to {num_classes})')
             modulelist = list(model.classifier.modules())[1:]
@@ -133,7 +136,7 @@ class VGG16(nn.Module):
 class VGGSem(nn.Module):
     """Model that wraps a VGG16 model and appends some semantic layers."""
     @classmethod
-    def from_checkpoint(cls, checkpoint, num_classes=300, freeze=True):
+    def from_checkpoint(cls, checkpoint, num_classes=300, freeze=False):
         """Construct this model from a stored checkpoint of a VGG16 model."""
         state_dict = checkpoint['state_dict']
         num_channels = state_dict['features.0.weight'].shape[1]
@@ -147,6 +150,9 @@ class VGGSem(nn.Module):
                 print('=> freezing feature and classifier parts of the model')
                 for param in vis_model.parameters():
                     param.requires_grad = False
+                for m in vis_model.modules():
+                    if isinstance(m, nn.BatchNorm2d):
+                        m.track_running_stats = False
                 vis_model.eval()
             print(f'=> attaching semantic layer (going from {prev_num_classes} to {num_classes})')
             model = cls(vis_model, num_classes)
@@ -157,6 +163,9 @@ class VGGSem(nn.Module):
                 print('=> freezing all parts of the model')
                 for param in model.parameters():
                     param.requires_grad = False
+                for m in model.modules():
+                    if isinstance(m, nn.BatchNorm2d):
+                        m.track_running_stats = False
                 model.eval()
         else:
             raise ValueError(f"Invalid network architecture in checkpoint: {checkpoint['arch']}")
@@ -189,6 +198,7 @@ class VGGSem(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, X):
+        print('Training?', self.training, self.features[1].training)
         out = self.features(X)
         out = out.view(out.size(0), -1)
         out = self.classifier(out)
@@ -207,27 +217,27 @@ class VGGSem(nn.Module):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
             del layer_out
-            print('layer %02d, output=%s' % (i, out.shape))
+            print('feature layer %02d, output=%s' % (i, out.shape))
             if i in [5, 12, 19, 26]:
                 feature_outputs.append(out.detach().numpy().copy())
         classifier_outputs = []
         out = out.view(out.size(0), -1)
+        layer_out = []
         for i, layer in enumerate(self.classifier):
             layer_out = []
             for j in range(0, len(out), batch_size):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
-            print('layer %02d, output=%s' % (i, out.shape))
+            print('classifier layer %02d, output=%s' % (i, out.shape))
             if i in [1, 4, 8]:
                 classifier_outputs.append(out.detach().numpy().copy())
         semantic_outputs = []
-        out = out.view(out.size(0), -1)
         for i, layer in enumerate(self.semantics):
             layer_out = []
             for j in range(0, len(out), batch_size):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
-            print('layer %02d, output=%s' % (i, out.shape))
-            if i in [1, 4, 8]:
+            print('semantic layer %02d, output=%s' % (i, out.shape))
+            if i in [0]:
                 semantic_outputs.append(out.detach().numpy().copy())
         return feature_outputs, classifier_outputs, semantic_outputs
