@@ -199,7 +199,7 @@ class VGGSem(nn.Module):
         for m in self.semantics.modules():
             if isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, 0, 0.01)
-                if m_bias is not None:
+                if m.bias is not None:
                     nn.init.constant_(m.bias, 0)
 
     def forward(self, X):
