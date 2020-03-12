@@ -152,8 +152,7 @@ class VGGSem(nn.Module):
                     param.requires_grad = False
                 for m in vis_model.modules():
                     if isinstance(m, nn.BatchNorm2d):
-                        #m.track_running_stats = False
-                        m.reset_runnint_stats()
+                        m.track_running_stats = False
             print(f'=> attaching semantic layer (going from {prev_num_classes} to {num_classes})')
             model = cls(vis_model, num_classes)
         elif checkpoint['arch'] == 'vgg_sem':
@@ -165,8 +164,7 @@ class VGGSem(nn.Module):
                     param.requires_grad = False
                 for m in model.modules():
                     if isinstance(m, nn.BatchNorm2d):
-                        #m.track_running_stats = False
-                        m.reset_runnint_stats()
+                        m.track_running_stats = False
         else:
             raise ValueError(f"Invalid network architecture in checkpoint: {checkpoint['arch']}")
         model.eval()
