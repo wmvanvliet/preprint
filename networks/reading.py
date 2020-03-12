@@ -87,7 +87,8 @@ class VGG16(nn.Module):
             out = torch.cat(layer_out, 0)
             del layer_out
             print('feature layer %02d, output=%s' % (i, out.shape))
-            if i in [5, 12, 19, 26]:
+            #if i in [5, 12, 19, 26]:
+            if i in [3, 10, 17, 24]:
                 feature_outputs.append(out.detach().numpy().copy())
         classifier_outputs = []
         out = out.view(out.size(0), -1)
@@ -98,7 +99,8 @@ class VGG16(nn.Module):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
             print('classifier layer %02d, output=%s' % (i, out.shape))
-            if i in [1, 4, 8]:
+            #if i in [1, 4, 8]:
+            if i in [0, 3, 6]:
                 classifier_outputs.append(out.detach().numpy().copy())
         return feature_outputs, classifier_outputs
 
@@ -118,6 +120,7 @@ class VGG16(nn.Module):
                 print('=> freezing model')
                 for param in model.parameters():
                     param.requires_grad = False
+                print('=> disabling tracking batchnorm running stats')
                 for m in model.modules():
                     if isinstance(m, nn.BatchNorm2d):
                         m.track_running_stats = False
@@ -150,6 +153,7 @@ class VGGSem(nn.Module):
                 print('=> freezing feature and classifier parts of the model')
                 for param in vis_model.parameters():
                     param.requires_grad = False
+                print('=> disabling tracking batchnorm running stats')
                 for m in vis_model.modules():
                     if isinstance(m, nn.BatchNorm2d):
                         m.track_running_stats = False
@@ -162,6 +166,7 @@ class VGGSem(nn.Module):
                 print('=> freezing all parts of the model')
                 for param in model.parameters():
                     param.requires_grad = False
+                print('=> disabling tracking batchnorm running stats')
                 for m in model.modules():
                     if isinstance(m, nn.BatchNorm2d):
                         m.track_running_stats = False
@@ -178,8 +183,8 @@ class VGGSem(nn.Module):
 
         # Stack on some semantic layers
         self.semantics = nn.Sequential(
-            nn.Linear(num_words, num_classes),
-            #nn.ReLU(True),
+            nn.Linear(num_words, num_classes, bias=False),
+            nn.ReLU(True),
             #nn.Dropout(),
             #nn.Linear(classifier_size, num_classes),
             #nn.ReLU(True),
@@ -216,6 +221,7 @@ class VGGSem(nn.Module):
             out = torch.cat(layer_out, 0)
             del layer_out
             print('feature layer %02d, output=%s' % (i, out.shape))
+            #if i in [3, 10, 17, 24]:
             if i in [5, 12, 19, 26]:
                 feature_outputs.append(out.detach().numpy().copy())
         classifier_outputs = []
@@ -227,6 +233,7 @@ class VGGSem(nn.Module):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
             print('classifier layer %02d, output=%s' % (i, out.shape))
+            #if i in [0, 3, 6]:
             if i in [1, 4, 8]:
                 classifier_outputs.append(out.detach().numpy().copy())
         semantic_outputs = []
