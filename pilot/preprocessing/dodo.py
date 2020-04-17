@@ -65,3 +65,14 @@ def task_epochs():
             targets=[fname.epochs(subject=subject), fname.evoked(subject=subject)],
             actions=[f'python 03_epochs.py {subject}'],
         )
+
+
+def task_dsms():
+    """Step 04: Compute DSMs in a searchlight pattern"""
+    for subject in subjects:
+        yield dict(
+            name=str(subject),
+            file_dep=[fname.epochs(subject=subject), '04_dsms.py'],
+            targets=[fname.dsms(subject=subject)],
+            actions=[f'python 03_epochs.py {subject}'],
+        )
