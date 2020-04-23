@@ -31,9 +31,10 @@ class PickledPNGs(VisionDataset):
             in the target and transforms it.
         labels ('int' | 'vector'): What kind of labels to use. Either a integer
             class label or a distributed (word2vec) vector.
+        label_offset (int): offset for 'int' style labels
     """
     def __init__(self, root, train=True, transform=None,
-                 target_transform=None, labels='int'):
+                 target_transform=None, labels='int', label_offset=0):
         super().__init__(root, transform=transform,
                          target_transform=target_transform)
 
@@ -44,7 +45,7 @@ class PickledPNGs(VisionDataset):
 
         self.data = dataset['data']
         if labels == 'int':
-            self.targets = dataset['labels']
+            self.targets = [l + label_offset for l in dataset['labels']]
             self.vectors = meta['vectors']
         elif labels == 'vector':
             self.targets = [meta['vectors'][l] for l in dataset['labels']]

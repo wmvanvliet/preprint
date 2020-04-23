@@ -40,14 +40,17 @@ fonts = {
 
 class ConsonantStrings(VisionDataset):
     """A dataset that generates pictures of random consonant strings."""
-    def __init__(self, length=100_000, width=64, height=64, class_label=0,
+    def __init__(self, length=100_000, width=64, height=64, label=0,
                  seed=0, labels='int', transform=None, target_transform=None):
         super().__init__('consonants', transform=transform,
                          target_transform=target_transform)
         self.length = length
         self.width = width
         self.height = height
-        self.class_label = class_label
+        self.label = label
+        self.classes = ['consonants']
+        self.class_to_idx = {'consonants': 0}
+        self.vectors = np.zeros((1, 300))
         self.labels = labels
 
         # Create figure of desired size in pixels (assume dpi of 96)
@@ -108,7 +111,7 @@ class ConsonantStrings(VisionDataset):
 
         # Construct target
         if self.labels == 'int':
-            target = self.class_label
+            target = self.label
         else:
             target = np.zeros(300)
         if self.target_transform is not None:
