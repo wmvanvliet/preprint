@@ -22,11 +22,11 @@ host = getfqdn()  # Hostname of the machine running the scripts
 if user == 'wmvan':
     # My laptop
     raw_data_dir = '../../data/pilot_data'
-    n_jobs = 8  # My laptop has 8 cores
+    n_jobs = 6  # My laptop has 6 cores
 elif host == 'nbe-024.org.aalto.fi' and user == 'vanvlm1':
     # My workstation
     raw_data_dir = '/m/nbe/scratch/reading_models/pilot_data'
-    n_jobs = 8  # My workstation has 8 cores
+    n_jobs = 4  # My workstation has 4 cores
 elif host == 'ECIT01472U':
     raw_data_dir = '../../data/pilot_data'
     n_jobs = 4
@@ -80,6 +80,7 @@ fname.add('ecg_events', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{ru
 fname.add('ica', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_run{run:d}_ica.fif')
 fname.add('epochs', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_epo.fif')
 fname.add('evoked', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_ave.fif')
+fname.add('dsms', '{raw_data_dir}/pilot{subject:d}/pilot{subject:d}_dsms.npz')
 
 # Filenames for MNE reports
 fname.add('reports_dir', './reports/')

@@ -15,12 +15,11 @@ assert np.array_equal(metadata.event_id.values.astype(int), epochs.events[:, 2])
 model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
 with open(f'../data/dsms/pilot1_{model_name}_dsms.pkl', 'rb') as f:
     dsm_models = pickle.load(f)
-    dsms = dsm_models['dsms']
     dsm_names = dsm_models['dsm_names']
 
 rsa_results = rsa.rsa_epochs(
     epochs,
-    dsms,
+    dsm_models['dsms']
     y=metadata['y'],
     spatial_radius=0.04,
     temporal_radius=0.05,

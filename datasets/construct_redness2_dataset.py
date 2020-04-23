@@ -92,9 +92,8 @@ for label, meta in tqdm(all_epochs.metadata.query('modality=="wri"').groupby('la
     ax = f.add_axes([0, 0, 1, 1])
     fontsize = 19
     fontfamily, fontfile = fonts[meta.font.lower()]
-    fontprop = fm.FontProperties(family=fontfamily, fname=fontfile)
-    ax.text(0.5, 0.5, meta.word, ha='center', va='center',
-            fontsize=fontsize, fontproperties=fontprop)
+    fontprop = fm.FontProperties(family=fontfamily, fname=fontfile, size=fontsize)
+    ax.text(0.5, 0.5, meta.word, ha='center', va='center', fontproperties=fontprop)
     plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.axis('off')

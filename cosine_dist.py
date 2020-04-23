@@ -29,21 +29,23 @@ word_vectors = np.array(word_vectors)
 non_word_vectors = np.array(non_word_vectors)
 vectors = np.vstack((word_vectors, non_word_vectors))
 
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet_then_w2v'
 checkpoint = torch.load('/m/nbe/scratch/reading_models/models/%s.pth.tar' % model_name, map_location='cpu')
-model = networks.vgg.from_checkpoint(checkpoint)
-_, classifier_outputs = model.get_layer_activations(images)
+model = networks.vgg_sem.from_checkpoint(checkpoint, freeze=True)
+classifier_outputs = model.get_layer_activations(images)[-1]
 model_output = classifier_outputs[-1]
 
 noise = np.random.randn(180, 300)
-noise2 = np.random.randn(360, 400)
+noise2 = np.random.randn(360, 300)
 
-#for noise_lvl in [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0]:
-noise_lvl = 0.0
+#for noise_lvl in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]:
+noise_lvl = 0.2
 
 desired_word_vectors = word_vectors + 0 * noise
 desired_non_word_vectors = non_word_vectors + 0.1 * noise
-model_vectors = np.exp(classifier_outputs[-1]) + noise_lvl * noise2
+
+model_vectors = classifier_outputs[-1] + noise_lvl * noise2
 model_word_vectors = model_vectors[:180]
 model_non_word_vectors = model_vectors[180:]
 
@@ -81,12 +83,12 @@ plt.tight_layout()
 
 f = plt.figure(figsize=(6, 10))
 ax = f.subplots(2, 1, sharex=True, sharey=True)
-im1 = ax[0].imshow(np.vstack((desired_word_vectors, desired_non_word_vectors)), cmap='RdBu_r', vmin=-1, vmax=1)
+im1 = ax[0].imshow(np.vstack((desired_word_vectors, desired_non_word_vectors)))
 ax[0].axhline(180, color='black')
 ax[0].axhline(180 + 90, color='black')
 ax[0].set_title('Desired output')
 f.colorbar(im1, ax=ax[0])
-im2 = ax[1].imshow(np.vstack((model_word_vectors, model_non_word_vectors)), cmap='RdBu_r', vmin=-1, vmax=1)
+im2 = ax[1].imshow(np.vstack((model_word_vectors, model_non_word_vectors)))
 ax[1].axhline(180, color='black')
 ax[1].axhline(180 + 90, color='black')
 ax[1].set_title('Actual model output')

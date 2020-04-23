@@ -9,7 +9,7 @@ from PIL import Image
 from tqdm import tqdm
 
 
-def get_stimulus_info(subject=2):
+def get_stimulus_info(subject=2, data_path='/m/nbe/scratch/reading_models'):
     """Get information about the stimuli presented during the MEG experiment
 
     Parameters
@@ -22,14 +22,15 @@ def get_stimulus_info(subject=2):
     stimuli : pandas.DataFrame
         A table with information about the stimuli presented to the subject.
     """
-    epochs = mne.read_epochs(f'/m/nbe/scratch/reading_models/pilot_data/pilot{subject:d}/pilot{subject:d}_epo.fif', preload=False)
+    epochs = mne.read_epochs(f'{data_path}/pilot_data/pilot{subject:d}/pilot{subject:d}_epo.fif', preload=False)
+    epochs = mne.read_epochs(f'{data_path}/pilot_data/pilot{subject:d}/pilot{subject:d}_epo.fif', preload=False)
     epochs = epochs[['word', 'symbols', 'consonants']]
     stimuli = epochs.metadata.groupby('text').agg('first').sort_values('event_id')
     stimuli['y'] = np.arange(len(stimuli))
     return stimuli
 
 
-def get_stimulus_images(subject=2, stimuli=None):
+def get_stimulus_images(subject=2, stimuli=None, data_path='/m/nbe/scratch/reading_models'):
     """Get information about the stimuli presented during the MEG experiment
 
     Parameters
@@ -67,7 +68,7 @@ def get_stimulus_images(subject=2, stimuli=None):
     # measure of visual complexity and perhaps useful in the RSA analysis.
     images = []
     for fname in tqdm(stimuli['filename'], desc='Reading images'):
-        with Image.open(f'/m/nbe/scratch/reading_models/pilot_data/pilot{subject:d}/stimuli/{fname}') as image:
+        with Image.open(f'{data_path}/pilot_data/pilot{subject:d}/stimuli/{fname}') as image:
             image = image.convert('RGB')
             image = preproc(image).unsqueeze(0)
             if image.shape[1] == 1:

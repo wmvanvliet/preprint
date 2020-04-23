@@ -21,7 +21,8 @@ import networks
 from pilot import utils
 
 # The model to perform the analysis on. I keep changing this around as I train new models.
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet_then_w2v'
 
 # Get the images that were presented during the MEG experiment
 stimuli = utils.get_stimulus_info(subject=2)
@@ -41,8 +42,10 @@ order = np.hstack([order, np.arange(180, 360)])
 
 # Load the model and feed through the images
 checkpoint = torch.load('/m/nbe/scratch/reading_models/models/%s.pth.tar' % model_name, map_location='cpu')
-model = networks.vgg.from_checkpoint(checkpoint)
-feature_outputs, classifier_outputs = model.get_layer_activations(images)
+#model = networks.vgg.from_checkpoint(checkpoint)
+#feature_outputs, classifier_outputs = model.get_layer_activations(images)
+model = networks.vgg_sem.from_checkpoint(checkpoint, freeze=True)
+feature_outputs, classifier_outputs, semantic_outputs = model.get_layer_activations(images)
 
 # Plot all the images being fed into the model
 plt.figure(figsize=(10, 10))
@@ -57,3 +60,11 @@ plt.axhline(180, color='black')
 plt.axhline(180 + 90, color='black')
 plt.colorbar()
 plt.axvline(201, color='black')
+plt.savefig('fig1.png', dpi=200)
+
+plt.figure()
+plt.imshow(semantic_outputs[-1][order], vmin=-1, vmax=1, cmap='RdBu_r')
+plt.axhline(180, color='black')
+plt.axhline(180 + 90, color='black')
+plt.colorbar()
+plt.savefig('fig2.png', dpi=200)

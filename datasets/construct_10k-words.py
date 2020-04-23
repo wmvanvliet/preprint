@@ -103,14 +103,14 @@ for label, word in tqdm(enumerate(words), total=len(words)):
         fontsize = rng.choice(sizes)
         font = rng.choice(list(fonts.keys()))
         fontfamily, fontfile = fonts[font]
-        fontprop = fm.FontProperties(family=fontfamily, fname=fontfile)
+        fontprop = fm.FontProperties(family=fontfamily, fname=fontfile, size=fontsize)
         noise_level = rng.choice(noise_levels)
         noise = rng.rand(64, 64)
         ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level)
         ax.text(0.5, 0.5, word, ha='center', va='center',
-                rotation=rotation, fontsize=fontsize, fontproperties=fontprop, alpha=1 - noise_level)
+                rotation=rotation, fontproperties=fontprop, alpha=1 - noise_level)
         #ax.text(0.5, 0.5, word, ha='center', va='center',
-        #        rotation=rotation, fontsize=fontsize, fontproperties=fontprop)
+        #        rotation=rotation, fontproperties=fontprop)
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
         ax.set_axis_off()
