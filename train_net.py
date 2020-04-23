@@ -16,12 +16,14 @@ import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
-import torchvision.datasets as datasets
 
 import networks
 import dataloaders
+import data_generators
 
-model_names = sorted(name for name in networks.__dict__
+model_names = sorted(
+    name
+    for name in networks.__dict__
     if name.islower() and not name.startswith("__")
     and callable(networks.__dict__[name]))
 
@@ -89,27 +91,49 @@ def main():
     # Data loading code
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
+    transform=transforms.Compose([
+        #transforms.ToPILImage(mode='RGB'),
+        #transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(60),
+        transforms.CenterCrop(60),
+        transforms.ToTensor(),
+        normalize,
+    ])
 
     print("=> creating dataset using {}".format(' and '.join(args.data)))
-    #train_dataset = datasets.ImageFolder(
-    train_dataset = dataloaders.CombinedPickledPNGs(
-        args.data,
-        train=True,
-        transform=transforms.Compose([
-            #transforms.ToPILImage(mode='RGB'),
-            #transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(60),
-            transforms.CenterCrop(60),
-            transforms.ToTensor(),
-            normalize,
-        ]),
-        labels=args.labels)
-    if args.labels == 'int':
-        target_num_classes = len(train_dataset.classes)
-    elif args.labels == 'vector':
-        target_num_classes = len(train_dataset.targets[0])
-        target_vectors = torch.tensor(train_dataset.vectors)
-    else:
-        raise ValueError('`labels` parameter must be either "int" or "vector"')
+
+    def load_datasets(train=True):
+        datasets = []
+        label_offset = 0
+        num_classes = 0
+        for dtype in args.data:
+            if dtype == 'consonants':
+                dataset = data_generators.ConsonantStrings(
+                    transform=transform,
+                    labels=args.labels,
+                    label=label_offset,
+                )
+                args.workers = 0  # Dataset cannot be accessed in parallel
+            else:
+                dataset = dataloaders.PickledPNGs(
+                    dtype,
+                    train=True,
+                    transform=transform,
+                    labels=args.labels,
+                    label_offset=label_offset
+                )
+            datasets.append(dataset)
+            label_offset += len(dataset.classes)
+            if args.labels == 'int':
+                num_classes += len(dataset.classes)
+            elif args.labels == 'vector':
+                num_classes = datasets.vectors.shape[1]
+            else:
+                raise ValueError('`labels` parameter must be either "int" or "vector"')
+        dataset = torch.utils.data.ConcatDataset(datasets)
+        return dataset, num_classes
+
+    train_dataset, target_num_classes = load_datasets(train=True)
+    val_dataset, _ = load_datasets(train=False)
 
     print("=> creating model '{}'".format(args.arch))
     if args.resume:
@@ -158,22 +182,11 @@ def main():
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=args.batch_size, shuffle=True,
-        num_workers=args.workers, pin_memory=True)
+        num_workers=args.workers, pin_memory=False)
 
     val_loader = torch.utils.data.DataLoader(
-        #datasets.ImageFolder(args.data + '/val',
-        dataloaders.CombinedPickledPNGs(
-            args.data,
-            train=False,
-            transform=transforms.Compose([
-                #transforms.ToPILImage(mode='RGB'),
-                transforms.CenterCrop(60),
-                transforms.ToTensor(),
-                normalize,
-            ]),
-            labels=args.labels),
-        batch_size=args.batch_size, shuffle=False,
-        num_workers=args.workers, pin_memory=True)
+        val_dataset, batch_size=args.batch_size, shuffle=False,
+        num_workers=args.workers, pin_memory=False)
 
     if args.evaluate:
         validate(val_loader, model, criterion)
