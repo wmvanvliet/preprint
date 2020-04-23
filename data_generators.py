@@ -20,21 +20,21 @@ noise_levels = [0.2, 0.35, 0.5]
 lengths = [4, 5, 6]
 
 fonts = {
-    'ubuntu mono': [None, '../data/fonts/UbuntuMono-R.ttf'],
-    'courier': [None, '../data/fonts/courier.ttf'],
-    'luxi mono regular': [None, '../data/fonts/luximr.ttf'],
-    'lucida console': [None, '../data/fonts/LucidaConsole-R.ttf'],
-    'lekton': [None, '../data/fonts/Lekton-Regular.ttf'],
-    'dejavu sans mono': ['dejavu sans mono', None],
-    'times new roman': [None, '../data/fonts/times.ttf'],
-    'arial': [None, '../data/fonts/arial.ttf'],
-    'arial black': [None, '../data/fonts/arialbd.ttf'],
-    'verdana': [None, '../data/fonts/verdana.ttf'],
-    'comic sans ms': [None, '../data/fonts/comic.ttf'],
-    'georgia': [None, '../data/fonts/georgia.ttf'],
-    'liberation serif': ['liberation serif', None],
-    'impact': [None, '../data/fonts/impact.ttf'],
-    'roboto condensed': [None, '../data/fonts/Roboto-Light.ttf'],
+    'ubuntu mono': [None, 'data/fonts/UbuntuMono-R.ttf'],
+    'courier': [None, 'data/fonts/courier.ttf'],
+    'luxi mono regular': [None, 'data/fonts/luximr.ttf'],
+    'lucida console': [None, 'data/fonts/LucidaConsole-R.ttf'],
+    'lekton': [None, 'data/fonts/Lekton-Regular.ttf'],
+    'dejavu sans mono': [None, 'data/fonts/DejaVuSansMono.ttf'],
+    'times new roman': [None, 'data/fonts/times.ttf'],
+    'arial': [None, 'data/fonts/arial.ttf'],
+    'arial black': [None, 'data/fonts/arialbd.ttf'],
+    'verdana': [None, 'data/fonts/verdana.ttf'],
+    'comic sans ms': [None, 'data/fonts/comic.ttf'],
+    'georgia': [None, 'data/fonts/georgia.ttf'],
+    'liberation serif': [None, 'data/fonts/LiberationSerif-Regular.ttf'],
+    'impact': [None, 'data/fonts/impact.ttf'],
+    'roboto condensed': [None, 'data/fonts/Roboto-Light.ttf'],
 }
 
 
@@ -70,7 +70,7 @@ class ConsonantStrings(VisionDataset):
         fontsize = self.rng.choice(sizes)
         font = self.rng.choice(list(fonts.keys()))
         noise_level = self.rng.choice(noise_levels)
-        length = self.rng.choise(lengths)
+        length = self.rng.choice(lengths)
 
         # Generate the consonant string
         text = ''.join(self.rng.choice(consonants, length))
