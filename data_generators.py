@@ -85,8 +85,8 @@ class ConsonantStrings(VisionDataset):
 
         # Add noise to the image. Note the usage of the alpha parameter to
         # tweak the amount of noise
-        noise_image = np.random.randn(self.width, self.height)
-        ax.imshow(noise_image, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level,
+        noise = np.random.rand(self.width, self.height)
+        ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level,
                   zorder=1)
         
         # Add the text to the image in the selected font
