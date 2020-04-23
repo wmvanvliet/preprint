@@ -54,9 +54,9 @@ def make_image(word, rotation=0, size=16, family='dejavu sans', fname=None, nois
     ax.imshow(noise_image, extent=[0, 1, 0, 1], cmap='gray', alpha=noise, zorder=1)
     
     # Add the text to the image in the selected font
-    fontprop = fm.FontProperties(family=family, fname=fname)
+    fontprop = fm.FontProperties(family=family, fname=fname, size=size)
     ax.text(0.5, 0.5, word, ha='center', va='center',
-            rotation=rotation, fontsize=size, fontproperties=fontprop, alpha=1 - noise, zorder=2)
+            rotation=rotation, fontproperties=fontprop, alpha=1 - noise, zorder=2)
 
     # Render the image and create a PIL.Image from the pixel data
     canvas.draw()
@@ -70,8 +70,9 @@ def make_image(word, rotation=0, size=16, family='dejavu sans', fname=None, nois
 
 # Construct images
 images = []
-for noise in np.arange(0, 1.0, 0.01):
-    images.append(make_image(word='hello', noise=noise))
+#for noise in np.arange(0, 1.0, 0.01):
+for size in np.linspace(5, 16, 100):
+    images.append(make_image(word='hello', noise=0, size=size))
 images = torch.cat(images, 0)
 
 # Plot the images

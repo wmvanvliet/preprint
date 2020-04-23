@@ -55,7 +55,6 @@ class PickledPNGs(VisionDataset):
         self.classes = meta['label_names']
         self.class_to_idx = {name: i for i, name in enumerate(self.classes)}
 
-
     def __getitem__(self, index):
         """
         Args:
@@ -80,7 +79,8 @@ class PickledPNGs(VisionDataset):
 
 
 class CombinedPickledPNGs(VisionDataset):
-    """Reads and combined multiple datasets in the form of pickles lists of PNG bytes.
+    """Reads and combined multiple datasets in the form of pickles lists of PNG
+    bytes.
 
     Args:
         roots (list of string): Root directorys of multiple datasets
@@ -122,7 +122,6 @@ class CombinedPickledPNGs(VisionDataset):
             self.class_to_idx = {name: i + target_offset for i, name in enumerate(self.classes)}
 
             target_offset = np.max(self.targets)
-
 
     def __getitem__(self, index):
         """

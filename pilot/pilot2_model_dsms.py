@@ -13,47 +13,21 @@ import pickle
 from matplotlib import pyplot as plt
 from scipy.spatial import distance
 
-epochs = mne.read_epochs('../data/pilot_data/pilot2/pilot2_epo.fif', preload=False)
-epochs = epochs[['word', 'symbols', 'consonants']]
-stimuli = epochs.metadata.groupby('text').agg('first').sort_values('event_id')
-stimuli['y'] = np.arange(len(stimuli))
-metadata = pd.merge(epochs.metadata, stimuli[['y']], left_on='text', right_index=True).sort_index()
-assert np.array_equal(metadata.event_id.values.astype(int), epochs.events[:, 2])
+import utils
 
-preproc = transforms.Compose([
-    transforms.CenterCrop(208),
-    transforms.Resize(64),
-    transforms.CenterCrop(60),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                         std=[0.229, 0.224, 0.225]),
-])
+stimuli = utils.get_stimulus_info(subject=2)
+images = utils.get_stimulus_images(subject=2, stimuli=stimuli)
 
-unnormalize = transforms.Normalize(mean=[-0.485, -0.456, -0.406],
-                                   std=[1 / 0.229, 1 / 0.224, 1 / 0.225])
-
-filesizes = []
-images = []
-for fname in tqdm(stimuli['filename'], desc='Reading images'):
-    filesizes.append(getsize(f'../data/pilot_data/pilot2/stimuli/{fname}'))
-    with Image.open(f'../data/pilot_data/pilot2/stimuli/{fname}') as image:
-        image = image.convert('RGB')
-        image = preproc(image).unsqueeze(0)
-        #image = transforms.ToTensor()(image)
-        if image.shape[1] == 1:
-            image = image.repeat(1, 3, 1, 1)
-        images.append(image)
-images = torch.cat(images, 0)
-stimuli['visual_complexity'] = filesizes
-
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
-#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
+#model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet'
 #model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_w2v'
-#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet_then_sem'
+#model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet_then_w2v'
 
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
-model = networks.vgg.from_checkpoint(checkpoint)
-feature_outputs, classifier_outputs = model.get_layer_activations(images)
+#model = networks.vgg.from_checkpoint(checkpoint, freeze=True)
+#feature_outputs, classifier_outputs = model.get_layer_activations(images)
+model = networks.vgg_sem.from_checkpoint(checkpoint, freeze=True)
+feature_outputs, classifier_outputs, semantic_outputs = model.get_layer_activations(images)
 
 def words_only(x, y):
     if (x != 'word' or y != 'word'):
@@ -84,11 +58,11 @@ dsm_models = [
     rsa.compute_dsm(feature_outputs[3], metric='correlation'),
     rsa.compute_dsm(classifier_outputs[0], metric='correlation'),
     rsa.compute_dsm(classifier_outputs[1], metric='correlation'),
-    rsa.compute_dsm(classifier_outputs[2] + np.random.randn(*classifier_outputs[2].shape) * 0.04, metric='correlation'),
+    rsa.compute_dsm(classifier_outputs[2], metric='correlation'),
+    rsa.compute_dsm(semantic_outputs[0], metric='correlation'),
     rsa.compute_dsm(stimuli[['type']], metric=words_only),
     rsa.compute_dsm(stimuli[['type']], metric=letters_only),
     rsa.compute_dsm(stimuli[['noise_level']], metric='euclidean'),
-    rsa.compute_dsm(stimuli[['visual_complexity']], metric='sqeuclidean'),
     rsa.compute_dsm(stimuli[['font']], metric=str_not_equal),
     rsa.compute_dsm(stimuli[['rotation']], metric='sqeuclidean'),
     rsa.compute_dsm(stimuli[['fontsize']], metric='sqeuclidean'),
@@ -102,8 +76,8 @@ dsm_models = [
     #rsa.compute_dsm(abs(classifier_outputs[1]).sum(axis=1, keepdims=True), metric='euclidean'),
     #rsa.compute_dsm(abs(classifier_outputs[2]).sum(axis=1, keepdims=True), metric='euclidean'),
 ]
-dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'output',
-             'Words only', 'Letters only', 'Noise level', 'Visual complexity', 'Font', 'Rotation', 'Fontsize', 'Edit distance', 'Pixel distance']
+dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'word', 'semantics',
+             'Words only', 'Letters only', 'Noise level', 'Font', 'Rotation', 'Fontsize', 'Edit distance', 'Pixel distance']
 #             'conv1_act', 'conv2_act', 'conv3_act', 'conv4_act', 'fc1_act', 'fc2_act', 'output_act']
 
 with open(f'../data/dsms/pilot2_{model_name}_dsms.pkl', 'wb') as f:
