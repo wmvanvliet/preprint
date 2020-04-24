@@ -46,10 +46,10 @@ class PickledPNGs(VisionDataset):
         self.data = dataset['data']
         if labels == 'int':
             self.targets = [l + label_offset for l in dataset['labels']]
-            self.vectors = meta['vectors']
+            self.vectors = np.array(meta['vectors'], dtype=np.float32)
         elif labels == 'vector':
-            self.targets = [meta['vectors'][l] for l in dataset['labels']]
-            self.vectors = meta['vectors']
+            self.targets = np.array([meta['vectors'][l] for l in dataset['labels']], dtype=np.float32)
+            self.vectors = np.array(meta['vectors'], dtype=np.float32)
         else:
             raise ValueError('`labels` should be either "int" or "vector"')
 

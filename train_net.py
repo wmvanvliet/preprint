@@ -102,6 +102,7 @@ def main():
     print("=> creating dataset using {}".format(' and '.join(args.data)))
 
     def load_datasets(train=True):
+        global target_vectors
         datasets = []
         label_offset = 0
         num_classes = 0
@@ -116,7 +117,7 @@ def main():
             else:
                 dataset = dataloaders.PickledPNGs(
                     dtype,
-                    train=True,
+                    train=train,
                     transform=transform,
                     labels=args.labels,
                     label_offset=label_offset
@@ -126,7 +127,11 @@ def main():
             if args.labels == 'int':
                 num_classes += len(dataset.classes)
             elif args.labels == 'vector':
-                num_classes = datasets.vectors.shape[1]
+                num_classes = dataset.vectors.shape[1]
+                if target_vectors is None:
+                    target_vectors = torch.tensor(dataset.vectors, dtype=torch.float)
+                else:
+                    target_vectors = torch.cat([target_vectors, torch.tensor(dataset.vectors, dtype=torch.float)], dim=0)
             else:
                 raise ValueError('`labels` parameter must be either "int" or "vector"')
         dataset = torch.utils.data.ConcatDataset(datasets)
