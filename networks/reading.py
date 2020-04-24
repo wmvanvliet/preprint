@@ -49,7 +49,7 @@ class VGG16(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            nn.ReLU(True),  # <-- Added after training
+            #nn.ReLU(True),  # <-- Added after training
             #nn.Softmax(1),  # <-- Added after training
         )
 

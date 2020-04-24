@@ -46,7 +46,7 @@ class PickledPNGs(VisionDataset):
         self.data = dataset['data']
         if labels == 'int':
             self.targets = [l + label_offset for l in dataset['labels']]
-            self.vectors = meta['vectors']
+            #self.vectors = meta['vectors']
         elif labels == 'vector':
             self.targets = [meta['vectors'][l] for l in dataset['labels']]
             self.vectors = meta['vectors']
