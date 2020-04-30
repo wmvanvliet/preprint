@@ -1,9 +1,9 @@
 """
-Construct a dataset containing 64x64 pixel images of rendered consonant
+Construct a dataset containing 64x64 pixel images of rendered symbol
 strings.
 
 Last run as:
-    python construct_tiny-consinants.pi data/datasets/tiny-consonants
+    python construct_tiny-symbols.pi data/datasets/tiny-symbols
 """
 # encoding: utf-8
 import argparse
@@ -19,45 +19,29 @@ from PIL import Image
 from io import BytesIO
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description='Generate the tiny-consonants dataset')
+parser = argparse.ArgumentParser(description='Generate symbol string stimuli')
 parser.add_argument('path', type=str, help='The path to write the dataset to.')
 parser.add_argument('set', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
 args = parser.parse_args()
 
-consonants = list('bcdfghjklmnpqrstvwxz')
+num_strings = 200  # Number of strings to generate
 
-rotations = np.linspace(-20, 20, 11)
-sizes = np.linspace(7, 16, 21)
-fonts = ['courier new', 'dejavu sans mono', 'times new roman', 'arial',
-         'arial black', 'verdana', 'comic sans ms', 'georgia',
-         'liberation serif', 'impact', 'roboto condensed']
+# Limits
 noise_levels = [0.2, 0.35, 0.5]
 lengths = [2, 3, 4, 5, 6]
-
-fonts = {
-    'ubuntu mono': [None, '../data/fonts/UbuntuMono-R.ttf'],
-    'courier': [None, '../data/fonts/courier.ttf'],
-    'luxi mono regular': [None, '../data/fonts/luximr.ttf'],
-    'lucida console': [None, '../data/fonts/LucidaConsole-R.ttf'],
-    'lekton': [None, '../data/fonts/Lekton-Regular.ttf'],
-    'dejavu sans mono': [None, '../data/fonts/DejaVuSansMono.ttf'],
-    'times new roman': [None, '../data/fonts/times.ttf'],
-    'arial': [None, '../data/fonts/arial.ttf'],
-    'arial black': [None, '../data/fonts/arialbd.ttf'],
-    'verdana': [None, '../data/fonts/verdana.ttf'],
-    'comic sans ms': [None, '../data/fonts/comic.ttf'],
-    'georgia': [None, '../data/fonts/georgia.ttf'],
-    'liberation serif': [None, '../data/fonts/LiberationSerif-Regular.ttf'],
-    'impact': [None, '../data/fonts/impact.ttf'],
-    'roboto condensed': [None, '../data/fonts/Roboto-Light.ttf'],
-}
-
+rotations = np.linspace(-20, 20, 11)
+sizes = np.linspace(8, 14, 21)
+symbols = [
+    '\u25A1',  # square
+    '\u25EF',  # circle
+    '\u25B3',  # triangle
+    '\u25C7',  # diamond
+]
+          
 rng = np.random.RandomState(0)
 
-# Render the consonant strings as PNG files
 chosen_rotations = []
 chosen_sizes = []
-chosen_fonts = []
 chosen_strings = []
 chosen_noise_levels = []
 chosen_lengths = []
@@ -69,21 +53,20 @@ labels = np.zeros(n, dtype=np.int)
 dpi = 96.
 f = Figure(figsize=(64 / dpi, 64 / dpi), dpi=dpi)
 canvas = FigureCanvasAgg(f)
+
 for i in tqdm(range(n), total=n):
     f.clf()
     ax = f.add_axes([0, 0, 1, 1])
     rotation = rng.choice(rotations)
     fontsize = rng.choice(sizes)
-    font = rng.choice(list(fonts.keys()))
-    fontfamily, fontfile = fonts[font]
-    fontprop = fm.FontProperties(family=fontfamily, fname=fontfile, size=fontsize)
+    fontprop = fm.FontProperties(fname= '../data/fonts/DejaVuSansMono.ttf', size=fontsize)
     noise_level = rng.choice(noise_levels)
     length = rng.choice(lengths)
     noise = rng.random((64, 64))
     ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level)
 
     # Generate the consonant string
-    text = ''.join(rng.choice(consonants, length))
+    text = ''.join(rng.choice(symbols, length))
     ax.text(0.5, 0.5, text, ha='center', va='center',
             rotation=rotation, fontproperties=fontprop, alpha=1 - noise_level)
     
@@ -97,7 +80,6 @@ for i in tqdm(range(n), total=n):
     chosen_strings.append(text)
     chosen_rotations.append(rotation)
     chosen_sizes.append(fontsize)
-    chosen_fonts.append(font)
     chosen_noise_levels.append(noise_level)
     chosen_lengths.append(length)
 
@@ -108,7 +90,7 @@ for i in tqdm(range(n), total=n):
     data.append(img_compressed)
 
 df = pd.DataFrame(dict(text=chosen_strings, rotation=chosen_rotations,
-                       size=chosen_sizes, font=chosen_fonts, label=labels,
+                       size=chosen_sizes, label=labels,
                        noise_level=chosen_noise_levels, lenght=chosen_lengths))
 
 makedirs(args.path, exist_ok=True)
@@ -118,4 +100,4 @@ with open(f'{args.path}/{args.set}', 'wb') as f:
     pickle.dump(dict(data=data, labels=labels), f)
 
 with open(f'{args.path}/meta', 'wb') as f:
-    pickle.dump(dict(label_names=['consonants'], vectors=np.zeros((1, 300))), f)
+    pickle.dump(dict(label_names=['symbols'], vectors=np.zeros((1, 300))), f)
