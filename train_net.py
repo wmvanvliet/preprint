@@ -19,7 +19,6 @@ import torchvision.transforms as transforms
 
 import networks
 import dataloaders
-import data_generators
 
 model_names = sorted(
     name
@@ -107,21 +106,13 @@ def main():
         label_offset = 0
         num_classes = 0
         for dtype in args.data:
-            if dtype == 'consonants':
-                dataset = data_generators.ConsonantStrings(
-                    transform=transform,
-                    labels=args.labels,
-                    label=label_offset,
-                )
-                args.workers = 0  # Dataset cannot be accessed in parallel
-            else:
-                dataset = dataloaders.PickledPNGs(
-                    dtype,
-                    train=train,
-                    transform=transform,
-                    labels=args.labels,
-                    label_offset=label_offset
-                )
+            dataset = dataloaders.PickledPNGs(
+                dtype,
+                train=train,
+                transform=transform,
+                labels=args.labels,
+                label_offset=label_offset
+            )
             datasets.append(dataset)
             label_offset += len(dataset.classes)
             if args.labels == 'int':
