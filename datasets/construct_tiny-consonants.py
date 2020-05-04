@@ -62,7 +62,7 @@ chosen_strings = []
 chosen_noise_levels = []
 chosen_lengths = []
 
-n = 100_000 if args.set == 'train' else 10_000
+n = 50_000 if args.set == 'train' else 5_000
 data = []
 labels = np.zeros(n, dtype=np.int)
 
