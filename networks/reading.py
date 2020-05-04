@@ -2,6 +2,13 @@ import torch
 from torch import nn
 
 
+class WinnerTakesAll(nn.Module):
+    def forward(self, x):
+        out = torch.zeros_like(x)
+        out[(torch.arange(len(out)), torch.argmax(x, dim=1))] = 1
+        return out
+
+
 class VGG16(nn.Module):
     """VGG-16 model as described in the literature. With some extra convenience methods."""
     def __init__(self, num_channels=3, num_classes=200, classifier_size=4096):
@@ -50,7 +57,7 @@ class VGG16(nn.Module):
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
             nn.ReLU(True),  # <-- Added after training
-            nn.Softmax(1),  # <-- Added after training
+            nn.WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
