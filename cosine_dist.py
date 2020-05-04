@@ -11,11 +11,11 @@ from scipy.spatial import distance
 import networks
 from pilot import utils
 
-stimuli = utils.get_stimulus_info(subject=2)
-images = utils.get_stimulus_images(subject=2, stimuli=stimuli)
+stimuli = utils.get_stimulus_info(subject=2, data_path='M:/scratch/reading_models')
+images = utils.get_stimulus_images(subject=2, stimuli=stimuli, data_path='M:/scratch/reading_models')
 
 # Get word2vec vectors for the words
-word2vec = loadmat('/m/nbe/scratch/reading_models/word2vec.mat')
+word2vec = loadmat('M:/scratch/reading_models/word2vec.mat')
 vocab = [v.strip() for v in word2vec['vocab']]
 word_vectors = []
 non_word_vectors = []
@@ -30,8 +30,8 @@ non_word_vectors = np.array(non_word_vectors)
 vectors = np.vstack((word_vectors, non_word_vectors))
 
 #model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-imagenet_then_w2v'
-checkpoint = torch.load('/m/nbe/scratch/reading_models/models/%s.pth.tar' % model_name, map_location='cpu')
+model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-symbols_tiny-imagenet_w2v'
+checkpoint = torch.load('M:/scratch/reading_models/models/%s.pth.tar' % model_name, map_location='cpu')
 model = networks.vgg_sem.from_checkpoint(checkpoint, freeze=True)
 classifier_outputs = model.get_layer_activations(images)[-1]
 model_output = classifier_outputs[-1]
@@ -39,23 +39,24 @@ model_output = classifier_outputs[-1]
 noise = np.random.randn(180, 300)
 noise2 = np.random.randn(360, 300)
 
-#for noise_lvl in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]:
-noise_lvl = 0.2
+for noise_lvl in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]:
+    #noise_lvl = 0.1
 
-desired_word_vectors = word_vectors + 0 * noise
-desired_non_word_vectors = non_word_vectors + 0.1 * noise
+    desired_word_vectors = word_vectors + 0 * noise
+    desired_non_word_vectors = non_word_vectors + 0.1 * noise
 
-model_vectors = classifier_outputs[-1] + noise_lvl * noise2
-model_word_vectors = model_vectors[:180]
-model_non_word_vectors = model_vectors[180:]
+    model_vectors = classifier_outputs[-1] + noise_lvl * noise2
+    model_word_vectors = model_vectors[:180]
+    model_non_word_vectors = model_vectors[180:]
 
-d1 = distance.pdist(desired_word_vectors, metric='cosine')
-d2 = distance.pdist(desired_non_word_vectors, metric='cosine')
-d3 = distance.pdist(model_word_vectors, metric='cosine')
-d4 = distance.pdist(model_non_word_vectors, metric='cosine')
-d5 = distance.pdist(model_vectors, metric='correlation')
+    d1 = distance.pdist(desired_word_vectors, metric='correlation')
+    d2 = distance.pdist(desired_non_word_vectors, metric='correlation')
+    d3 = distance.pdist(model_word_vectors, metric='correlation')
+    d4 = distance.pdist(model_non_word_vectors, metric='correlation')
+    d5 = distance.pdist(model_vectors, metric='correlation')
 
-print(noise_lvl, d3.mean() - d4.mean())
+    print(noise_lvl, d3.mean() - d4.mean())
+noise_lvl = 0.1
 
 bins = np.arange(0, 2, 0.02)
 
