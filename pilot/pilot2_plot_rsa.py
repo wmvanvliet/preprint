@@ -15,9 +15,9 @@ rsa_results[rsa_names.index('Words only')].plot_topomap(
     times, units=dict(grad='Kendall tau-a'), scalings=dict(grad=1), vmax=0.3, title='Words only')
 plt.savefig('../figures/pilot2_rsa_words-only.pdf')
 
-rsa_results[rsa_names.index('Feature 1')].plot_topomap(
-    times, units=dict(grad='Kendall tau-a'), scalings=dict(grad=1), vmax=0.3, title='Feature 1')
-plt.savefig('../figures/pilot2_rsa_feature-1.pdf')
-rsa_results[rsa_names.index('Classifier 1')].plot_topomap(
-    times, units=dict(grad='Kendall tau-a'), scalings=dict(grad=1), vmax=0.3, title='Classifier 1')
-plt.savefig('../figures/pilot2_rsa_class-1.pdf')
+for name in rsa_names:
+    rsa_results[rsa_names.index(name)].plot_topomap(
+        times, units=dict(grad='Kendall tau-a'), scalings=dict(grad=1), vmax=0.2, title=name,
+        cbar_fmt='%1.3f')
+    plt.savefig(f'../figures/pilot2_rsa_{name}.pdf')
+    plt.close()

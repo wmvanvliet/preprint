@@ -49,8 +49,8 @@ class VGG16(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            #nn.ReLU(True),  # <-- Added after training
-            #nn.Softmax(1),  # <-- Added after training
+            nn.ReLU(True),  # <-- Added after training
+            nn.Softmax(1),  # <-- Added after training
         )
 
         self.initialize_weights()
@@ -222,8 +222,8 @@ class VGGSem(nn.Module):
             out = torch.cat(layer_out, 0)
             del layer_out
             print('feature layer %02d, output=%s' % (i, out.shape))
-            #if i in [3, 10, 17, 24]:
-            if i in [5, 12, 19, 26]:
+            #if i in [5, 12, 19, 26]:
+            if i in [3, 10, 17, 24]:
                 feature_outputs.append(out.detach().numpy().copy())
         classifier_outputs = []
         out = out.view(out.size(0), -1)
@@ -234,8 +234,8 @@ class VGGSem(nn.Module):
                 layer_out.append(layer(out[j:j + batch_size]))
             out = torch.cat(layer_out, 0)
             print('classifier layer %02d, output=%s' % (i, out.shape))
-            #if i in [0, 3, 6]:
-            if i in [1, 4, 8]:
+            #if i in [1, 4, 8]:
+            if i in [0, 3, 6]:
                 classifier_outputs.append(out.detach().numpy().copy())
         semantic_outputs = []
         for i, layer in enumerate(self.semantics):

@@ -4,9 +4,12 @@
 *.zip
 *.log
 *.out
+.quickdrawcache
+.ipynb_checkpoints
 __pycache__
 rsa
 models
 data
 figures
 pilot/networks
+tags
