@@ -1,4 +1,4 @@
-These scripts generate training images for the computational models. Each dataset is around 100_000 images. To prevent folders with 100_000 files in them, the images are saved as pickled python lists of PNG byte-encoded images. The [`dataloaders.py`](../blob/master/dataloaders.py) file contains PyTorch dataloaders to load in these pickled files.
+These scripts generate training images for the computational models. Each dataset is around 100_000 images. To prevent folders with 100_000 files in them, the images are saved as pickled python lists of PNG byte-encoded images. The [`dataloaders.py`](../../../blob/master/dataloaders.py) file contains PyTorch dataloaders to load in these pickled files.
 
 |script|dataset it generates
 |------|--------
