@@ -111,6 +111,23 @@ class VGG16(nn.Module):
                 classifier_outputs.append(out.detach().numpy().copy())
         return feature_outputs, classifier_outputs
 
+    def set_n_outputs(self, num_classes, keep_weights=True):
+        modulelist = list(self.classifier.modules())[1:]
+        output_layer = modulelist[6]
+        weight = output_layer.weight[:num_classes, :]
+        bias = output_layer.bias[:num_classes]
+        prev_num_classes, classifier_size = weight.shape
+        print(f'=> resizing output layer ({prev_num_classes} => {num_classes}), keep_weights={keep_weights}')
+        output_layer = nn.Linear(classifier_size, num_classes)
+        if keep_weights:
+            output_layer.weight = nn.Parameter(weight)
+            output_layer.bias = nn.Parameter(bias)
+        else:
+            nn.init.normal_(output_layer.weight, 0, 0.01)
+            nn.init.constant_(output_layer.bias, 0)
+        modulelist[6] = output_layer
+        self.classifier = nn.Sequential(*modulelist)
+
     @classmethod
     def from_checkpoint(cls, checkpoint, num_classes=None, freeze=False):
         """Construct this model from a stored checkpoint."""
@@ -133,13 +150,7 @@ class VGG16(nn.Module):
                 #    if isinstance(m, nn.BatchNorm2d):
                 #        m.track_running_stats = False
 
-            print(f'=> attaching new output layer (size changed from {prev_num_classes} to {num_classes})')
-            modulelist = list(model.classifier.modules())[1:]
-            classifier3 = nn.Linear(classifier_size, num_classes)
-            nn.init.normal_(classifier3.weight, 0, 0.01)
-            nn.init.constant_(classifier3.bias, 0)
-            modulelist[6] = classifier3
-            model.classifier = nn.Sequential(*modulelist)
+            model.set_n_outputs(num_classes)
 
         return model
 
@@ -147,16 +158,22 @@ class VGG16(nn.Module):
 class VGGSem(nn.Module):
     """Model that wraps a VGG16 model and appends some semantic layers."""
     @classmethod
-    def from_checkpoint(cls, checkpoint, num_classes=300, freeze=False):
+    def from_checkpoint(cls, checkpoint, num_classes=None, vector_length=300, freeze=False):
         """Construct this model from a stored checkpoint of a VGG16 model."""
         state_dict = checkpoint['state_dict']
         num_channels = state_dict['features.0.weight'].shape[1]
         prev_num_classes = state_dict['classifier.6.weight'].shape[0]
         classifier_size = state_dict['classifier.6.weight'].shape[1]
         vis_model = VGG16(num_channels, prev_num_classes, classifier_size)
-
+        
         if checkpoint['arch'] == 'vgg':
             vis_model.load_state_dict(state_dict)
+
+            if num_classes is not None:
+                vis_model.set_n_outputs(num_classes)
+            else:
+                num_classes = prev_num_classes
+
             if freeze:
                 print('=> freezing feature and classifier parts of the model')
                 for param in vis_model.parameters():
@@ -166,9 +183,10 @@ class VGGSem(nn.Module):
                     if isinstance(m, nn.BatchNorm2d):
                         m.track_running_stats = False
             print(f'=> attaching semantic layer (going from {prev_num_classes} to {num_classes})')
-            model = cls(vis_model, num_classes)
+            model = cls(vis_model, vector_length)
         elif checkpoint['arch'] == 'vgg_sem':
-            model = VGGSem(vis_model, num_classes, classifier_size)
+            vector_length = state_dict['semantics.0.weight'].shape[0]
+            model = VGGSem(vis_model, vector_length)
             model.load_state_dict(state_dict)
             if freeze:
                 print('=> freezing all parts of the model')
@@ -183,24 +201,16 @@ class VGGSem(nn.Module):
         model.eval()
         return model
 
-    def __init__(self, vis_network, num_classes=300, classifier_size=1024):
+    def __init__(self, vis_network, vector_size=300):
         super().__init__()
         self.features = vis_network.features
         self.classifier = vis_network.classifier
-        num_words = self.classifier[6].weight.shape[0]
+        num_classes = self.classifier[6].weight.shape[0]
 
         # Stack on some semantic layers
         self.semantics = nn.Sequential(
-            nn.Linear(num_words, num_classes, bias=False),
-            #nn.ReLU(True),
-            #nn.Dropout(),
-            #nn.Linear(classifier_size, num_classes),
-            #nn.ReLU(True),
-            #nn.LogSoftmax(),
+            nn.Linear(num_classes, vector_size, bias=False),
         )
-        #self.semantics = nn.Linear(num_words, num_classes)
-        #nn.init.normal_(self.semantics.weight, 0, 0.01)
-        #nn.init.constant_(self.semantics.bias, 0)
         self.initialize_semantic_weights()
 
     def initialize_semantic_weights(self):

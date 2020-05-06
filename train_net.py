@@ -118,7 +118,7 @@ def main():
             if args.labels == 'int':
                 num_classes += len(dataset.classes)
             elif args.labels == 'vector':
-                num_classes = dataset.vectors.shape[1]
+                num_classes, vector_length = dataset.vectors.shape
                 if target_vectors is None:
                     target_vectors = torch.tensor(dataset.vectors, dtype=torch.float)
                 else:
