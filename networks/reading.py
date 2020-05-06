@@ -57,7 +57,7 @@ class VGG16(nn.Module):
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
             nn.ReLU(True),  # <-- Added after training
-            nn.WinnerTakesAll(),  # <-- Added after training
+            WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
