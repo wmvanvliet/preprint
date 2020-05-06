@@ -24,6 +24,9 @@ parser.add_argument('path', type=str, help='The path to write the dataset to.')
 parser.add_argument('set', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
 args = parser.parse_args()
 
+# Set this to wherever /m/nbe/scratch/reading_models is mounted on your system
+data_path = '/m/nbe/scratch/reading_models'
+
 consonants = list('bcdfghjklmnpqrstvwxz')
 symbols = [
     '\u25A1',  # square
@@ -33,32 +36,32 @@ symbols = [
 ]
 alphabet = consonants + symbols
 
+# Limits
 rotations = np.linspace(-20, 20, 11)
 sizes = np.linspace(7, 16, 21)
 fonts = ['courier new', 'dejavu sans mono', 'times new roman', 'arial',
          'arial black', 'verdana', 'comic sans ms', 'georgia',
          'liberation serif', 'impact', 'roboto condensed']
-noise_levels = [0.2, 0.25, 0.35, 0.4, 0.45, 0.5]
+noise_levels = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
 lengths = [2, 3, 4, 5, 6]
 
 fonts = {
-    'ubuntu mono': [None, '../data/fonts/UbuntuMono-R.ttf'],
-    'courier': [None, '../data/fonts/courier.ttf'],
-    'luxi mono regular': [None, '../data/fonts/luximr.ttf'],
-    'lucida console': [None, '../data/fonts/LucidaConsole-R.ttf'],
-    'lekton': [None, '../data/fonts/Lekton-Regular.ttf'],
-    'dejavu sans mono': [None, '../data/fonts/DejaVuSansMono.ttf'],
-    'times new roman': [None, '../data/fonts/times.ttf'],
-    'arial': [None, '../data/fonts/arial.ttf'],
-    'arial black': [None, '../data/fonts/arialbd.ttf'],
-    'verdana': [None, '../data/fonts/verdana.ttf'],
-    'comic sans ms': [None, '../data/fonts/comic.ttf'],
-    'georgia': [None, '../data/fonts/georgia.ttf'],
-    'liberation serif': [None, '../data/fonts/LiberationSerif-Regular.ttf'],
-    'impact': [None, '../data/fonts/impact.ttf'],
-    'roboto condensed': [None, '../data/fonts/Roboto-Light.ttf'],
+    'ubuntu mono': [None, f'{data_path}/fonts/UbuntuMono-R.ttf'],
+    'courier': [None, f'{data_path}/fonts/courier.ttf'],
+    'luxi mono regular': [None, f'{data_path}/fonts/luximr.ttf'],
+    'lucida console': [None, f'{data_path}/fonts/LucidaConsole-R.ttf'],
+    'lekton': [None, f'{data_path}/fonts/Lekton-Regular.ttf'],
+    'dejavu sans mono': [None, f'{data_path}/fonts/DejaVuSansMono.ttf'],
+    'times new roman': [None, f'{data_path}/fonts/times.ttf'],
+    'arial': [None, f'{data_path}/fonts/arial.ttf'],
+    'arial black': [None, f'{data_path}/fonts/arialbd.ttf'],
+    'verdana': [None, f'{data_path}/fonts/verdana.ttf'],
+    'comic sans ms': [None, f'{data_path}/fonts/comic.ttf'],
+    'georgia': [None, f'{data_path}/fonts/georgia.ttf'],
+    'liberation serif': [None, f'{data_paht}/fonts/LiberationSerif-Regular.ttf'],
+    'impact': [None, f'{data_path}/fonts/impact.ttf'],
+    'roboto condensed': [None, f'{data_path}/fonts/Roboto-Light.ttf'],
 }
-
 rng = np.random.RandomState(0)
 
 # Render the consonant strings as PNG files
