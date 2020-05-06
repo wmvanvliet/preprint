@@ -1,0 +1,1 @@
+These are files that are used by NeuroBehavior's "Presentation" software for presenting stimuli in the MEG recording room. These files should tell you everything you need to know about the stimuli used in the MEG experiments.
