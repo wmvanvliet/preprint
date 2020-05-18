@@ -11,6 +11,8 @@ datasets.
 from io import BytesIO
 import os.path as op
 import pickle
+import tarfile
+import pandas as pd
 
 from torchvision.datasets import VisionDataset
 from PIL import Image
@@ -144,3 +146,62 @@ class CombinedPickledPNGs(VisionDataset):
 
     def __len__(self):
         return len(self.data)
+
+class Tar(VisionDataset):
+    """Reads datasets in the form of a tar file of image files.
+
+    Args:
+        root (string): Root directory of dataset
+        train (bool, optional): If True, creates dataset from training set,
+            otherwise creates from test set.
+        transform (callable, optional): A function/transform that takes in an
+            PIL image and returns a transformed version. E.g,
+            ``transforms.RandomCrop``
+        target_transform (callable, optional): A function/transform that takes
+            in the target and transforms it.
+        labels ('int' | 'vector'): What kind of labels to use. Either a integer
+            class label or a distributed (word2vec) vector.
+        label_offset (int): offset for 'int' style labels
+    """
+    def __init__(self, root, train=True, transform=None,
+                 target_transform=None, labels='int', label_offset=0):
+        super().__init__(root, transform=transform,
+                         target_transform=target_transform)
+
+        base_fname = 'train' if train else 'test'
+        self.file = tarfile.open(op.join(root, f'{base_fname}.tar'))
+        self.items = self.file.getmembers()
+        self.meta = pd.read_csv(op.join(root, f'{base_fname}.csv'), index_col=0)
+        self.vectors = np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301))
+
+        if labels == 'int':
+            self.targets = [l + label_offset for l in self.meta['label']]
+        elif labels == 'vector':
+            self.targets = np.array([self.vectors[l] for l in self.meta['label']], dtype=np.float32)
+        else:
+            raise ValueError('`labels` should be either "int" or "vector"')
+
+        self.classes = self.meta.groupby('label').agg('first')['word']
+        self.class_to_idx = {name: i for i, name in enumerate(self.classes)}
+
+    def __getitem__(self, index):
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        img = Image.open(self.file.extractfile(self.items[index]))
+        target = self.targets[index]
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+
+        return img, target
+
+    def __len__(self):
+        return len(self.items)
