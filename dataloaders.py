@@ -181,7 +181,7 @@ class Tar(VisionDataset):
         else:
             raise ValueError('`labels` should be either "int" or "vector"')
 
-        self.classes = self.meta.groupby('label').agg('first')['word']
+        self.classes = self.meta.groupby('label').agg('first')['class']
         self.class_to_idx = {name: i for i, name in enumerate(self.classes)}
 
     def __getitem__(self, index):

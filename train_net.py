@@ -31,8 +31,8 @@ parser.add_argument('data', metavar='DIR', nargs='+', help='path to dataset(s)')
 parser.add_argument('--arch', '-a', metavar='ARCH', default='vgg',
                     choices=model_names,
                     help='model architecture: ' + ' | '.join(model_names) + ' (default: vgg)')
-parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
-                    help='number of data loading workers (default: 4)')
+parser.add_argument('-j', '--workers', default=1, type=int, metavar='N',
+                    help='number of data loading workers (default: 1)')
 parser.add_argument('--epochs', default=90, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--start-epoch', default=-1, type=int, metavar='N',
@@ -106,7 +106,7 @@ def main():
         label_offset = 0
         num_classes = 0
         for dtype in args.data:
-            dataset = dataloaders.PickledPNGs(
+            dataset = dataloaders.Tar(
                 dtype,
                 train=train,
                 transform=transform,
