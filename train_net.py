@@ -140,7 +140,7 @@ def main():
         checkpoint = torch.load(args.resume, map_location='cpu')
         model = networks.__dict__[args.arch].from_checkpoint(checkpoint, num_classes=target_num_classes, freeze=args.freeze)
     else:
-        model = networks.__dict__[args.arch](num_classes=target_num_classes)
+        model = networks.__dict__[args.arch](num_classes=target_num_classes, pretrained=True)
 
     if args.gpu is not None:
         device = torch.device(args.gpu)

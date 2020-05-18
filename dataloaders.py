@@ -172,7 +172,7 @@ class Tar(VisionDataset):
         self.file = tarfile.open(op.join(root, f'{base_fname}.tar'))
         self.items = self.file.getmembers()
         self.meta = pd.read_csv(op.join(root, f'{base_fname}.csv'), index_col=0)
-        self.vectors = np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301))
+        self.vectors = np.atleast_2d(np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301), encoding='utf8'))
 
         if labels == 'int':
             self.targets = [l + label_offset for l in self.meta['label']]

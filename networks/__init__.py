@@ -5,7 +5,7 @@ from . import iac
 
 twolayer = simple.TwoLayerNet
 alexnet = models.alexnet
-vgg16 = models.vgg16
+vgg16 = models.vgg16_bn
 resnet18 = models.resnet18
 vgg = reading.VGG16
 vgg_sem = reading.VGGSem

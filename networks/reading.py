@@ -37,6 +37,9 @@ class VGG16(nn.Module):
             nn.Conv2d(256, 256, kernel_size=3, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             nn.Conv2d(256, 512, kernel_size=3, padding=1),
@@ -45,26 +48,43 @@ class VGG16(nn.Module):
             nn.Conv2d(512, 512, kernel_size=3, padding=1),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.BatchNorm2d(512),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.BatchNorm2d(512),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.BatchNorm2d(512),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.BatchNorm2d(512),
+            nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
+        self.avgpool = nn.AdaptiveAvgPool2d((7, 7))
+
         self.classifier = nn.Sequential(
-            nn.Linear(512 * 3 * 3, classifier_size),
+            nn.Linear(512 * 7 * 7, classifier_size),
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, classifier_size),
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            #nn.ReLU(True),  # <-- Added after training
-            #WinnerTakesAll(),  # <-- Added after training
+            nn.ReLU(True),  # <-- Added after training
+            WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
 
     def forward(self, X):
         out = self.features(X)
-        out = out.view(out.size(0), -1)
+        out = self.avgpool(out)
+        out = torch.flatten(out, 1)
         out = self.classifier(out)
         return out
 
@@ -94,8 +114,8 @@ class VGG16(nn.Module):
             out = torch.cat(layer_out, 0)
             del layer_out
             print('feature layer %02d, output=%s' % (i, out.shape))
-            #if i in [3, 10, 17, 24]:
-            if i in [5, 12, 19, 26]:
+            #if i in [3, 10, 20, 30, 40]:
+            if i in [5, 12, 22, 32, 42]:
                 feature_outputs.append(out.detach().numpy().copy())
         classifier_outputs = []
         out = out.view(out.size(0), -1)
@@ -204,6 +224,7 @@ class VGGSem(nn.Module):
     def __init__(self, vis_network, vector_size=300):
         super().__init__()
         self.features = vis_network.features
+        self.avgpool = vis_network.avgpool
         self.classifier = vis_network.classifier
         num_classes = self.classifier[6].weight.shape[0]
 
@@ -222,7 +243,8 @@ class VGGSem(nn.Module):
 
     def forward(self, X):
         out = self.features(X)
-        out = out.view(out.size(0), -1)
+        out = torch.flatten(out, 1)
+        out = self.avgpool(out)
         out = self.classifier(out)
         out = self.semantics(out)
         return out
@@ -240,8 +262,8 @@ class VGGSem(nn.Module):
             out = torch.cat(layer_out, 0)
             del layer_out
             print('feature layer %02d, output=%s' % (i, out.shape))
-            #if i in [5, 12, 19, 26]:
-            if i in [3, 10, 17, 24]:
+            #if i in [3, 10, 20, 30, 40]:
+            if i in [5, 12, 22, 32, 42]:
                 feature_outputs.append(out.detach().numpy().copy())
         classifier_outputs = []
         out = out.view(out.size(0), -1)
