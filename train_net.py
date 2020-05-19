@@ -93,7 +93,7 @@ def main():
     transform=transforms.Compose([
         #transforms.ToPILImage(mode='RGB'),
         #transforms.RandomResizedCrop(224) if args.arch == 'alexnet' else transforms.RandomResizedCrop(60),
-        transforms.CenterCrop(60),
+        transforms.CenterCrop(224),
         transforms.ToTensor(),
         normalize,
     ])
