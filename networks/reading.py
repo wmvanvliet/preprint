@@ -243,8 +243,8 @@ class VGGSem(nn.Module):
 
     def forward(self, X):
         out = self.features(X)
-        out = torch.flatten(out, 1)
         out = self.avgpool(out)
+        out = torch.flatten(out, 1)
         out = self.classifier(out)
         out = self.semantics(out)
         return out
