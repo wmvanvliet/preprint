@@ -1,6 +1,6 @@
 """
 Construct a dataset containing 128x128 pixel images of random consonant strings.  Uses the
-consonants used in the epasana study.
+consonants used in the "epasana" study.
 """
 # encoding: utf-8
 import argparse
@@ -16,13 +16,14 @@ from PIL import Image
 from io import BytesIO
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description='Generate the consonants dataset')
+parser = argparse.ArgumentParser(description='Generate the epasana-consonants dataset')
 parser.add_argument('path', type=str, help='The path to write the dataset to.')
 parser.add_argument('set', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
 args = parser.parse_args()
 
 data_path = '/m/nbe/scratch/reading_models'
 
+# In Finnish, many consonants are barely used (only for loan words).
 consonants = list('BDFGHJKLMNPRSTV')
 
 rotations = np.linspace(-20, 20, 11)
