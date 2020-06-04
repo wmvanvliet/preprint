@@ -1,6 +1,6 @@
 """
 Construct a dataset containing 128x128 pixel images of random symbol strings.  Uses the
-11 symbols used in the epasana study.
+11 symbols used in the "epasana" study.
 """
 # encoding: utf-8
 import argparse
