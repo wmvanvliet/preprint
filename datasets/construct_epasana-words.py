@@ -1,6 +1,6 @@
 """
 Construct a dataset containing 128x128 pixel images of rendered words.  Uses the
-180 words used in the epasana study + 20 other frequently used Finnish words.
+118 words used in the "epasana" study + 82 other frequently used Finnish words.
 """
 # encoding: utf-8
 import argparse
@@ -52,8 +52,9 @@ fonts = {
     'roboto condensed': [None, f'{data_path}/fonts/Roboto-Light.ttf'],
 }
 
-# Using the pilot stimulus list to select words to plot
-words = pd.read_csv(f'reading_models/order.txt',sep=',',header=None)[1]
+# Using the "epasana" stimulus list to select words to plot
+words = pd.read_csv(f'/m/nbe/archive/epasana/stimuli.csv',sep=',')['text'][236:354]
+
 
 # Adding some common finnish words to pad the list to 200
 more_words = pd.read_csv(f'{data_path}/parsebank_v4_ud_scrambled.wordlist.txt', sep=' ', nrows=500, quoting=3, usecols=[1], header=None)
