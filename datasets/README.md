@@ -13,4 +13,4 @@ These scripts generate training images for the computational models. Each datase
 | construct_tiny-words.py         | words used in the pilot experiment and some additional finnish words
 | construct_epasana-words.py      | 100_000/10_000 128x128 pixel word train/test images
 | construct_epasana-consonants.py | 100_000/10_000 128x128 pixel consonant string train/test images
-| construct_symbols.py            | 100_000/10_000 128x128 pixel symbol string train/test images
+| construct_epasana_symbols.py    | 100_000/10_000 128x128 pixel symbol string train/test images
