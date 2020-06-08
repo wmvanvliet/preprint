@@ -18,7 +18,7 @@ from PIL import Image
 from io import BytesIO
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description='Generate the tiny-words dataset')
+parser = argparse.ArgumentParser(description='Generate the epasana-words dataset')
 parser.add_argument('path', type=str, help='The path to write the dataset to.')
 parser.add_argument('set', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
 args = parser.parse_args()
