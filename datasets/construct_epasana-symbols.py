@@ -19,7 +19,7 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description='Generate symbol string stimuli')
+parser = argparse.ArgumentParser(description='Generate epasana-symbols dataset')
 parser.add_argument('path', type=str, help='The path to write the dataset to.')
 parser.add_argument('set', type=str, help='Specify either "train" to generate the training set and to "test" to generate the test set.')
 args = parser.parse_args()
