@@ -30,7 +30,7 @@ def get_stimulus_info(subject=2, data_path='/m/nbe/scratch/reading_models'):
     return stimuli
 
 
-def get_stimulus_images(subject=2, stimuli=None, data_path='/m/nbe/scratch/reading_models'):
+def get_stimulus_images(subject=2, stimuli=None, data_path='/m/nbe/scratch/reading_models', size=224):
     """Get information about the stimuli presented during the MEG experiment
 
     Parameters
@@ -41,23 +41,24 @@ def get_stimulus_images(subject=2, stimuli=None, data_path='/m/nbe/scratch/readi
         Information about the stimuli as returned by the `get_stimulus_info`
         function. When omitted, this is obtained automatically by calling this
         function.
+    size : int
+        Pixel size to resize the images to. Defaults to 60, for 60x60 pixel images.
 
     Returns
     -------
-    images : tensor, shape (n_images, n_colors, width, height)
+    images : tensor, shape (n_images, n_colors, size, size)
         A tensor containing the bitmap data of the images presented to the
         subject during the MEG experiment. Ready to feed into a model.
     """
     if stimuli is None:
-        stimuli = get_stimulus_info(subject)
+        stimuli = get_stimulus_info(subject, data_path=data_path)
 
     # Transform the images to a 60x60 pixel image suitable for feeding through
     # the model. This is the same transform as used in train_net.py during the
     # training of the model.
     preproc = transforms.Compose([
         transforms.CenterCrop(208),
-        transforms.Resize(64),
-        transforms.CenterCrop(60),
+        transforms.Resize(size),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                              std=[0.229, 0.224, 0.225]),

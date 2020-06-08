@@ -22,11 +22,11 @@ from pilot import utils
 
 # The model to perform the analysis on. I keep changing this around as I train new models.
 #model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-imagenet'
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-symbols_tiny-imagenet_w2v'
+model_name = 'vgg_first_imagenet_then_tiny-words_pilot-nontext_w2v'
 
 # Get the images that were presented during the MEG experiment
-stimuli = utils.get_stimulus_info(subject=2, data_path='M:/scratch/reading_models/')
-images = utils.get_stimulus_images(subject=2, stimuli=stimuli, data_path='M:/scratch/reading_models/')
+stimuli = utils.get_stimulus_info(subject=2, data_path='data')
+images = utils.get_stimulus_images(subject=2, stimuli=stimuli, data_path='data')
 
 # Annotate the stimuli with the class labels in the tiny-words dataset. This
 # dataset was used to train the model, so the model outputs correspond to these
@@ -41,7 +41,7 @@ order = np.argsort(stimuli[:180]['class_index'])
 order = np.hstack([order, np.arange(180, 360)])
 
 # Load the model and feed through the images
-checkpoint = torch.load('M:/scratch/reading_models/models/%s.pth.tar' % model_name, map_location='cpu')
+checkpoint = torch.load('models/%s.pth.tar' % model_name, map_location='cpu')
 #model = networks.vgg.from_checkpoint(checkpoint)
 #feature_outputs, classifier_outputs = model.get_layer_activations(images)
 model = networks.vgg_sem.from_checkpoint(checkpoint, freeze=True)

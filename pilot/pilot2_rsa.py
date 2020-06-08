@@ -12,7 +12,7 @@ stimuli['y'] = np.arange(len(stimuli))
 metadata = pd.merge(epochs.metadata, stimuli[['y']], left_on='text', right_index=True).sort_index()
 assert np.array_equal(metadata.event_id.values.astype(int), epochs.events[:, 2])
 
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg_first_imagenet_then_pilot-words_pilot-nontext_w2v'
 with open(f'../data/dsms/pilot2_{model_name}_dsms.pkl', 'rb') as f:
     dsm_models = pickle.load(f)
     dsm_names = dsm_models['dsm_names']

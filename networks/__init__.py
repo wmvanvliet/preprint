@@ -9,3 +9,4 @@ vgg16 = models.vgg16_bn
 resnet18 = models.resnet18
 vgg = reading.VGG16
 vgg_sem = reading.VGGSem
+vgg_small = reading.VGGSmall

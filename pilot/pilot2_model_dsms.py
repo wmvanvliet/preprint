@@ -1,12 +1,6 @@
 import torch
-import torchvision.transforms as transforms
 import mne_rsa
-import mne
-import pandas as pd
 import numpy as np
-from os.path import getsize
-from PIL import Image
-from tqdm import tqdm
 import networks
 import editdistance
 import pickle
@@ -15,10 +9,10 @@ from scipy.spatial import distance
 
 import utils
 
-stimuli = utils.get_stimulus_info(subject=2, data_path='M:/scratch/reading_models')
-images = utils.get_stimulus_images(subject=2, stimuli=stimuli, data_path='M:/scratch/reading_models')
+stimuli = utils.get_stimulus_info(subject=2, data_path='../data')
+images = utils.get_stimulus_images(subject=2, stimuli=stimuli, data_path='../data')
 
-model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-symbols_tiny-imagenet_w2v'
+model_name = 'vgg_first_imagenet_then_pilot-words_pilot-nontext_w2v'
 #model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-symbols_tiny-imagenet'
 
 checkpoint = torch.load('../models/%s.pth.tar' % model_name, map_location='cpu')
@@ -57,6 +51,7 @@ dsm_models = [
     mne_rsa.compute_dsm(n(feature_outputs[1]), metric='correlation'),
     mne_rsa.compute_dsm(n(feature_outputs[2]), metric='correlation'),
     mne_rsa.compute_dsm(n(feature_outputs[3]), metric='correlation'),
+    mne_rsa.compute_dsm(n(feature_outputs[4]), metric='correlation'),
     mne_rsa.compute_dsm(n(classifier_outputs[0]), metric='correlation'),
     mne_rsa.compute_dsm(n(classifier_outputs[1]), metric='correlation'),
     mne_rsa.compute_dsm(n(classifier_outputs[2]), metric='correlation'),
@@ -77,8 +72,8 @@ dsm_models = [
     #rsa.compute_dsm(abs(classifier_outputs[1]).sum(axis=1, keepdims=True), metric='euclidean'),
     #rsa.compute_dsm(abs(classifier_outputs[2]).sum(axis=1, keepdims=True), metric='euclidean'),
 ]
-dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'word', 
-dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'word', 'semantics',
+#dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'fc1', 'fc2', 'word', 
+dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'conv5', 'fc1', 'fc2', 'word', 'semantics',
              'Words only', 'Letters only', 'Noise level', 'Font', 'Rotation', 'Fontsize', 'Edit distance', 'Pixel distance']
 
 with open(f'../data/dsms/pilot2_{model_name}_dsms.pkl', 'wb') as f:
