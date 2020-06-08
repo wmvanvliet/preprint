@@ -7,7 +7,8 @@ import pandas as pd
 import pickle
 
 path = '/m/nbe/scratch/epasana/stimuli/'
-
+# We are going to extract the individual symbols from these three stimulus examples.
+# Together, they contain every symbol used in the study.
 pic = plt.imread(f'{path}/symbolit1.tif')
 pic2 = plt.imread(path+'symbolit8.tif')
 pic3 = plt.imread(path+'symbolit4.tif')
@@ -28,7 +29,6 @@ symbols = [star,triangle,circle,symb,star2,box,slash,hexa,spiral,diamond,angle]
 
 with open('/m/nbe/scratch/reading_models/datasets/symbol-bitmaps', 'wb') as output:
     pickle.dump(symbols, output)
-
 
 
 
