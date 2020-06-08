@@ -53,7 +53,7 @@ fonts = {
 }
 
 # Using the "epasana" stimulus list to select words to plot
-words = pd.read_csv(f'/m/nbe/scratch/epasana/stimuli.csv',sep=',')['text'][236:354]
+words = pd.read_csv(f'/m/nbe/scratch/epasana/stimuli.csv').query('type=="word"')['text']
 
 # Adding some common finnish words to pad the list to 200
 more_words = pd.read_csv(f'{data_path}/parsebank_v4_ud_scrambled.wordlist.txt', sep=' ', nrows=500, quoting=3, usecols=[1], header=None)
