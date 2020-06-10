@@ -14,10 +14,9 @@ from matplotlib import font_manager as fm
 import pandas as pd
 from os import makedirs
 from tqdm import tqdm
-import pickle
 from PIL import Image
 from io import BytesIO
-import tarfile
+import tfrecord
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Generate the pilot-nontext dataset')
@@ -47,21 +46,21 @@ noise_levels = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
 lengths = [2, 3, 4, 5, 6]
 
 fonts = {
-    'ubuntu mono': [None, f'{data_path}/fonts/UbuntuMono-R.ttf'],
-    'courier': [None, f'{data_path}/fonts/courier.ttf'],
-    'luxi mono regular': [None, f'{data_path}/fonts/luximr.ttf'],
-    'lucida console': [None, f'{data_path}/fonts/LucidaConsole-R.ttf'],
-    'lekton': [None, f'{data_path}/fonts/Lekton-Regular.ttf'],
-    'dejavu sans mono': [None, f'{data_path}/fonts/DejaVuSansMono.ttf'],
-    'times new roman': [None, f'{data_path}/fonts/times.ttf'],
-    'arial': [None, f'{data_path}/fonts/arial.ttf'],
-    'arial black': [None, f'{data_path}/fonts/arialbd.ttf'],
-    'verdana': [None, f'{data_path}/fonts/verdana.ttf'],
-    'comic sans ms': [None, f'{data_path}/fonts/comic.ttf'],
-    'georgia': [None, f'{data_path}/fonts/georgia.ttf'],
-    'liberation serif': [None, f'{data_path}/fonts/LiberationSerif-Regular.ttf'],
-    'impact': [None, f'{data_path}/fonts/impact.ttf'],
-    'roboto condensed': [None, f'{data_path}/fonts/Roboto-Light.ttf'],
+    'ubuntu mono': [None, '../fonts/UbuntuMono-R.ttf'],
+    'courier': [None, '../fonts/courier.ttf'],
+    'luxi mono regular': [None, '../fonts/luximr.ttf'],
+    'lucida console': [None, '../fonts/LucidaConsole-R.ttf'],
+    'lekton': [None, '../fonts/Lekton-Regular.ttf'],
+    'dejavu sans mono': [None, '../fonts/DejaVuSansMono.ttf'],
+    'times new roman': [None, '../fonts/times.ttf'],
+    'arial': [None, '../fonts/arial.ttf'],
+    'arial black': [None, '../fonts/arialbd.ttf'],
+    'verdana': [None, '../fonts/verdana.ttf'],
+    'comic sans ms': [None, '../fonts/comic.ttf'],
+    'georgia': [None, '../fonts/georgia.ttf'],
+    'liberation serif': [None, '../fonts/LiberationSerif-Regular.ttf'],
+    'impact': [None, '../fonts/impact.ttf'],
+    'roboto condensed': [None, '../fonts/Roboto-Light.ttf'],
 }
 rng = np.random.RandomState(0)
 
@@ -78,7 +77,7 @@ data = []
 labels = np.zeros(n, dtype=np.int)
 
 makedirs(args.path, exist_ok=True)
-file = tarfile.open(f'{args.path}/{args.set}.tar', 'w')
+writer = tfrecord.TFRecordWriter(f'{args.path}/{args.set}.tfrecord')
 
 dpi = 96.
 width = 256  # Pixels
@@ -118,12 +117,19 @@ for i in tqdm(range(n), total=n):
     chosen_lengths.append(length)
 
     buf = BytesIO()
-    Image.fromarray(image.astype(np.uint8)).save(buf, format='png')
+    Image.fromarray(image.astype(np.uint8)).save(buf, format='jpeg')
 
-    info = tarfile.TarInfo(name=f'nontext/{i:06d}.png')
-    info.size = len(buf.getvalue())
-    buf.seek(0)
-    file.addfile(info, buf)
+    writer.write({
+        'image/height': (height, 'int'),
+        'image/width': (width, 'int'),
+        'image/colorspace': (b'RGB', 'byte'),
+        'image/channels': (3, 'int'),
+        'image/class/label': (0, 'int'),
+        'image/class/text': (b'nontext', 'byte'),
+        'image/format': (b'JPEG', 'byte'),
+        'image/filename': (f'nontext-{i:03d}.jpg'.encode('utf-8'), 'byte'),
+        'image/encoded': (buf.getvalue(), 'byte'),
+    })
 
 df = pd.DataFrame(dict(text=chosen_strings, rotation=chosen_rotations,
                        size=chosen_sizes, font=chosen_fonts, label=labels,
