@@ -106,7 +106,7 @@ def main():
         label_offset = 0
         num_classes = 0
         for dtype in args.data:
-            dataset = dataloaders.Tar(
+            dataset = dataloaders.TFRecord(
                 dtype,
                 train=train,
                 transform=transform,
@@ -140,7 +140,7 @@ def main():
         checkpoint = torch.load(args.resume, map_location='cpu')
         model = networks.__dict__[args.arch].from_checkpoint(checkpoint, num_classes=target_num_classes, freeze=args.freeze)
     else:
-        model = networks.__dict__[args.arch](num_classes=target_num_classes, pretrained=True)
+        model = networks.__dict__[args.arch](num_classes=target_num_classes)
 
     if args.gpu is not None:
         device = torch.device(args.gpu)
