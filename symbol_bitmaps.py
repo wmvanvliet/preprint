@@ -29,8 +29,3 @@ symbols = [star,triangle,circle,symb,star2,box,slash,hexa,spiral,diamond,angle]
 
 with open('/m/nbe/scratch/reading_models/datasets/symbol-bitmaps', 'wb') as output:
     pickle.dump(symbols, output)
-
-
-
-
-

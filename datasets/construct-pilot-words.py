@@ -148,7 +148,7 @@ for label, word in tqdm(enumerate(words), total=len(words)):
         labels[label * n + i] = label
 writer.close()
 
-tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.set}.index')
+tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.path}/{args.set}.index')
 
 df = pd.DataFrame(dict(text=chosen_words, rotation=chosen_rotations,
                        size=chosen_sizes, font=chosen_fonts, label=labels,

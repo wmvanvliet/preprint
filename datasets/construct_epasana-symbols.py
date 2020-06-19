@@ -35,6 +35,7 @@ rng = np.random.RandomState(0)
 chosen_rotations = []
 chosen_lengths = []
 
+
 n = 50_000 if args.set == 'train' else 5_000
 
 labels = np.zeros(n, dtype=np.int)
@@ -110,7 +111,9 @@ for i in tqdm(range(n), total=n):
     })
 writer.close()
 
+tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.path}/{args.set}.index')
+
 makedirs(args.path, exist_ok=True)
-df = pd.DataFrame(dict(rotation=chosen_rotations, label=np.zeros(n), length=chosen_lengths))
+df = pd.DataFrame(dict(text=['symbol'] * n, rotation=chosen_rotations, label=np.zeros(n), length=chosen_lengths))
 df.to_csv(f'{args.path}/{args.set}.csv')
 pd.DataFrame(np.zeros((1, 300))).to_csv(f'{args.path}/vectors.csv')

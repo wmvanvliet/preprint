@@ -131,6 +131,8 @@ for i in tqdm(range(n), total=n):
         'image/encoded': (buf.getvalue(), 'byte'),
     })
 
+tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.set}.index')
+
 df = pd.DataFrame(dict(text=chosen_strings, rotation=chosen_rotations,
                        size=chosen_sizes, font=chosen_fonts, label=labels,
                        noise_level=chosen_noise_levels, lenght=chosen_lengths))

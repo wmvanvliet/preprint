@@ -112,6 +112,8 @@ for i in tqdm(range(n), total=n):
     })
 writer.close()
 
+tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.path}/{args.set}.index')
+
 makedirs(args.path, exist_ok=True)
 df = pd.DataFrame(dict(text=chosen_strings, rotation=chosen_rotations,
                        size=chosen_sizes, font=chosen_fonts, label=np.zeros(n),

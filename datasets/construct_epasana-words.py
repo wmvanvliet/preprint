@@ -1,8 +1,8 @@
+# encoding: utf-8
 """
-Construct a dataset containing 128x128 pixel images of rendered words.  Uses the
+Construct a dataset containing 256x256 pixel images of rendered words. Uses the
 118 words used in the "epasana" study + 82 other frequently used Finnish words.
 """
-# encoding: utf-8
 import argparse
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -156,7 +156,7 @@ for label, word in tqdm(enumerate(words), total=len(words)):
         labels[label * n + i] = label
 writer.close()
 
-tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.set}.index')
+tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.path}/{args.set}.index')
 
 df = pd.DataFrame(dict(text=chosen_words, rotation=chosen_rotations,
                        size=chosen_sizes, font=chosen_fonts, label=labels))
