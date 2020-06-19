@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
 
-path = '/m/nbe/scratch/epasana/stimuli/'
+path = '/m/nbe/scratch/epasana/stimulus_images/'
 # We are going to extract the individual symbols from these three stimulus examples.
 # Together, they contain every symbol used in the study.
 pic = plt.imread(f'{path}/symbolit1.tif')

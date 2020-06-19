@@ -7,15 +7,14 @@ import argparse
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 from matplotlib import font_manager as fm
 import pandas as pd
 from scipy.io import loadmat
 from os import makedirs
 from tqdm import tqdm
-import pickle
 from PIL import Image
 from io import BytesIO
+import tfrecord
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Generate the epasana-words dataset')
@@ -28,11 +27,10 @@ data_path = '/m/nbe/scratch/reading_models'
 
 # Limits
 rotations = np.linspace(-20, 20, 11)
-sizes = np.linspace(7, 16, 21)
+sizes = np.linspace(14, 32, 42)
 fonts = ['courier new', 'dejavu sans mono', 'times new roman', 'arial',
          'arial black', 'verdana', 'comic sans ms', 'georgia',
          'liberation serif', 'impact', 'roboto condensed']
-noise_levels = [0.2, 0.35, 0.5]
 
 fonts = {
     'ubuntu mono': [None, f'{data_path}/fonts/UbuntuMono-R.ttf'],
@@ -78,9 +76,25 @@ words = words[:200]
 words  = words[0]
 
 # Get word2vec vectors for the words
-#word2vec = loadmat(f'{data_path}/word2vec.mat')
-#vocab = [v.strip() for v in word2vec['vocab']]
-#vectors = np.array([word2vec['vectors'][vocab.index(w)] for w in words])
+word2vec = loadmat(f'{data_path}/word2vec.mat')
+vocab = [v.strip() for v in word2vec['vocab']]
+
+vectors = []
+for w in words:
+    w = w.lower()
+
+    # Some words need translation to their lemma form
+    if w == 'maalari':
+        w = 'taide#maalari'
+    elif w == 'luominen':
+        w = 'luomus'
+    elif w == 'oleminen':
+        w = 'olemus'
+    elif w == 'eläminen':
+        w = 'elatus'
+    elif w == 'koraani':
+        w = 'koraanin'
+    vectors.append(word2vec['vectors'][vocab.index(w)])
 
 rng = np.random.RandomState(0)
 
@@ -88,14 +102,15 @@ chosen_rotations = []
 chosen_sizes = []
 chosen_fonts = []
 chosen_words = []
-chosen_noise_levels = []
 
 n = 500 if args.set == 'train' else 50
-data = []
 labels = np.zeros(len(words) * n, dtype=np.int)
 
+makedirs(args.path, exist_ok=True)
+writer = tfrecord.TFRecordWriter(f'{args.path}/{args.set}.tfrecord')
+
 dpi = 96.
-f = Figure(figsize=(128 / dpi, 128 / dpi), dpi=dpi)
+f = Figure(figsize=(256 / dpi, 256 / dpi), dpi=dpi)
 canvas = FigureCanvasAgg(f)
 for label, word in tqdm(enumerate(words), total=len(words)):
     for i in range(n):
@@ -106,11 +121,8 @@ for label, word in tqdm(enumerate(words), total=len(words)):
         font = rng.choice(list(fonts.keys()))
         fontfamily, fontfile = fonts[font]
         fontprop = fm.FontProperties(family=fontfamily, fname=fontfile, size=fontsize)
-        noise_level = rng.choice(noise_levels)
-        noise = rng.rand(128, 128)
-        ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level)
-        ax.text(0.5, 0.5, word, ha='center', va='center',
-                rotation=rotation, fontproperties=fontprop, alpha=1 - noise_level)
+        ax.text(0.5, 0.5, word, ha='center', va='center', rotation=rotation,
+                fontproperties=fontprop)
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
         ax.set_axis_off()
@@ -125,28 +137,28 @@ for label, word in tqdm(enumerate(words), total=len(words)):
         chosen_rotations.append(rotation)
         chosen_sizes.append(fontsize)
         chosen_fonts.append(font)
-        chosen_noise_levels.append(noise_level)
 
         buf = BytesIO()
-        Image.fromarray(image.astype(np.uint8)).save(buf, format='png')
-        img_compressed = buf.getvalue()
+        Image.fromarray(image.astype(np.uint8)).save(buf, format='jpeg')
 
-        #data[label * n + i] = image
-        data.append(img_compressed)
+        writer.write({
+            'image/height': (height, 'int'),
+            'image/width': (width, 'int'),
+            'image/colorspace': (b'RGB', 'byte'),
+            'image/channels': (3, 'int'),
+            'image/class/label': (label, 'int'),
+            'image/class/text': (word.encode('utf-8'), 'byte'),
+            'image/format': (b'JPEG', 'byte'),
+            'image/filename': (f'{word}-{i:03d}.jpg'.encode('utf-8'), 'byte'),
+            'image/encoded': (buf.getvalue(), 'byte'),
+        })
+
         labels[label * n + i] = label
+writer.close()
 
-df = pd.DataFrame(dict(word=chosen_words, rotation=chosen_rotations,
-                       size=chosen_sizes, font=chosen_fonts, label=labels,
-                       noise_level=chosen_noise_levels))
+tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.set}.index')
 
-makedirs(args.path, exist_ok=True)
-
+df = pd.DataFrame(dict(text=chosen_words, rotation=chosen_rotations,
+                       size=chosen_sizes, font=chosen_fonts, label=labels))
 df.to_csv(f'{args.path}/{args.set}.csv')
-
-with open(f'{args.path}/{args.set}', 'wb') as f:
-    pickle.dump(dict(data=data, labels=labels), f)
-
-#with open(f'{args.path}/meta', 'wb') as f:
-#    pickle.dump(dict(label_names=words, vectors=vectors), f)
-
-#pd.DataFrame(vectors, index=words).to_csv(f'{args.path}/vectors.csv')
+pd.DataFrame(vectors, index=words).to_csv(f'{args.path}/vectors.csv')

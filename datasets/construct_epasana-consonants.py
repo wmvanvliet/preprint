@@ -11,9 +11,9 @@ from matplotlib import font_manager as fm
 import pandas as pd
 from os import makedirs
 from tqdm import tqdm
-import pickle
 from PIL import Image
 from io import BytesIO
+import tfrecord
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Generate the epasana-consonants dataset')
@@ -27,11 +27,10 @@ data_path = '/m/nbe/scratch/reading_models'
 consonants = list('BDFGHJKLMNPRSTV')
 
 rotations = np.linspace(-20, 20, 11)
-sizes = np.linspace(7, 16, 21)
+sizes = np.linspace(14, 32, 42)
 fonts = ['courier new', 'dejavu sans mono', 'times new roman', 'arial',
          'arial black', 'verdana', 'comic sans ms', 'georgia',
          'liberation serif', 'impact', 'roboto condensed']
-noise_levels = [0.2, 0.35, 0.5]
 lengths = [7, 8]
 
 fonts = {
@@ -59,15 +58,15 @@ chosen_rotations = []
 chosen_sizes = []
 chosen_fonts = []
 chosen_strings = []
-chosen_noise_levels = []
 chosen_lengths = []
 
-n = 100_000 if args.set == 'train' else 10_000
-data = []
-labels = np.zeros(n, dtype=np.int)
+n = 50_000 if args.set == 'train' else 5_000
+
+makedirs(args.path, exist_ok=True)
+writer = tfrecord.TFRecordWriter(f'{args.path}/{args.set}.tfrecord')
 
 dpi = 96.
-f = Figure(figsize=(128 / dpi, 128 / dpi), dpi=dpi)
+f = Figure(figsize=(256 / dpi, 256 / dpi), dpi=dpi)
 canvas = FigureCanvasAgg(f)
 for i in tqdm(range(n), total=n):
     f.clf()
@@ -77,21 +76,16 @@ for i in tqdm(range(n), total=n):
     font = rng.choice(list(fonts.keys()))
     fontfamily, fontfile = fonts[font]
     fontprop = fm.FontProperties(family=fontfamily, fname=fontfile, size=fontsize)
-    noise_level = rng.choice(noise_levels)
     length = rng.choice(lengths)
-    noise = rng.rand(128, 128)
-    ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level)
 
     # Generate the consonant string
     text = ''.join(rng.choice(consonants, length))
     ax.text(0.5, 0.5, text, ha='center', va='center',
-            rotation=rotation, fontproperties=fontprop, alpha=1 - noise_level)
+            rotation=rotation, fontproperties=fontprop)
     
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.set_axis_off()
-
-    #f.savefig('training_imgs/imgs' + '/'+text+'%03d.JPEG' % i)
 
     canvas.draw()
     buffer, (width, height) = canvas.print_to_buffer()
@@ -101,24 +95,26 @@ for i in tqdm(range(n), total=n):
     chosen_rotations.append(rotation)
     chosen_sizes.append(fontsize)
     chosen_fonts.append(font)
-    chosen_noise_levels.append(noise_level)
     chosen_lengths.append(length)
 
     buf = BytesIO()
-    Image.fromarray(image.astype(np.uint8)).save(buf, format='png')
-    img_compressed = buf.getvalue()
+    Image.fromarray(image.astype(np.uint8)).save(buf, format='jpeg')
 
-    data.append(img_compressed)
-
-df = pd.DataFrame(dict(text=chosen_strings, rotation=chosen_rotations,
-                       size=chosen_sizes, font=chosen_fonts, label=labels,
-                       noise_level=chosen_noise_levels, lenght=chosen_lengths))
+    writer.write({
+        'image/height': (height, 'int'),
+        'image/width': (width, 'int'),
+        'image/colorspace': (b'RGB', 'byte'),
+        'image/channels': (3, 'int'),
+        'image/class/label': (0, 'int'),
+        'image/format': (b'JPEG', 'byte'),
+        'image/filename': (f'{i:06d}.jpg'.encode('utf-8'), 'byte'),
+        'image/encoded': (buf.getvalue(), 'byte'),
+    })
+writer.close()
 
 makedirs(args.path, exist_ok=True)
-
+df = pd.DataFrame(dict(text=chosen_strings, rotation=chosen_rotations,
+                       size=chosen_sizes, font=chosen_fonts, label=np.zeros(n),
+                       length=chosen_lengths))
 df.to_csv(f'{args.path}/{args.set}.csv')
-with open(f'{args.path}/{args.set}', 'wb') as f:
-    pickle.dump(dict(data=data, labels=labels), f)
-
-#with open(f'{args.path}/meta', 'wb') as f:
-#    pickle.dump(dict(label_names=['consonants'], vectors=np.zeros((1, 300))), f)
+pd.DataFrame(np.zeros((1, 300))).to_csv(f'{args.path}/vectors.csv')

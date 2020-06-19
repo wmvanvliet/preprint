@@ -42,7 +42,7 @@ def get_stimulus_images(subject=2, stimuli=None, data_path='/m/nbe/scratch/readi
         function. When omitted, this is obtained automatically by calling this
         function.
     size : int
-        Pixel size to resize the images to. Defaults to 60, for 60x60 pixel images.
+        Pixel size to resize the images to. Defaults to 224, for 224x224 pixel images.
 
     Returns
     -------
