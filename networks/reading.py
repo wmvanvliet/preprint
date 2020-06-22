@@ -101,35 +101,35 @@ class VGG16(nn.Module):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.constant_(m.bias, 0)
 
-    def get_layer_activations(self, images):
+    def get_layer_activations(self, images,
+                              feature_layers=[5, 12, 22, 32, 42],
+                              classifier_layers=[1, 4, 8]):
         """Obtain activation of each layer on a set of images."""
         self.eval()
-        batch_size = 128
-        feature_outputs = []
-        out = images
-        for i, layer in enumerate(self.features):
+        batch_size = 360
+        with torch.no_grad():
+            out = images
+            for i, layer in enumerate(self.features):
+                layer_out = []
+                for j in range(0, len(out), batch_size):
+                    layer_out.append(layer(out[j:j + batch_size]))
+                out = torch.cat(layer_out, 0)
+                del layer_out
+                print('feature layer %02d, output=%s' % (i, out.shape))
+                #if i in [3, 10, 20, 30, 40]:
+                if i in feature_layers:
+                    yield out.detach().numpy().copy()
+            out = out.view(out.size(0), -1)
             layer_out = []
-            for j in range(0, len(out), batch_size):
-                layer_out.append(layer(out[j:j + batch_size]))
-            out = torch.cat(layer_out, 0)
-            del layer_out
-            print('feature layer %02d, output=%s' % (i, out.shape))
-            #if i in [3, 10, 20, 30, 40]:
-            if i in [5, 12, 22, 32, 42]:
-                feature_outputs.append(out.detach().numpy().copy())
-        classifier_outputs = []
-        out = out.view(out.size(0), -1)
-        layer_out = []
-        for i, layer in enumerate(self.classifier):
-            layer_out = []
-            for j in range(0, len(out), batch_size):
-                layer_out.append(layer(out[j:j + batch_size]))
-            out = torch.cat(layer_out, 0)
-            print('classifier layer %02d, output=%s' % (i, out.shape))
-            #if i in [0, 3, 6]:
-            if i in [1, 4, 8]:
-                classifier_outputs.append(out.detach().numpy().copy())
-        return feature_outputs, classifier_outputs
+            for i, layer in enumerate(self.classifier):
+                layer_out = []
+                for j in range(0, len(out), batch_size):
+                    layer_out.append(layer(out[j:j + batch_size]))
+                out = torch.cat(layer_out, 0)
+                print('classifier layer %02d, output=%s' % (i, out.shape))
+                #if i in [0, 3, 6]:
+                if i in classifier_layers:
+                    yield out.detach().numpy().copy()
 
     def set_n_outputs(self, num_classes, keep_weights=True):
         modulelist = list(self.classifier.modules())[1:]
@@ -160,17 +160,17 @@ class VGG16(nn.Module):
         model.load_state_dict(state_dict)
 
         if num_classes is not None:
-            if freeze:
-                print('=> freezing model')
-                for layer in model.features[:14]:
-                    for param in layer.parameters():
-                        param.requires_grad = False
-                #print('=> disabling tracking batchnorm running stats')
-                #for m in model.modules():
-                #    if isinstance(m, nn.BatchNorm2d):
-                #        m.track_running_stats = False
-
             model.set_n_outputs(num_classes)
+
+        if freeze:
+            print('=> freezing model')
+            for layer in model.features[:14]:
+                for param in layer.parameters():
+                    param.requires_grad = False
+            print('=> disabling tracking batchnorm running stats')
+            for m in model.modules():
+                if isinstance(m, nn.BatchNorm2d):
+                    m.track_running_stats = False
 
         return model
 
@@ -433,16 +433,16 @@ class VGGSmall(nn.Module):
         model.load_state_dict(state_dict)
 
         if num_classes is not None:
-            if freeze:
-                print('=> freezing model')
-                for layer in model.features:
-                    for param in layer.parameters():
-                        param.requires_grad = False
-                print('=> disabling tracking batchnorm running stats')
-                for m in model.modules():
-                    if isinstance(m, nn.BatchNorm2d):
-                        m.track_running_stats = False
-
             model.set_n_outputs(num_classes)
+
+        if freeze:
+            print('=> freezing model')
+            for layer in model.features:
+                for param in layer.parameters():
+                    param.requires_grad = False
+            print('=> disabling tracking batchnorm running stats')
+            for m in model.modules():
+                if isinstance(m, nn.BatchNorm2d):
+                    m.track_running_stats = False
 
         return model
