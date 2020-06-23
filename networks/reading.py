@@ -75,8 +75,8 @@ class VGG16(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            nn.ReLU(True),  # <-- Added after training
-            WinnerTakesAll(),  # <-- Added after training
+            #nn.ReLU(True),  # <-- Added after training
+            #WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
@@ -131,20 +131,14 @@ class VGG16(nn.Module):
                 if i in classifier_layers:
                     yield out.detach().numpy().copy()
 
-    def set_n_outputs(self, num_classes, keep_weights=True):
+    def set_n_outputs(self, num_classes):
         modulelist = list(self.classifier.modules())[1:]
         output_layer = modulelist[6]
-        weight = output_layer.weight[:num_classes, :]
-        bias = output_layer.bias[:num_classes]
-        prev_num_classes, classifier_size = weight.shape
-        print(f'=> resizing output layer ({prev_num_classes} => {num_classes}), keep_weights={keep_weights}')
+        prev_num_classes, classifier_size = output_layer.weight.shape
+        print(f'=> resizing output layer ({prev_num_classes} => {num_classes})')
         output_layer = nn.Linear(classifier_size, num_classes)
-        if keep_weights:
-            output_layer.weight = nn.Parameter(weight)
-            output_layer.bias = nn.Parameter(bias)
-        else:
-            nn.init.normal_(output_layer.weight, 0, 0.01)
-            nn.init.constant_(output_layer.bias, 0)
+        nn.init.normal_(output_layer.weight, 0, 0.01)
+        nn.init.constant_(output_layer.bias, 0)
         modulelist[6] = output_layer
         self.classifier = nn.Sequential(*modulelist)
 
@@ -404,20 +398,14 @@ class VGGSmall(nn.Module):
                 semantic_outputs.append(out.detach().numpy().copy())
         return feature_outputs, classifier_outputs, semantic_outputs
 
-    def set_n_outputs(self, num_classes, keep_weights=True):
+    def set_n_outputs(self, num_classes):
         modulelist = list(self.classifier.modules())[1:]
         output_layer = modulelist[6]
-        weight = output_layer.weight[:num_classes, :]
-        bias = output_layer.bias[:num_classes]
-        prev_num_classes, classifier_size = weight.shape
-        print(f'=> resizing output layer ({prev_num_classes} => {num_classes}), keep_weights={keep_weights}')
+        prev_num_classes, classifier_size = output_layer.weight.shape
+        print(f'=> resizing output layer ({prev_num_classes} => {num_classes})')
         output_layer = nn.Linear(classifier_size, num_classes)
-        if keep_weights:
-            output_layer.weight = nn.Parameter(weight)
-            output_layer.bias = nn.Parameter(bias)
-        else:
-            nn.init.normal_(output_layer.weight, 0, 0.01)
-            nn.init.constant_(output_layer.bias, 0)
+        nn.init.normal_(output_layer.weight, 0, 0.01)
+        nn.init.constant_(output_layer.bias, 0)
         modulelist[6] = output_layer
         self.classifier = nn.Sequential(*modulelist)
 
