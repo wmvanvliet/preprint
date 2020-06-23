@@ -157,8 +157,6 @@ def main():
     elif args.labels == 'vector':
         target_vectors = target_vectors.to(device)
         criterion = nn.MSELoss().to(device)
-        #criterion = HingeRankLoss(margin=0.1, all_vectors=target_vectors).to(device)
-        #criterion = cos_loss
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -290,16 +288,13 @@ def validate(val_loader, model, criterion):
             end = time.time()
 
             if i % args.print_freq == 0:
-                print('Test: [{0}/{1}]\t'
-                      'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                      'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                      'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                      'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-                       i, len(val_loader), batch_time=batch_time, loss=losses,
-                       top1=top1, top5=top5))
+                print(f'Test: [{i}/{len(val_loader)}]\t'
+                      f'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                      f'Loss {losses.val:.4f} ({losses.avg:.4f})\t'
+                      f'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
+                      f'Prec@5 {top5.val:.3f} ({top5.avg:.3f})')
 
-        print(' * Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f}'
-              .format(top1=top1, top5=top5))
+        print(f' * Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f}')
 
     return top1.avg
 
@@ -356,50 +351,6 @@ def accuracy(output, target, topk=(1,)):
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 
-
-class Visual(nn.Module):
-    def __init__(self, base_model, num_classes=200):
-        super().__init__()
-
-        self.features = base_model.features
-
-        # Attach new classifier
-        modulelist = list(base_model.classifier.modules())[1:]
-        modulelist.pop()
-        classifier3 = nn.Linear(4096, num_classes)
-        nn.init.normal_(classifier3.weight, 0, 0.01)
-        nn.init.constant_(classifier3.bias, 0)
-        modulelist.append(classifier3)
-        self.classifier = nn.Sequential(*modulelist)
-
-        print(self)
-
-    def forward(self, X):
-        out = self.features(X)
-        out = out.view(out.size(0), -1)
-        return self.classifier(out)
-
-
-def attach_classifier(model, n):
-    return Visual(model, num_classes=n)
-
-def num_classes(model):
-    final_layer = list(model.classifier.modules())[-1]
-    num_classes = final_layer.weight.shape[0]
-    return num_classes
-
-class HingeRankLoss(torch.nn.Module):
-    def __init__(self, all_vectors, margin=0.1):
-        super(HingeRankLoss, self).__init__()
-        self.all_vectors = all_vectors
-        self.margin = margin
-
-    def forward(self, input, target):
-        loss = (input @ self.all_vectors.T).sum(dim=1) - 2 * (input @ target.T).diag()
-        return torch.clamp_min(self.margin + loss, 0).sum()
-
-def cos_loss(input, target):
-    return 1 - torch.nn.functional.cosine_similarity(input, target).mean()
 
 if __name__ == '__main__':
     main()
