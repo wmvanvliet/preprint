@@ -75,8 +75,8 @@ class VGG16(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            #nn.ReLU(True),  # <-- Added after training
-            #WinnerTakesAll(),  # <-- Added after training
+            nn.ReLU(True),  # <-- Added after training
+            WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
@@ -183,10 +183,10 @@ class VGGSem(nn.Module):
         if checkpoint['arch'] == 'vgg':
             vis_model.load_state_dict(state_dict)
 
-            if num_classes is not None:
-                vis_model.set_n_outputs(num_classes)
-            else:
-                num_classes = prev_num_classes
+            #if num_classes is not None:
+            #    vis_model.set_n_outputs(num_classes)
+            #else:
+            num_classes = prev_num_classes
 
             if freeze:
                 print('=> freezing feature and classifier parts of the model')
@@ -421,7 +421,7 @@ class VGGSmall(nn.Module):
         model.load_state_dict(state_dict)
 
         if num_classes is not None:
-            model.set_n_outputs(num_classes)
+           model.set_n_outputs(num_classes)
 
         if freeze:
             print('=> freezing model')
