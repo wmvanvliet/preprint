@@ -31,7 +31,7 @@ images = utils.get_stimulus_images(subject=2, stimuli=stimuli, data_path='data')
 # Annotate the stimuli with the class labels in the tiny-words dataset. This
 # dataset was used to train the model, so the model outputs correspond to these
 # class labels.
-meta = pd.read_csv('/m/nbe/scratch/reading_models/datasets/tiny-words/train.csv', index_col=0)
+meta = pd.read_csv('M:/scratch/reading_models/datasets/tiny-words/train.csv', index_col=0)
 
 labels = meta.groupby('word').agg('first')['label']
 stimuli = stimuli.join(labels)

@@ -75,8 +75,8 @@ class VGG16(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            #nn.ReLU(True),  # <-- Added after training
-            #WinnerTakesAll(),  # <-- Added after training
+            nn.ReLU(True),  # <-- Added after training
+            WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
@@ -243,44 +243,44 @@ class VGGSem(nn.Module):
         out = self.semantics(out)
         return out
 
-    def get_layer_activations(self, images):
+    def get_layer_activations(self, images,
+                              feature_layers=[5, 12, 22, 32, 42],
+                              classifier_layers=[1, 4, 8],
+                              semantic_layers=[0]):
         """Obtain activation of each layer on a set of images."""
         self.eval()
-        batch_size = 128
-        feature_outputs = []
-        out = images
-        for i, layer in enumerate(self.features):
+        batch_size = 360
+        with torch.no_grad():
+            out = images
+            for i, layer in enumerate(self.features):
+                layer_out = []
+                for j in range(0, len(out), batch_size):
+                    layer_out.append(layer(out[j:j + batch_size]))
+                out = torch.cat(layer_out, 0)
+                del layer_out
+                print('feature layer %02d, output=%s' % (i, out.shape))
+                #if i in [3, 10, 20, 30, 40]:
+                if i in feature_layers:
+                    yield out.detach().numpy().copy()
+            out = out.view(out.size(0), -1)
             layer_out = []
-            for j in range(0, len(out), batch_size):
-                layer_out.append(layer(out[j:j + batch_size]))
-            out = torch.cat(layer_out, 0)
-            del layer_out
-            print('feature layer %02d, output=%s' % (i, out.shape))
-            #if i in [3, 10, 20, 30, 40]:
-            if i in [5, 12, 22, 32, 42]:
-                feature_outputs.append(out.detach().numpy().copy())
-        classifier_outputs = []
-        out = out.view(out.size(0), -1)
-        layer_out = []
-        for i, layer in enumerate(self.classifier):
-            layer_out = []
-            for j in range(0, len(out), batch_size):
-                layer_out.append(layer(out[j:j + batch_size]))
-            out = torch.cat(layer_out, 0)
-            print('classifier layer %02d, output=%s' % (i, out.shape))
-            #if i in [1, 4, 8]:
-            if i in [0, 3, 6]:
-                classifier_outputs.append(out.detach().numpy().copy())
-        semantic_outputs = []
-        for i, layer in enumerate(self.semantics):
-            layer_out = []
-            for j in range(0, len(out), batch_size):
-                layer_out.append(layer(out[j:j + batch_size]))
-            out = torch.cat(layer_out, 0)
-            print('semantic layer %02d, output=%s' % (i, out.shape))
-            if i in [0]:
-                semantic_outputs.append(out.detach().numpy().copy())
-        return feature_outputs, classifier_outputs, semantic_outputs
+            for i, layer in enumerate(self.classifier):
+                layer_out = []
+                for j in range(0, len(out), batch_size):
+                    layer_out.append(layer(out[j:j + batch_size]))
+                out = torch.cat(layer_out, 0)
+                print('classifier layer %02d, output=%s' % (i, out.shape))
+                #if i in [0, 3, 6]:
+                if i in classifier_layers:
+                    yield out.detach().numpy().copy()
+            for i, layer in enumerate(self.semantics):
+                layer_out = []
+                for j in range(0, len(out), batch_size):
+                    layer_out.append(layer(out[j:j + batch_size]))
+                out = torch.cat(layer_out, 0)
+                print('semantic layer %02d, output=%s' % (i, out.shape))
+                if i in semantic_layers:
+                    yield out.detach().numpy().copy()
 
 
 class VGGSmall(nn.Module):
