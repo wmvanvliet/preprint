@@ -1,4 +1,3 @@
-import argparse
 import mne
 import mne_rsa
 import pandas as pd
@@ -9,18 +8,11 @@ from tqdm import tqdm
 # Path to the epasana dataset on scratch
 data_path = '/m/nbe/scratch/epasana'
 
-# Handle command line arguments
-parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('subject', metavar='#', type=int, help='The subject to process')
-args = parser.parse_args()
-subject = args.subject
-print('Processing subject:', subject)
-
 # Read epochs and create the stimulus order. Drop epochs that do no have proper metadata.
-stimuli = pd.read_csv(f'stimulus_selection.csv', index_col=0)
+stimuli = pd.read_csv('stimulus_selection.csv', index_col=0)
 
 all_epochs = []
-for subject in [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15]:
+for subject in range(1, 16):
     print(f'Loading subject {subject}...', flush=True)
     epochs = mne.read_epochs(f'{data_path}/bids/derivatives/marijn/sub-{subject:02d}/meg/sub-{subject:02d}-epo.fif')
     epochs.crop(0, 0.8).resample(100).pick_types(meg='grad')
@@ -28,6 +20,7 @@ for subject in [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15]:
     epochs.drop(np.flatnonzero(np.isnan(epochs.metadata.y).values))
     all_epochs.append(epochs)
 epochs = mne.concatenate_epochs(all_epochs)
+assert len(epochs) == (560 * 15)
 
 # We're going to be computing lots of big DSMs and the result will not fit
 # comfortably in memory. Hence we'll be streaming the results to disk using a
@@ -44,7 +37,7 @@ def compute_dsms_ch(index, channel):
     channel : int
         Integer index of channel to use as center of the searchlight patch.
     """
-    dsms[index] = next(mne_rsa.dsm_epochs(
+    dsms[index] = list(mne_rsa.dsm_epochs(
         epochs,
         y=epochs.metadata['y'],
         spatial_radius=0.04,
