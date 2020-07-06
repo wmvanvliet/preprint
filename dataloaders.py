@@ -229,11 +229,12 @@ class TFRecord(VisionDataset):
         super().__init__(root, transform=transform,
                          target_transform=target_transform)
 
+        self.labels = labels
         base_fname = 'train' if train else 'test'
         self.file = open(op.join(root, f'{base_fname}.tfrecord'), 'rb')
         self.file_index = np.loadtxt(op.join(root, f'{base_fname}.index'), dtype=np.int64)[:, 0]
         self.meta = pd.read_csv(op.join(root, f'{base_fname}.csv'), index_col=0)
-        self.vectors = np.atleast_2d(np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301), encoding='utf8'))
+        self.vectors = np.atleast_2d(np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301), encoding='utf8', dtype=np.float32))
         self.classes = self.meta.groupby('label').agg('first')['text']
         self.class_to_idx = {name: i for i, name in enumerate(self.classes)}
 
@@ -281,7 +282,7 @@ class TFRecord(VisionDataset):
                 value = np.array(value, dtype=np.int32)
             features[key] = value
 
-        img = Image.open(BytesIO(features['image/encoded']))
+        img = Image.open(BytesIO(features['image/encoded'])).convert('RGB')
         target = int(features['image/class/label'][0])
 
         if self.transform is not None:
@@ -289,6 +290,9 @@ class TFRecord(VisionDataset):
 
         if self.target_transform is not None:
             target = self.target_transform(target)
+
+        if self.labels == 'vector':
+            target = self.vectors[target]
 
         return img, target
 
