@@ -8,5 +8,6 @@ alexnet = models.alexnet
 vgg16 = models.vgg16_bn
 resnet18 = models.resnet18
 vgg = reading.VGG16
+vgg11 = reading.VGG11
 vgg_sem = reading.VGGSem
 vgg_small = reading.VGGSmall

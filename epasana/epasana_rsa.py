@@ -12,20 +12,21 @@ stimuli['y'] = np.arange(len(stimuli))
 metadata = pd.merge(epochs.metadata, stimuli[['y']], left_on='text', right_index=True).sort_index()
 assert np.array_equal(metadata.event_id.values.astype(int), epochs.events[:, 2])
 
-model_name = 'vgg_first_imagenet_then_pilot-words_pilot-nontext_imagenet256_w2v'
-with open(f'../data/dsms/pilot2_{model_name}_dsms.pkl', 'rb') as f:
+model_name = 'vgg_first_imagenet_then_epasana-words_epasana-nontext_imagenet256_w2v'
+with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'rb') as f:
     dsm_models = pickle.load(f)
     dsm_names = dsm_models['dsm_names']
 
 rsa_results = mne_rsa.rsa_epochs(
     epochs,
     dsm_models['dsms'],
-    y=metadata['y'],
+    y=epochs.metadata['y'],
     spatial_radius=0.04,
     temporal_radius=0.05,
     epochs_dsm_metric='correlation',
     verbose=True,
-    n_jobs=6,
+    n_jobs=4,
+    n_folds=5,
 )
 
 for r, name in zip(rsa_results, dsm_names):

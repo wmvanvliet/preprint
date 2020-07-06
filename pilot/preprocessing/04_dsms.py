@@ -7,6 +7,7 @@ import mne
 import pandas as pd
 import numpy as np
 from joblib import Parallel, delayed
+from tqdm import tqdm
 
 from config import fname, n_jobs
 
@@ -17,6 +18,7 @@ args = parser.parse_args()
 subject = args.subject
 print('Processing subject:', subject)
 
+# Read epochs and create the stimulus order
 epochs = mne.read_epochs(fname.epochs(subject=subject))
 epochs = epochs[['word', 'symbols', 'consonants']]
 epochs.crop(0, 0.8).resample(100).pick_types(meg='grad')
@@ -36,7 +38,7 @@ def compute_dsms(picks):
     ))
 
 dsms = Parallel(n_jobs=n_jobs, verbose=True)(
-    delayed(compute_dsms)(p) for p in range(epochs.info['nchan'])
+    delayed(compute_dsms)(p) for p in tqdm(range(epochs.info['nchan']))
 )
 
 np.savez_compressed(
