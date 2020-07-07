@@ -135,6 +135,9 @@ class VGG16(nn.Module):
         modulelist = list(self.classifier.modules())[1:]
         output_layer = modulelist[6]
         prev_num_classes, classifier_size = output_layer.weight.shape
+        if prev_num_classes == num_classes:
+            print(f'=> not resizing output layer ({prev_num_classes} == {num_classes})')
+            return
         print(f'=> resizing output layer ({prev_num_classes} => {num_classes})')
         output_layer = nn.Linear(classifier_size, num_classes)
         nn.init.normal_(output_layer.weight, 0, 0.01)
@@ -220,8 +223,8 @@ class VGG11(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            #nn.ReLU(True),  # <-- Added after training
-            #WinnerTakesAll(),  # <-- Added after training
+            nn.ReLU(True),  # <-- Added after training
+            WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
@@ -278,6 +281,9 @@ class VGG11(nn.Module):
         modulelist = list(self.classifier.modules())[1:]
         output_layer = modulelist[6]
         prev_num_classes, classifier_size = output_layer.weight.shape
+        if prev_num_classes == num_classes:
+            print(f'=> not resizing output layer ({prev_num_classes} == {num_classes})')
+            return
         print(f'=> resizing output layer ({prev_num_classes} => {num_classes})')
         output_layer = nn.Linear(classifier_size, num_classes)
         nn.init.normal_(output_layer.weight, 0, 0.01)
@@ -321,7 +327,7 @@ class VGGSem(nn.Module):
         num_channels = state_dict['features.0.weight'].shape[1]
         prev_num_classes = state_dict['classifier.6.weight'].shape[0]
         classifier_size = state_dict['classifier.6.weight'].shape[1]
-        vis_model = VGG16(num_channels, prev_num_classes, classifier_size)
+        vis_model = VGG11(num_channels, prev_num_classes, classifier_size)
         
         if checkpoint['arch'] == 'vgg' or checkpoint['arch'] == 'vgg11':
             vis_model.load_state_dict(state_dict)
@@ -339,7 +345,7 @@ class VGGSem(nn.Module):
                 for m in vis_model.modules():
                     if isinstance(m, nn.BatchNorm2d):
                         m.track_running_stats = False
-            print(f'=> attaching semantic layer (going from {prev_num_classes} to {num_classes})')
+            print(f'=> attaching semantic layer (going from {num_classes} to {vector_length})')
             model = cls(vis_model, vector_length)
         elif checkpoint['arch'] == 'vgg_sem':
             vector_length = state_dict['semantics.0.weight'].shape[0]
@@ -545,6 +551,9 @@ class VGGSmall(nn.Module):
         modulelist = list(self.classifier.modules())[1:]
         output_layer = modulelist[6]
         prev_num_classes, classifier_size = output_layer.weight.shape
+        if prev_num_classes == num_classes:
+            print(f'=> not resizing output layer ({prev_num_classes} == {num_classes})')
+            return
         print(f'=> resizing output layer ({prev_num_classes} => {num_classes})')
         output_layer = nn.Linear(classifier_size, num_classes)
         nn.init.normal_(output_layer.weight, 0, 0.01)
