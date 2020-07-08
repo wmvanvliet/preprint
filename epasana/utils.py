@@ -10,11 +10,13 @@ from tqdm import tqdm
 import pandas as pd
 
 
-def get_stimulus_images(data_path='/m/nbe/scratch/epasana'):
+def get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana'):
     """Get the stimulus images presented during the MEG experiment
 
     Parameters
     ----------
+    stimuli : DataFrame
+        Stimulus information
     data_path : str
         Path to the epasana dataset on scratch.
 
@@ -24,8 +26,6 @@ def get_stimulus_images(data_path='/m/nbe/scratch/epasana'):
         A tensor containing the bitmap data of the images presented to the
         subject during the MEG experiment. Ready to feed into a model.
     """
-    stimuli = pd.read_csv(f'{data_path}/bids/stimuli.csv')
-
     # Transform the images to a 60x60 pixel image suitable for feeding through
     # the model. This is the same transform as used in train_net.py during the
     # training of the model.
@@ -39,7 +39,7 @@ def get_stimulus_images(data_path='/m/nbe/scratch/epasana'):
     # transformation to them. Also keep track of the filesizes, as this is a decent
     # measure of visual complexity and perhaps useful in the RSA analysis.
     images = []
-    for fname in tqdm(stimuli['fname'], desc='Reading images'):
+    for fname in tqdm(stimuli['tif_file'], desc='Reading images'):
         with Image.open(f'{data_path}/bids/stimulus_images/{fname}') as orig:
             image = Image.new('RGB', (224, 224), '#696969')
             image.paste(orig, (12, 62))

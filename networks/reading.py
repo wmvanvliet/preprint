@@ -393,8 +393,8 @@ class VGGSem(nn.Module):
         return out
 
     def get_layer_activations(self, images,
-                              feature_layers=[5, 12, 22, 32, 42],
-                              classifier_layers=[1, 4, 8],
+                              feature_layers=[0, 4, 11, 18, 25],
+                              classifier_layers=[0, 3, 6],
                               semantic_layers=[0]):
         """Obtain activation of each layer on a set of images."""
         self.eval()

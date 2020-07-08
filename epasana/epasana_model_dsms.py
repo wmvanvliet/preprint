@@ -10,10 +10,10 @@ import pandas as pd
 
 import utils
 
-stimuli = pd.read_csv(f'../data/epasana/bids/stimuli.csv')
-images = utils.get_stimulus_images(data_path='../data/epasana')
+stimuli = pd.read_csv(f'stimulus_selection.csv')
+images = utils.get_stimulus_images(stimuli, data_path='../data/epasana')
 
-model_name = 'vgg_first_imagenet_then_pilot-words_pilot-nontext_imagenet256_w2v'
+model_name = 'vgg11_first_imagenet_then_epasana-words_epasana-nontext_imagenet256_w2v'
 #model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-symbols_tiny-imagenet'
 
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
@@ -55,14 +55,5 @@ dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'conv5', 'fc1', 'fc2', 'word', 
 with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'wb') as f:
     pickle.dump(dict(dsms=dsm_models, dsm_names=dsm_names), f)
 
-n_rows = 4
-n_cols = 4
-fig, ax = plt.subplots(n_rows, n_cols, sharex='col', sharey='row', figsize=(10, 10))
-for row in range(n_rows):
-    for col in range(n_cols):
-        i = row * n_cols + col
-        if i < len(dsm_models):
-            ax[row, col].imshow(distance.squareform(dsm_models[i]), cmap='magma')
-            ax[row, col].set_title(dsm_names[i])
-plt.tight_layout()
+mne_rsa.plot_dsms(dsm_models, dsm_names, n_rows=3, cmap='magma')
 plt.savefig(f'../figures/epasana_dsms_{model_name}.pdf')
