@@ -2,10 +2,8 @@ import torch
 import mne_rsa
 import numpy as np
 import networks
-import editdistance
 import pickle
 from matplotlib import pyplot as plt
-from scipy.spatial import distance
 import pandas as pd
 
 import utils
@@ -42,12 +40,13 @@ def noise_level(x, y):
 print('Computing model DSMs...', end='', flush=True)
 layer_outputs = model.get_layer_activations(images)
 layer_activity = []
+dsm_models = []
 for output in layer_outputs:
     if output.ndim == 4:
         layer_activity.append(np.square(output).sum(axis=(1, 2, 3)))
     elif output.ndim == 2:
         layer_activity.append(np.square(output).sum(axis=1))
-dsm_models = [mne_rsa.compute_dsm(activity, metric='euclidean') for activity in layer_activity]
+    dsm_models.append(mne_rsa.compute_dsm(output, metric='correlation'))
 dsm_models += [
     mne_rsa.compute_dsm(stimuli[['type']], metric=words_only),
     mne_rsa.compute_dsm(stimuli[['type']], metric=letters_only),
@@ -59,7 +58,7 @@ dsm_names = ['conv1', 'conv2', 'conv3', 'conv4', 'conv5', 'fc1', 'fc2', 'word', 
              'Words only', 'Letters only', 'Noise level', 'Pixel distance']
 
 with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'wb') as f:
-    pickle.dump(dict(dsms=dsm_models, dsm_names=dsm_names), f)
+    pickle.dump(dict(dsms=dsm_models, dsm_names=dsm_names, layer_activity=layer_activity), f)
 
 mne_rsa.plot_dsms(dsm_models, dsm_names, n_rows=3, cmap='magma')
 plt.savefig(f'../figures/epasana_dsms_{model_name}.pdf')

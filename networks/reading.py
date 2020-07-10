@@ -161,7 +161,7 @@ class VGG16(nn.Module):
 
         if freeze:
             print('=> freezing model')
-            for layer in model.features[:14]:
+            for layer in model.features:
                 for param in layer.parameters():
                     param.requires_grad = False
             print('=> disabling tracking batchnorm running stats')

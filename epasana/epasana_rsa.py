@@ -1,35 +1,34 @@
 import mne_rsa
 import mne
-import pandas as pd
 import numpy as np
 import pickle
 
-epochs = mne.read_epochs('../data/pilot_data/pilot2/pilot2_epo.fif')
-epochs = epochs[['word', 'symbols', 'consonants']]
-epochs.crop(0, 0.8).resample(100).pick_types(meg='grad')
-stimuli = epochs.metadata.groupby('text').agg('first').sort_values('event_id')
-stimuli['y'] = np.arange(len(stimuli))
-metadata = pd.merge(epochs.metadata, stimuli[['y']], left_on='text', right_index=True).sort_index()
-assert np.array_equal(metadata.event_id.values.astype(int), epochs.events[:, 2])
+print('Loading Epasana DSMs...', end='', flush=True)
+meg_data = np.load('../data/dsms/epasana-dsms.npz')
+ch_names = meg_data['ch_names']
+times = meg_data['times']
+dsms_meg = meg_data['dsms']
+print('done.')
 
-model_name = 'vgg_first_imagenet_then_epasana-words_epasana-nontext_imagenet256_w2v'
+model_name = 'vgg11_first_imagenet_then_epasana-words_epasana-nontext_imagenet256_w2v'
 with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'rb') as f:
-    dsm_models = pickle.load(f)
-    dsm_names = dsm_models['dsm_names']
+    model_data = pickle.load(f)
+    dsms_model = model_data['dsms']
+    dsms_model_names = model_data['dsm_names']
 
-rsa_results = mne_rsa.rsa_epochs(
-    epochs,
-    dsm_models['dsms'],
-    y=epochs.metadata['y'],
-    spatial_radius=0.04,
-    temporal_radius=0.05,
-    epochs_dsm_metric='correlation',
+rsa_results = mne_rsa.rsa(
+    list(dsms_meg.reshape(102 * 70, 172578)),
+    dsms_model,
+    metric='kendall-tau-a',
     verbose=True,
     n_jobs=4,
-    n_folds=5,
 )
 
-for r, name in zip(rsa_results, dsm_names):
-    r.comment = name
+info = mne.io.read_info('info_102.fif')
+info['sfreq'] = 100
+evokeds = []
+for data, name in zip(rsa_results.T, dsms_model_names):
+    data = data.reshape(102, 70)
+    evokeds.append(mne.EvokedArray(data, info, tmin=0.05, comment=name))
 
-mne.write_evokeds('../data/pilot_data/pilot2/pilot2_rsa_{model_name}-ave.fif', rsa_results)
+mne.write_evokeds(f'../data/epasana/epasana_rsa_{model_name}-ave.fif', evokeds)
