@@ -10,8 +10,8 @@ import pandas as pd
 
 import utils
 
-stimuli = pd.read_csv(f'stimulus_selection.csv')
-images = utils.get_stimulus_images(stimuli, data_path='../data/epasana')
+stimuli = pd.read_csv('stimulus_selection.csv')
+images = utils.get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana/')
 
 model_name = 'vgg11_first_imagenet_then_epasana-words_epasana-nontext_imagenet256_w2v'
 #model_name = 'vgg_first_imagenet64_then_tiny-words_tiny-consonants_tiny-symbols_tiny-imagenet'
@@ -41,7 +41,13 @@ def noise_level(x, y):
 
 print('Computing model DSMs...', end='', flush=True)
 layer_outputs = model.get_layer_activations(images)
-dsm_models = [mne_rsa.compute_dsm(output, metric='correlation') for output in layer_outputs]
+layer_activity = []
+for output in layer_outputs:
+    if output.ndim == 4:
+        layer_activity.append(np.square(output).sum(axis=(1, 2, 3)))
+    elif output.ndim == 2:
+        layer_activity.append(np.square(output).sum(axis=1))
+dsm_models = [mne_rsa.compute_dsm(activity, metric='euclidean') for activity in layer_activity]
 dsm_models += [
     mne_rsa.compute_dsm(stimuli[['type']], metric=words_only),
     mne_rsa.compute_dsm(stimuli[['type']], metric=letters_only),

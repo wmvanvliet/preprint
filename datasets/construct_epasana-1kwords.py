@@ -60,7 +60,7 @@ print('Reading Finnish Parsebank...', flush=True, end='')
 vectors = KeyedVectors.load_word2vec_format('/m/nbe/project/corpora/big/parsebank_v4/finnish_parsebank_v4_lemma_5+5.bin', binary=True)
 print('done.')
 
-# Adding some common finnish words to pad the list to 10_000
+# Adding some common finnish words to pad the list to 1_000
 more_words = list(vectors.vocab.keys())[:1_000_000]
 
 # Drop words containing capitals (like names) and punctuation characters
@@ -68,13 +68,13 @@ pattern = re.compile('^[a-zäö#]+$')
 more_words = [w for w in more_words if pattern.match(w)]
 
 # Do we have enough words left after our filters?
-assert len(more_words) >= 10_000
+assert len(more_words) >= 1_000
 
-# Pad the original word list up to 10_000 words
+# Pad the original word list up to 1_000 words
 more_words = pd.DataFrame(more_words)
 words = pd.concat([words, more_words], ignore_index=True)
 words = words.drop_duplicates()
-words = list(words[:10_000][0])
+words = list(words[:1_000][0])
 
 # Fix lemmatization of some words
 for i, w in enumerate(words):
@@ -100,7 +100,7 @@ chosen_sizes = []
 chosen_fonts = []
 chosen_words = []
 
-n = 50 if args.set == 'train' else 1
+n = 100 if args.set == 'train' else 10
 labels = np.zeros(len(words) * n, dtype=np.int)
 
 makedirs(args.path, exist_ok=True)
