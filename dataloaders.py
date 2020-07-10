@@ -174,7 +174,7 @@ class Tar(VisionDataset):
         self.file = tarfile.open(op.join(root, f'{base_fname}.tar'))
         self.items = self.file.getmembers()
         self.meta = pd.read_csv(op.join(root, f'{base_fname}.csv'), index_col=0)
-        self.vectors = np.atleast_2d(np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301), encoding='utf8'))
+        self.vectors = np.atleast_2d(np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301), encoding='utf8', comments=None))
 
         if labels == 'int':
             self.targets = [l + label_offset for l in self.meta['label']]
@@ -234,7 +234,7 @@ class TFRecord(VisionDataset):
         self.file = open(op.join(root, f'{base_fname}.tfrecord'), 'rb')
         self.file_index = np.loadtxt(op.join(root, f'{base_fname}.index'), dtype=np.int64)[:, 0]
         self.meta = pd.read_csv(op.join(root, f'{base_fname}.csv'), index_col=0)
-        self.vectors = np.atleast_2d(np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301), encoding='utf8', dtype=np.float32))
+        self.vectors = np.atleast_2d(np.loadtxt(op.join(root, 'vectors.csv'), delimiter=',', skiprows=1, usecols=np.arange(1, 301), encoding='utf8', dtype=np.float32, comments=None))
         self.classes = self.meta.groupby('label').agg('first')['text']
         self.class_to_idx = {name: i for i, name in enumerate(self.classes)}
 
