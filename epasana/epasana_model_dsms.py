@@ -37,6 +37,9 @@ def noise_level(x, y):
     else:
         return 0
 
+def n(x):
+    return x + (np.std(x) / 7) * np.random.randn(*x.shape)
+
 print('Computing model DSMs...', end='', flush=True)
 layer_outputs = model.get_layer_activations(images)
 layer_activity = []
@@ -46,7 +49,7 @@ for output in layer_outputs:
         layer_activity.append(np.square(output).sum(axis=(1, 2, 3)))
     elif output.ndim == 2:
         layer_activity.append(np.square(output).sum(axis=1))
-    dsm_models.append(mne_rsa.compute_dsm(output, metric='correlation'))
+    dsm_models.append(mne_rsa.compute_dsm(n(output), metric='correlation'))
 dsm_models += [
     mne_rsa.compute_dsm(stimuli[['type']], metric=words_only),
     mne_rsa.compute_dsm(stimuli[['type']], metric=letters_only),
