@@ -106,7 +106,7 @@ class VGG16(nn.Module):
                               classifier_layers=[1, 4, 8]):
         """Obtain activation of each layer on a set of images."""
         self.eval()
-        batch_size = 500
+        batch_size = 600
         with torch.no_grad():
             out = images
             for i, layer in enumerate(self.features):
@@ -254,7 +254,7 @@ class VGG11(nn.Module):
                               classifier_layers=[0, 3, 6]):
         """Obtain activation of each layer on a set of images."""
         self.eval()
-        batch_size = 500
+        batch_size = 600
         with torch.no_grad():
             out = images
             for i, layer in enumerate(self.features):
@@ -398,7 +398,7 @@ class VGGSem(nn.Module):
                               semantic_layers=[0]):
         """Obtain activation of each layer on a set of images."""
         self.eval()
-        batch_size = 500
+        batch_size = 600
         with torch.no_grad():
             out = images
             for i, layer in enumerate(self.features):

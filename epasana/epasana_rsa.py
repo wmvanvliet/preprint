@@ -10,7 +10,7 @@ times = meg_data['times']
 dsms_meg = meg_data['dsms']
 print('done.')
 
-model_name = 'vgg11_first_imagenet_then_epasana-words_epasana-nontext_imagenet256_w2v'
+model_name = 'vgg11_first_imagenet_then_epasana-1kwords_epasana-nontext'
 with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'rb') as f:
     model_data = pickle.load(f)
     dsms_model = model_data['dsms']
