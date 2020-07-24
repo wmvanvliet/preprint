@@ -32,6 +32,7 @@ sizes = np.linspace(14, 32, 42)
 fonts = ['courier new', 'dejavu sans mono', 'times new roman', 'arial',
          'arial black', 'verdana', 'comic sans ms', 'georgia',
          'liberation serif', 'impact', 'roboto condensed']
+noise_levels = [0.1, 0.2, 0.3]
 
 fonts = {
     'ubuntu mono': [None, f'{data_path}/fonts/UbuntuMono-R.ttf'],
@@ -92,6 +93,9 @@ for i, w in enumerate(words):
 # Perform a lookup for the w2v vectors for each chosen word
 vectors = vectors[words]
 
+# Words in the epasana experiment were always shown in upper case
+words = [word.upper() for word in words]
+
 # Start generating images
 rng = np.random.RandomState(0)
 
@@ -99,6 +103,7 @@ chosen_rotations = []
 chosen_sizes = []
 chosen_fonts = []
 chosen_words = []
+chosen_noise_levels = []
 
 n = 100 if args.set == 'train' else 10
 labels = np.zeros(len(words) * n, dtype=np.int)
@@ -113,17 +118,32 @@ for label, word in tqdm(enumerate(words), total=len(words)):
     word = word.replace('#', '')
     for i in range(n):
         f.clf()
-        ax = f.add_axes([0, 0, 1, 1])
+        ax = f.add_axes([0, 0, 1, 1], label='background')
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis('off')
+        ax.fill_between([0, 1], [1, 1], color='#696969')
+
         rotation = rng.choice(rotations)
         fontsize = rng.choice(sizes)
         font = rng.choice(list(fonts.keys()))
+        noise_level = rng.choice(noise_levels)
+
+        ax = f.add_axes([0, 0, 1, 1], label='text')
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis('off')
         fontfamily, fontfile = fonts[font]
         fontprop = fm.FontProperties(family=fontfamily, fname=fontfile, size=fontsize)
         ax.text(0.5, 0.5, word, ha='center', va='center', rotation=rotation,
-                fontproperties=fontprop)
+                fontproperties=fontprop, alpha=1 - noise_level)
+
+        ax = f.add_axes([0, 0, 1, 1], label='noise')
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
-        ax.set_axis_off()
+        ax.axis('off')
+        noise = rng.rand(256, 256)
+        ax.imshow(noise, extent=[0, 1, 0, 1], cmap='gray', alpha=noise_level)
 
         canvas.draw()
         buffer, (width, height) = canvas.print_to_buffer()
@@ -133,9 +153,11 @@ for label, word in tqdm(enumerate(words), total=len(words)):
         chosen_rotations.append(rotation)
         chosen_sizes.append(fontsize)
         chosen_fonts.append(font)
+        chosen_noise_levels.append(noise_level)
 
         buf = BytesIO()
         Image.fromarray(image.astype(np.uint8)).save(buf, format='jpeg')
+        #Image.fromarray(image.astype(np.uint8)).save('/tmp/test.jpg', format='jpeg')
 
         writer.write({
             'image/height': (height, 'int'),
@@ -154,7 +176,7 @@ writer.close()
 
 tfrecord.tools.create_index(f'{args.path}/{args.set}.tfrecord', f'{args.path}/{args.set}.index')
 
-df = pd.DataFrame(dict(text=chosen_words, rotation=chosen_rotations,
+df = pd.DataFrame(dict(text=chosen_words, rotation=chosen_rotations, noise=chosen_noise_levels,
                        size=chosen_sizes, font=chosen_fonts, label=labels))
 df.to_csv(f'{args.path}/{args.set}.csv')
 pd.DataFrame(vectors, index=words).to_csv(f'{args.path}/vectors.csv')
