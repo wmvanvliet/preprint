@@ -1,3 +1,6 @@
+"""
+Compute DSMs based on the MEG data of the epasana dataset.
+"""
 import mne
 import mne_rsa
 import pandas as pd
@@ -25,7 +28,7 @@ assert len(epochs) == (560 * 15)
 # We're going to be computing lots of big DSMs and the result will not fit
 # comfortably in memory. Hence we'll be streaming the results to disk using a
 # memmap-ed file.
-dsms = np.memmap('/tmp/dsms.npy', shape=(102, 70, 172578), mode='w+', dtype=np.float64)
+dsms = np.memmap('/tmp/dsms.npy', shape=(102, 78, 172578), mode='w+', dtype=np.float64)
 
 def compute_dsms_ch(index, channel):
     """Compute DSMs for a single channel and store them in the memmap-ed dsms array.
@@ -41,16 +44,16 @@ def compute_dsms_ch(index, channel):
         epochs,
         y=epochs.metadata['y'],
         spatial_radius=0.04,
-        temporal_radius=0.05,
+        temporal_radius=0.01,
         dist_metric='correlation',
         picks=channel,
-        n_folds=5,
+        n_folds=1,
     ))
 
 # Compute DSMs in parallel. Each channel gets assigned its own worker using the
 # helper function above.
 channels = range(0, epochs.info['nchan'], 2)  # Only use one of the two gradiometers as patch center
-Parallel(n_jobs=4, verbose=True)(
+Parallel(n_jobs=4)(
     delayed(compute_dsms_ch)(i, c) for i, c in enumerate(tqdm(channels))
 )
 
@@ -60,5 +63,5 @@ np.savez_compressed(
     f'{data_path}/bids/derivatives/reading_models/epasana-dsms.npz',
     dsms=dsms,
     ch_names=epochs.ch_names,
-    times=epochs.times[5:-4],
+    times=epochs.times[1:-2],
 )

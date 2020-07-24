@@ -1,3 +1,6 @@
+"""
+Compute DSMs from the model activations for use in RSA with the epasana dataset.
+"""
 import torch
 import mne_rsa
 import numpy as np
@@ -8,10 +11,12 @@ import pandas as pd
 
 import utils
 
+torch.set_num_threads(1)
+
 stimuli = pd.read_csv('stimulus_selection.csv')
 images = utils.get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana/')
 
-model_name = 'vgg11_first_imagenet_then_epasana-1kwords_epasana-consonants'
+model_name = 'vgg11_first_imagenet_then_epasana-1kwords_epasana-nontext_imagenet256'
 
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
 model = networks.vgg11.from_checkpoint(checkpoint, freeze=True)
