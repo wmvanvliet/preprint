@@ -19,37 +19,21 @@ from reading_models import networks
 import os
 import contextlib
 
-def analyze_model(model_path, data_path='/m/nbe/scratch/epasana',
-                  meta_path = '/m/nbe/scratch/epasana/bids/stimuli.csv',
-                  feature_layers=[5, 12, 22, 32, 42],
-                  classifier_layers=[1, 4, 8],
-                  noise_path='noise.pdf', rot_path='rotation.pdf',
-                  len_path='len.pdf', rsa_path='rsa_analysis.pdf'):
-    """Analyze model on how it responds to noises, rotations and word lengths,
-    and save results in image files.
-    
-    Parameters
-    ----------
-    model_path: str
-        Path to the VGGSem model.
-    data_path: str
-        Path to the epasana dataset folder.
-    meta_path: str
-        Path to the csv file containing meta data of epasana images.
-    feature_layers: list of int
-        Index of feature layers to use for analysis.
-    classifier_layers: list of int
-        Index of classifier layers to use for analysis.
-    noise_path: str
-        File name to save the noise DSMs plot as.
-    rot_path: str
-        File name to save the rotation DSMs plot as.
-    len_path: str
-        File name to save the word length DSMs plot as.
-    rsa_path: str
-        File name to save the RSA analysis plot as.
-    """
-    
+# parameters
+model_path = "" # need to select a model
+data_path='/m/nbe/scratch/epasana'
+meta_path = '/m/nbe/scratch/epasana/bids/stimuli.csv'
+feature_layers=[5, 12, 22, 32, 42]
+classifier_layers=[1, 4, 8]
+noise_path='noise.pdf' # set to None to skip noise DSMs plot
+rot_path='rotation.pdf' # set to None to skip rotation DSMs plot
+len_path='len.pdf' # set to None to skip word lengths DSMs plot
+rsa_path='rsa_analysis.pdf' # set to None to skip RSAs bar plot
+
+if noise_path is None:
+    rsa_noise = None
+
+else: # if noise_path is not None
     def create_image_noise(data_path=data_path, index=300, 
                            n_noise_levels=100, max_noise_std=1.5):
         """Get the stimulus images presented during the MEG experiment with noises
@@ -173,7 +157,11 @@ def analyze_model(model_path, data_path='/m/nbe/scratch/epasana',
     
     # save model DSMs for noisy imput
     fig.savefig(noise_path)
-    
+
+if rot_path is None:
+    rsa_rot = None
+
+else: #if rot_path is not None
     def create_image_rotation(data_path=data_path, index=300, 
                               angles=[0, 45, -45, 90, -90, 135, -135, 180]):
         """Get the stimulus images presented during the MEG experiment with rotation.
@@ -245,7 +233,7 @@ def analyze_model(model_path, data_path='/m/nbe/scratch/epasana',
         outputs = model.get_layer_activations(img_rotation,
                                               feature_layers=feature_layers,
                                               classifier_layers=classifier_layers)
-
+    
     # plot model DSMs
     fig, axes = plt.subplots(h, w, figsize=figsize)
     for i in range(n_loops):
@@ -276,7 +264,11 @@ def analyze_model(model_path, data_path='/m/nbe/scratch/epasana',
     
     # save model DSMs image for rotated input
     fig.savefig(rot_path)
-    
+
+if len_path is None:
+    rsa_len = None
+
+else: #if len_path is not None
     meta = pd.read_csv(meta_path)
     lengths = np.array([len(word) for word in meta[meta.text.notna()].text])
     unique_len = np.unique(lengths)
@@ -383,21 +375,30 @@ def analyze_model(model_path, data_path='/m/nbe/scratch/epasana',
     
     # save DSMs image for different word lengths
     fig.savefig(len_path)
-    
+
+if rsa_path is not None:
     # plot RSAs bar graph
     conv_layers = 'conv' + pd.Series(feature_layers, dtype=str)
     fc_layers = 'fc' + pd.Series(classifier_layers, dtype=str)
     layers = pd.concat([conv_layers, fc_layers, pd.Series(['sem'])], ignore_index=True)
-    rsas = [rsa_noise, rsa_rot, rsa_len]
+    rsas = np.array([rsa_noise, rsa_rot, rsa_len])
+    titles = np.array(["Noise", "Rotation", "Word Length"])[rsas != None]
+    rsas = rsas[rsas != None]
     
-    n_plots = 3
-    fig, axes = plt.subplots(n_plots, sharex=True, sharey=True, figsize=(6, 8))
-    titles = ["Noise", "Rotation", "Word Length"]
+    n_plots = len(rsas)
+    if n_plots == 0:
+        raise ValueError("Need DSMs to compute RSAs."
+                         "Set one of noise/rot/len paths to non-None.")
+    else:
+        pass
+    fig, axes = plt.subplots(n_plots, sharex=True, sharey=True, figsize=(6, n_plots * 3))
+    if n_plots == 1:
+        axes = [axes]
     fig.suptitle("RSA analysis")
     
     for i in range(n_plots):
         axes[i].bar(x=layers, height=rsas[i])
         axes[i].set_title(titles[i], fontdict={'verticalalignment': 'center'}, rotation='vertical', x=-0.125, y=0.5)
     plt.setp(axes, ylim=(-0.6, 1.2));
-    plt.savefig("rsa_path")
+    plt.savefig(rsa_path)
     
