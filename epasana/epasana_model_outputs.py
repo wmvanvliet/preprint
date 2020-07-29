@@ -30,7 +30,7 @@ images = utils.get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana')
 # Load the model and feed through the images
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
 model = networks.vgg11.from_checkpoint(checkpoint, freeze=True)
-outputs = next(model.get_layer_activations(images, feature_layers=[], classifier_layers=[8]))
+outputs = next(model.get_layer_activations(images, feature_layers=[], classifier_layers=[6]))
 #model = networks.vgg_sem.from_checkpoint(checkpoint, freeze=True)
 #feature_outputs, classifier_outputs, semantic_outputs = model.get_layer_activations(images)
 
@@ -49,7 +49,7 @@ plt.colorbar()
 #plt.axvline(202, color='black')
 #plt.savefig('fig1.png', dpi=200)
 plt.xlim(0, 500)
-plt.ylim(352, 470)
+#plt.ylim(352, 470)
 
 # plt.figure()
 # sem = semantic_outputs[-1][order]

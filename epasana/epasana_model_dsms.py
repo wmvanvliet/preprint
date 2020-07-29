@@ -53,13 +53,13 @@ layer_activity = []
 dsm_models = []
 for output in layer_outputs:
     if output.ndim == 4:
-        layer_activity.append(np.square(output).sum(axis=(1, 2, 3)))
+        layer_activity.append(np.square(output).mean(axis=(1, 2, 3)))
     elif output.ndim == 2:
-        layer_activity.append(np.square(output).sum(axis=1))
-    if output.shape[-1] == 1001:
-        print('Removing nontext class')
-        output = np.hstack((output[:, :1000], output[:, 1001:]))
-        print('New output shape:', output.shape)
+        layer_activity.append(np.square(output).mean(axis=1))
+    #if output.shape[-1] == 10001:
+    #    print('Removing nontext class')
+    #    output = np.hstack((output[:, :10000], output[:, 10001:]))
+    #    print('New output shape:', output.shape)
     dsm_models.append(mne_rsa.compute_dsm(n(output), metric='correlation'))
 
 dsm_models += [
