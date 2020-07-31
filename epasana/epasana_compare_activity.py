@@ -5,16 +5,18 @@ import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
-from scipy.stats import zscore, spearmanr
-from tqdm import tqdm
+from scipy.stats import zscore, rankdata
 
 epochs = mne.read_epochs('../data/epasana/items-epo.fif')
 stimuli = pd.read_csv('stimulus_selection.csv')
 stimuli['type'] = stimuli['type'].astype('category')
+info = mne.io.read_info('info_102.fif')
 
 ga = []
 for t in stimuli.type.unique():
     ev = epochs[f'type=="{t}"'].average()
+    grads_comb = np.linalg.norm(ev.data.reshape(2, 102, 80), axis=0)
+    ev = mne.EvokedArray(grads_comb, info, tmin=ev.times[0])
     ev.comment = t
     ga.append(ev)
 
@@ -22,13 +24,13 @@ for t in stimuli.type.unique():
 model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
 with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'rb') as f:
     d = pickle.load(f)
-layer_activity = d['layer_activity'][1::2]
-layer_names = d['dsm_names'][1:-4:2]
+layer_activity = d['layer_activity']
+layer_names = d['dsm_names'][:-4]
 
 dsms = [mne_rsa.compute_dsm(a, metric='euclidean') for a in layer_activity]
 mne_rsa.plot_dsms(dsms, layer_names, n_rows=4)
 
-fig, axes = plt.subplots(4, 2, sharex=True, figsize=(16, 10))
+fig, axes = plt.subplots(4, 4, sharex=True, figsize=(16, 10))
 for i, ax in enumerate(axes.ravel()):
     ax.plot(layer_activity[i])
     ax.set_title(layer_names[i])
@@ -39,41 +41,26 @@ for i, ax in enumerate(axes.ravel()):
         ax.legend(loc='upper right')
 plt.tight_layout()
 
-epochs_norm = epochs.copy()
-epochs_norm._data = zscore(epochs_norm._data, axis=0)
+def pearsonr(x, y, *, x_axis=-1, y_axis=-1):
+    """Compute Pearson correlation along the given axis."""
+    x = zscore(x, axis=x_axis)
+    y = zscore(y, axis=y_axis)
+    return np.tensordot(x, y, (x_axis, y_axis)) / x.shape[x_axis]
 
-evokeds = []
-for i, name in enumerate(layer_names):
-    if name.endswith('relu'):
-        continue
-    design_matrix = np.hstack([np.ones((len(epochs_norm), 1)), zscore(layer_activity[i])[:, None]])
-    r = mne.stats.linear_regression(epochs_norm, design_matrix, ['offset', name])
-    ev = r[name].beta
-    ev.comment = name
-    evokeds.append(ev)
+def spearmanr(x, y, *, x_axis=-1, y_axis=-1):
+    """Compute Spearman rank correlation along the given axis."""
+    x = rankdata(x, axis=x_axis)
+    y = rankdata(y, axis=y_axis)
+    return pearsonr(x, y, x_axis=x_axis, y_axis=y_axis)
 
-# HACK!
-data = np.zeros(epochs._data.shape[1:])
-for ch in tqdm(range(len(epochs.ch_names))):
-    for t in range(len(epochs.times)):
-        data[ch, t] = spearmanr(layer_activity[2], epochs._data[:, ch, t])[0]
-ev1 = mne.EvokedArray(abs(data), epochs.info, tmin=epochs.times[0], comment=layer_names[2])
-
-data = np.zeros(epochs._data.shape[1:])
-for ch in tqdm(range(len(epochs.ch_names))):
-    for t in range(len(epochs.times)):
-        data[ch, t] = spearmanr(layer_activity[8], epochs._data[:, ch, t])[0]
-ev2 = mne.EvokedArray(abs(data), epochs.info, tmin=epochs.times[0], comment=layer_names[8])
-
-data = np.zeros(epochs._data.shape[1:])
-for ch in tqdm(range(len(epochs.ch_names))):
-    for t in range(len(epochs.times)):
-        data[ch, t] = spearmanr(layer_activity[12], epochs._data[:, ch, t])[0]
-ev3 = mne.EvokedArray(abs(data), epochs.info, tmin=epochs.times[0], comment=layer_names[12])
-
-data = np.zeros(epochs._data.shape[1:])
-for ch in tqdm(range(len(epochs.ch_names))):
-    for t in range(len(epochs.times)):
-        data[ch, t] = spearmanr(layer_activity[14], epochs._data[:, ch, t])[0]
-ev4 = mne.EvokedArray(abs(data), epochs.info, tmin=epochs.times[0], comment=layer_names[14])
-mne.viz.plot_evoked_topo([ev1, ev2, ev3, ev4], merge_grads=True, scalings=dict(grad=1), ylim=dict(grad=[0, 0.5]))
+info['sfreq'] = epochs.info['sfreq']
+evokeds_r = []
+# Combine grads
+# grads_comb = np.linalg.norm(epochs._data.reshape(588, 2, 102, 80), axis=1)
+# for r, name in zip(spearmanr(layer_activity, grads_comb, x_axis=1, y_axis=0), layer_names):
+#     ev = mne.EvokedArray(r.repeat(2, axis=0), epochs.info, tmin=epochs.times[0], comment=name)
+#     evokeds_r.append(ev)
+for r, name in zip(spearmanr(layer_activity, epochs._data, x_axis=1, y_axis=0), layer_names):
+    ev = mne.EvokedArray(r, epochs.info, tmin=epochs.times[0], comment=name)
+    evokeds_r.append(ev)
+mne.viz.plot_evoked_topo([evokeds_r[i] for i in [3, 9, 13, 15]], scalings=dict(grad=1), ylim=dict(grad=[0, 0.5]), merge_grads=True)
