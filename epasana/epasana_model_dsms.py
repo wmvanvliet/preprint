@@ -14,9 +14,9 @@ import utils
 torch.set_num_threads(1)
 
 stimuli = pd.read_csv('stimulus_selection.csv')
-images = utils.get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana/')
+images = utils.get_stimulus_images(stimuli, data_path='../data/epasana')
 
-model_name = 'vgg11_first_imagenet_then_epasana-1kwords_epasana-nontext_imagenet256'
+model_name = 'vgg11_first_imagenet_then_epasana-1kwords'
 
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
 model = networks.vgg11.from_checkpoint(checkpoint, freeze=True)
@@ -85,7 +85,7 @@ dsm_names = [
     'fc2',
     'fc2_relu',
     'word',
-    'word_relu',
+    #'word_relu',
     'Words only',
     'Letters only',
     'Noise level',
