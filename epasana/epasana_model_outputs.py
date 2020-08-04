@@ -21,11 +21,11 @@ import networks
 import utils
 
 # The model to perform the analysis on. I keep changing this around as I train new models.
-model_name = 'vgg11_first_imagenet_then_epasana-1kwords_epasana-nontext_imagenet256'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
 
 # Get the images that were presented during the MEG experiment
 stimuli = pd.read_csv('stimulus_selection.csv')
-images = utils.get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana')
+images = utils.get_stimulus_images(stimuli, data_path='m:/scratch/epasana')
 
 # Load the model and feed through the images
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
