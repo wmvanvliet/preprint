@@ -21,7 +21,7 @@ if subject == 'ga':
     epochs = mne.read_epochs('../data/epasana/items-epo.fif')
     epochs.metadata['tif_file'] = stimuli['tif_file'].values
 else:
-    epochs = mne.read_epochs(f'/m/nbe/scratch/epasana/bids/derivatives/marijn/sub-{subject:02d}/meg/sub-{subject:02d}-epo.fif')
+    epochs = mne.read_epochs(f'm:/scratch/epasana/bids/derivatives/marijn/sub-{subject:02d}/meg/sub-{subject:02d}-epo.fif')
 epochs.pick_types(meg='grad')
 
 # Drop any stimuli for which there are no corresponding epochs
@@ -78,12 +78,12 @@ evokeds_r = []
 # for r, name in zip(pearsonr(layer_activity, grads_comb, x_axis=1, y_axis=0), layer_names):
 #     ev = mne.EvokedArray(r.repeat(2, axis=0), epochs.info, tmin=epochs.times[0], comment=name)
 #     evokeds_r.append(ev)
-for r, name in zip(pearsonr(layer_activity, epochs._data, x_axis=1, y_axis=0), layer_names):
+for r, name in zip(spearmanr(layer_activity, epochs._data, x_axis=1, y_axis=0), layer_names):
     ev = mne.EvokedArray(r, epochs.info, tmin=epochs.times[0], comment=name)
     evokeds_r.append(ev)
 # mne.viz.plot_evoked_topo([evokeds_r[i] for i in [3, 9, 13, 15]], scalings=dict(grad=1), ylim=dict(grad=[0, 0.5]), merge_grads=False)
 
 if subject == 'ga':
-    mne.write_evokeds('/m/nbe/scratch/reading_models/epasana/ga_layer_corr-ave.fif', evokeds_r)
+    mne.write_evokeds('m:/scratch/reading_models/epasana/ga_layer_corr-ave.fif', evokeds_r)
 else:
-    mne.write_evokeds(f'/m/nbe/scratch/reading_models/epasana/sub-{subject:02}_layer_corr-ave.fif', evokeds_r)
+    mne.write_evokeds(f'm:/scratch/reading_models/epasana/sub-{subject:02}_layer_corr-ave.fif', evokeds_r)

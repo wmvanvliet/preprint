@@ -26,7 +26,7 @@ layer_activity = d['layer_activity']
 layer_names = d['dsm_names'][:-4]
 
 noise_sens = stimuli['type'].isin(['noisy word']).values.astype(int)[:, None]
-letter_sens = stimuli['type'].isin(['consonants', 'word', 'pseudoword']).values.astype(int)[:, None]
+letter_sens = stimuli['type'].isin(['noisy word', 'consonants', 'word', 'pseudoword']).values.astype(int)[:, None]
 word_sens = stimuli['type'].isin(['word', 'pseudoword']).values.astype(int)[:, None]
 
 r = mne.stats.linear_regression(epochs, np.hstack([noise_sens, letter_sens, word_sens]), ['noise', 'letter', 'word'])
