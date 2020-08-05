@@ -7,21 +7,23 @@ import matplotlib.pyplot as plt
 import matplotlib
 from scipy.stats import zscore, rankdata
 
+from config import fname
+
 if len(sys.argv) > 1:
     subject = int(sys.argv[1])
 else:
     subject = 'ga'
 
-stimuli = pd.read_csv('stimulus_selection.csv')
+stimuli = pd.read_csv(fname.stimulus_selection)
 stimuli['type'] = stimuli['type'].astype('category')
-info = mne.io.read_info('info_102.fif')
+info = mne.io.read_info(fname.info_102)
 
 # Read MEG data
 if subject == 'ga':
-    epochs = mne.read_epochs('../data/epasana/items-epo.fif')
+    epochs = mne.read_epochs(fname.ga_epochs)
     epochs.metadata['tif_file'] = stimuli['tif_file'].values
 else:
-    epochs = mne.read_epochs(f'm:/scratch/epasana/bids/derivatives/marijn/sub-{subject:02d}/meg/sub-{subject:02d}-epo.fif')
+    epochs = mne.read_epochs(fname.epochs(subject=subject))
 epochs.pick_types(meg='grad')
 
 # Drop any stimuli for which there are no corresponding epochs
@@ -42,7 +44,7 @@ for t in stimuli.type.unique():
 
 # Load model layer activations
 model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
-with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'rb') as f:
+with open(fname.model_dsms(name=model_name), 'rb') as f:
     d = pickle.load(f)
 layer_activity = np.array(d['layer_activity'])[:, stimuli.index]
 layer_names = d['dsm_names'][:-4]
@@ -74,16 +76,16 @@ def spearmanr(x, y, *, x_axis=-1, y_axis=-1):
 info['sfreq'] = epochs.info['sfreq']
 evokeds_r = []
 # # Combine grads
-# grads_comb = np.linalg.norm(epochs._data.reshape(588, 2, 102, 80), axis=1)
-# for r, name in zip(pearsonr(layer_activity, grads_comb, x_axis=1, y_axis=0), layer_names):
+# grads_comb = np.linalg.norm(epochs._data.reshape(len(epochs), 102, 2, len(epochs.times)), axis=2)
+# for r, name in zip(spearmanr(layer_activity, grads_comb, x_axis=1, y_axis=0), layer_names):
 #     ev = mne.EvokedArray(r.repeat(2, axis=0), epochs.info, tmin=epochs.times[0], comment=name)
 #     evokeds_r.append(ev)
 for r, name in zip(spearmanr(layer_activity, epochs._data, x_axis=1, y_axis=0), layer_names):
     ev = mne.EvokedArray(r, epochs.info, tmin=epochs.times[0], comment=name)
     evokeds_r.append(ev)
-# mne.viz.plot_evoked_topo([evokeds_r[i] for i in [3, 9, 13, 15]], scalings=dict(grad=1), ylim=dict(grad=[0, 0.5]), merge_grads=False)
+mne.viz.plot_evoked_topo([evokeds_r[i] for i in [3, 9, 13, 15]], scalings=dict(grad=1), ylim=dict(grad=[0, 0.5]), merge_grads=False)
 
 if subject == 'ga':
-    mne.write_evokeds('m:/scratch/reading_models/epasana/ga_layer_corr-ave.fif', evokeds_r)
+    mne.write_evokeds(fname.ga_layer_corr, evokeds_r)
 else:
-    mne.write_evokeds(f'm:/scratch/reading_models/epasana/sub-{subject:02}_layer_corr-ave.fif', evokeds_r)
+    mne.write_evokeds(fname.layer_corr(subject=subject), evokeds_r)

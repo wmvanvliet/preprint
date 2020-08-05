@@ -1,115 +1,110 @@
+"""
+Create functional localizers for the three landmarks: visual, letter string and m400.
+Quantify activity in each landmark.
+"""
+import sys
 import mne
-import posthoc
 import numpy as np
 import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
 
-epochs = mne.read_epochs('../data/epasana/items-epo.fif')
-stimuli = pd.read_csv('stimulus_selection.csv')
-stimuli['type'] = stimuli['type'].astype('category')
-info = mne.io.read_info('info_102.fif')
+from config import fname, subjects
 
-ga = []
-for t in stimuli.type.unique():
-    ev = epochs[f'type=="{t}"'].average()
-    grads_comb = np.linalg.norm(ev.data.reshape(2, 102, 80), axis=0)
-    ev = mne.EvokedArray(grads_comb, info, tmin=ev.times[0])
-    ev.comment = t
-    ga.append(ev)
+if len(sys.argv) > 1:
+    subject = int(sys.argv[1])
+else:
+    subject = 'ga'
 
+##
+if subject == 'ga':
+    epochs = mne.read_epochs(fname.ga_epochs)
+else:
+    epochs = mne.read_epochs(fname.epochs(subject=subject))
 
-model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
-with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'rb') as f:
-    d = pickle.load(f)
-layer_activity = d['layer_activity']
-layer_names = d['dsm_names'][:-4]
+info_102 = mne.io.read_info(fname.info_102)
+info_102['sfreq'] = epochs.info['sfreq']
 
-noise_sens = stimuli['type'].isin(['noisy word']).values.astype(int)[:, None]
-letter_sens = stimuli['type'].isin(['noisy word', 'consonants', 'word', 'pseudoword']).values.astype(int)[:, None]
-word_sens = stimuli['type'].isin(['word', 'pseudoword']).values.astype(int)[:, None]
+# Combine gradiometer pairs
+epochs.pick_types(meg='grad')
+grads_comb = np.linalg.norm(epochs.get_data().reshape(len(epochs), 102, 2, len(epochs.times)), axis=2)
 
-r = mne.stats.linear_regression(epochs, np.hstack([noise_sens, letter_sens, word_sens]), ['noise', 'letter', 'word'])
-#r = mne.stats.linear_regression(epochs, noise_sens, ['noise'])
-noise_template = r['noise'].beta
-noise_template.comment = 'noise template'
-#r = mne.stats.linear_regression(epochs, letter_sens, ['letter'])
-letter_template = r['letter'].beta
-letter_template.comment = 'letter template'
-#r = mne.stats.linear_regression(epochs, word_sens, ['word'])
-word_template = r['word'].beta
-word_template.comment = 'word template'
+## Make t-maps with the proper contrasts to hunt for the ROIs
+# Contrast between noisy and non-noisy stimuli.
+cond1 = grads_comb[epochs.metadata.type == 'noisy word']
+cond2 = grads_comb[epochs.metadata.type != 'noisy word']
+ts_noise, ps_noise = ttest_ind(cond1, cond2, axis=0)
+tmap_noise = mne.EvokedArray(ts_noise.repeat(2, axis=0), epochs.info, tmin=epochs.tmin, comment='noise contrast t-values')
 
-times=[0.05, 0.1, 0.15, 0.17, 0.2, 0.25, 0.3, 0.4, 0.5]
-noise_template.plot_topomap(times, title='Noise template')
-letter_template.plot_topomap(times, title='Letter template')
-word_template.plot_topomap(times, title='Word template')
+# Contrast between letter and non-letter stimuli.
+cond1 = grads_comb[epochs.metadata.type.isin(['word', 'pseudoword', 'consonants'])]
+cond2 = grads_comb[epochs.metadata.type == 'symbols']
+ts_letter, ps_letter = ttest_ind(cond1, cond2, axis=0)
+tmap_letter = mne.EvokedArray(ts_letter.repeat(2, axis=0), epochs.info, tmin=epochs.tmin, comment='letter contrast t-values')
 
-def make_X(epochs):
-    """Construct an n_samples x n_channels matrix from an mne.Epochs object."""
-    #X = epochs.get_data().transpose(0, 2, 1).reshape(-1, epochs.info['nchan'])
-    X = epochs.get_data().reshape(len(epochs), -1)
-    return X
-X = make_X(epochs)
+# Contrast between (pseudo-)word and non-word stimuli.
+cond1 = grads_comb[epochs.metadata.type.isin(['word', 'pseudoword'])]
+cond2 = grads_comb[epochs.metadata.type.isin(['symbols', 'consonants'])]
+ts_word, ps_word = ttest_ind(cond1, cond2, axis=0)
+tmap_word = mne.EvokedArray(ts_word.repeat(2, axis=0), epochs.info, tmin=epochs.tmin, comment='word contrast t-values')
 
-def pattern_modifier(pattern, X_train=None, y_train=None, mu=0.36, sigma=0.06):
-    pattern = pattern.reshape(204, 80)
-    
-    # Define mu and sigma in samples
-    mu = np.searchsorted(epochs.times, mu)
-    sigma = sigma  * epochs.info['sfreq']
-    
-    # Formula for Gaussian curve
-    kernel = np.exp(-0.5 * ((np.arange(80) - mu) / sigma) ** 2)
-    
-    return (pattern * kernel).ravel()
+## Plot tvalues and overlay manually chosen temporal ROIs
+ROI_noise_temp = (0.065, 0.135)  # Manually chosen values
+ROI_letter_temp = (0.16, 0.22)
+ROI_word_temp = (0.27, 0.54)
+ROI_noise_temp_idx = slice(*np.searchsorted(epochs.times, ROI_noise_temp))
+ROI_letter_temp_idx = slice(*np.searchsorted(epochs.times, ROI_letter_temp))
+ROI_word_temp_idx = slice(*np.searchsorted(epochs.times, ROI_word_temp))
 
-def plot_mod_pattern(ev, mu, sigma):
-    pat = pattern_modifier(ev.data, mu=mu, sigma=sigma)
-    ev = mne.EvokedArray(pat.reshape(ev.data.shape), ev.info)
-    ev.plot()
+fig, axes = plt.subplots(3, 1, sharex=True, figsize=(8, 10))
+axes[0].plot(tmap_noise.times, ts_noise.T, color='black', alpha=0.2)
+axes[0].set_ylabel('t-value')
+axes[0].set_title(tmap_noise.comment)
+axes[0].axvspan(*ROI_noise_temp, alpha=0.2, color='C0', label='Early visual')
+axes[0].legend(loc='upper right')
+axes[1].plot(tmap_letter.times, ts_letter.T, color='black', alpha=0.2)
+axes[1].set_ylabel('t-value')
+axes[1].set_title(tmap_letter.comment)
+axes[1].axvspan(*ROI_letter_temp, alpha=0.2, color='C1', label='Letter string')
+axes[1].legend(loc='upper right')
+axes[2].plot(tmap_word.times, ts_word.T, color='black', alpha=0.2)
+axes[2].set_ylabel('t-value')
+axes[2].set_xlabel('Time (s)')
+axes[2].axvspan(*ROI_word_temp, alpha=0.2, color='C2', label='m400')
+axes[2].legend(loc='upper right')
+axes[2].set_title(tmap_word.comment)
+plt.tight_layout()
 
-m = posthoc.Beamformer(noise_template.data.ravel(),
-                       cov=posthoc.cov_estimators.ShrinkageKernel(0.05)).fit(X)
-y_vis = m.transform(make_X(epochs))
-plt.figure()
-plt.bar([1, 2, 3, 4, 5], [
-    m.transform(make_X(epochs['type=="noisy word"'])).mean(),
-    m.transform(make_X(epochs['type=="consonants"'])).mean(),
-    m.transform(make_X(epochs['type=="pseudoword"'])).mean(),
-    m.transform(make_X(epochs['type=="word"'])).mean(),
-    m.transform(make_X(epochs['type=="symbols"'])).mean(),
-])
-plt.axhline(0, color='black')
-plt.title('Noise template')
-plt.xticks([1, 2, 3, 4, 5], ['noisy word', 'consonants', 'pseudoword', 'word', 'symbols'])
+## Plot tvalues as topomaps and overlay manually chosen spatial ROIs
+ROI_noise_spat = np.flatnonzero(ts_noise[:, ROI_noise_temp_idx].mean(axis=1).repeat(2, axis=0) > 8)
+ROI_letter_spat = np.flatnonzero(ts_letter[:, ROI_letter_temp_idx].mean(axis=1).repeat(2, axis=0) > 3)
+ROI_word_spat = np.flatnonzero(ts_word[:, ROI_word_temp_idx].mean(axis=1).repeat(2, axis=0) > 3)
 
-m = posthoc.Beamformer(letter_template.data.ravel(),
-                       cov=posthoc.cov_estimators.ShrinkageKernel(0.05)).fit(X)
-y_vis = m.transform(make_X(epochs))
-plt.figure()
-plt.bar([1, 2, 3, 4, 5], [
-    m.transform(make_X(epochs['type=="noisy word"'])).mean(),
-    m.transform(make_X(epochs['type=="consonants"'])).mean(),
-    m.transform(make_X(epochs['type=="pseudoword"'])).mean(),
-    m.transform(make_X(epochs['type=="word"'])).mean(),
-    m.transform(make_X(epochs['type=="symbols"'])).mean(),
-])
-plt.axhline(0, color='black')
-plt.title('Letter template')
-plt.xticks([1, 2, 3, 4, 5], ['noisy word', 'consonants', 'pseudoword', 'word', 'symbols'])
+contrast1 = mne.combine_evoked((epochs[cond1].average(), -epochs['type!="noisy word"'].average()), weights='equal')
+mask = np.zeros(contrast1.data.shape, np.bool)
+mask[ROI_noise_spat, ROI_noise_temp_idx] = True
+contrast1.plot_joint([0.1, 0.17, 0.4],
+                     ts_args=dict(spatial_colors=False),
+                     topomap_args=dict(mask=mask, mask_params=dict(markersize=8)),
+                     title='noise contrast')
 
-m = posthoc.Beamformer(word_template.data.ravel(),
-                       cov=posthoc.cov_estimators.ShrinkageKernel(0.05)).fit(X)
-y_vis = m.transform(make_X(epochs))
-plt.figure()
-plt.bar([1, 2, 3, 4, 5], [
-    m.transform(make_X(epochs['type=="noisy word"'])).mean(),
-    m.transform(make_X(epochs['type=="consonants"'])).mean(),
-    m.transform(make_X(epochs['type=="pseudoword"'])).mean(),
-    m.transform(make_X(epochs['type=="word"'])).mean(),
-    m.transform(make_X(epochs['type=="symbols"'])).mean(),
-])
-plt.axhline(0, color='black')
-plt.title('Word template')
-plt.xticks([1, 2, 3, 4, 5], ['noisy word', 'consonants', 'pseudoword', 'word', 'symbols'])
+cond1 = np.flatnonzero(epochs.metadata.type.isin(['word', 'pseudoword', 'consonants']))
+cond2 = np.flatnonzero(epochs.metadata.type == 'symbols')
+contrast2 = mne.combine_evoked((epochs[cond1].average(), -epochs[cond2].average()), weights='equal')
+mask = np.zeros(contrast2.data.shape, np.bool)
+mask[ROI_letter_spat, ROI_letter_temp_idx] = True
+contrast2.plot_joint([0.1, 0.17, 0.4],
+                     ts_args=dict(spatial_colors=False),
+                     topomap_args=dict(mask=mask, mask_params=dict(markersize=8)),
+                     title='letter contrast')
+
+cond1 = np.flatnonzero(epochs.metadata.type.isin(['word', 'pseudoword']))
+cond2 = np.flatnonzero(epochs.metadata.type == 'consonants')
+contrast3 = mne.combine_evoked((epochs[cond1].average(), -epochs[cond2].average()), weights='equal')
+mask = np.zeros(contrast3.data.shape, np.bool)
+mask[ROI_word_spat, ROI_word_temp_idx] = True
+contrast3.plot_joint([0.1, 0.17, 0.4],
+                     ts_args=dict(spatial_colors=False),
+                     topomap_args=dict(mask=mask, mask_params=dict(markersize=8)),
+                     title='word contrast')
