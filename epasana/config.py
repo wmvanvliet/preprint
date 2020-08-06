@@ -62,6 +62,8 @@ fname.add('evokeds', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-
 fname.add('dsms', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dsms.npz')
 fname.add('layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_layer_corr-ave.fif')
 fname.add('ga_layer_corr', '{reading_models_dir}/epasana/grand_average/ga_layer_corr-ave.fif')
+fname.add('contrasts', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_contrasts-ave.fif')
+fname.add('ga_contrasts', '{reading_models_dir}/epasana/grand_average/ga_contrasts-ave.fif')
 fname.add('model', '{reading_models_dir}/models/{name}_pth.tar')
 fname.add('model_dsms', '{reading_models_dir}/dsms/epasana_{name}_dsms.pkl')
 fname.add('ga_epochs', '{reading_models_dir}/epasana/grand_average/items-epo.fif')

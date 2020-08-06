@@ -81,7 +81,9 @@ ROI_noise_spat = np.flatnonzero(ts_noise[:, ROI_noise_temp_idx].mean(axis=1).rep
 ROI_letter_spat = np.flatnonzero(ts_letter[:, ROI_letter_temp_idx].mean(axis=1).repeat(2, axis=0) > 3)
 ROI_word_spat = np.flatnonzero(ts_word[:, ROI_word_temp_idx].mean(axis=1).repeat(2, axis=0) > 3)
 
-contrast1 = mne.combine_evoked((epochs[cond1].average(), -epochs['type!="noisy word"'].average()), weights='equal')
+cond1 = np.flatnonzero(epochs.metadata.type == 'noisy word')
+cond2 = np.flatnonzero(epochs.metadata.type != 'noisy word')
+contrast1 = mne.combine_evoked((epochs[cond1].average(), -epochs[cond2].average()), weights='equal')
 mask = np.zeros(contrast1.data.shape, np.bool)
 mask[ROI_noise_spat, ROI_noise_temp_idx] = True
 contrast1.plot_joint([0.1, 0.17, 0.4],
@@ -108,3 +110,8 @@ contrast3.plot_joint([0.1, 0.17, 0.4],
                      ts_args=dict(spatial_colors=False),
                      topomap_args=dict(mask=mask, mask_params=dict(markersize=8)),
                      title='word contrast')
+
+if subject == 'ga':
+    mne.write_evokeds(fname.ga_contrasts, [contrast1, contrast2, contrast3])
+else:
+    mne.write_evokeds(fname.contrasts(subject=subject), [contrast1, contrast2, contrast3])
