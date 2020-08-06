@@ -27,7 +27,7 @@ if host == 'nbe-024.org.aalto.fi' and user == 'vanvlm1':
 elif user == 'wmvan':
     # My laptop
     orig_epasana_dir = 'M:/scratch/epasana/bids'
-    reading_models_dir = 'M:/scratch/reading_models'
+    reading_models_dir = '../data'
     n_jobs = 6  # My laptop has 6 cores
 else:
     raise ValueError('Please add your system to config.py')
