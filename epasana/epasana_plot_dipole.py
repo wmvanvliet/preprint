@@ -3,6 +3,7 @@ import mne_bids
 from config import fname, n_jobs
 from mayavi import mlab
 from matplotlib import pyplot as plt
+import numpy as np
 
 subject=3
 
@@ -13,17 +14,16 @@ cov = mne.compute_covariance(epochs) # read_cov(fname.cov(subject=subject))
 bem = mne.read_bem_solution(fname.bem(subject=subject))
 
 ##
-evoked = epochs['type=="noisy word"'].average()
-evoked.comment = 'noise'
+#evoked = epochs['type=="noisy word"'].average()
+#evoked.comment = 'noise'
 #evoked = epochs[epochs.metadata.type.isin(['word', 'pseudoword', 'consonants'])].average()
 #evoked.comment = 'letter'
-#evoked = epochs[epochs.metadata.type.isin(['word', 'pseudoword'])].average()
-#evoked.comment = 'word'
+evoked = epochs[epochs.metadata.type.isin(['word', 'pseudoword'])].average()
+evoked.comment = 'word'
 #time_roi = (0.27, 0.54)
 
 # Read a dipole
-#dip = mne.read_dipole(fname.dip(subject=subject, landmark='word'))
-dip = mne.read_dipole('/l/vanvlm1/reading_models/sub-03-noise.bdip')
+dip = mne.read_dipole(fname.dip(subject=subject, landmark='word'))
 
 # Make a fancy plot showing the realtionship between the dipole and the field lines
 fig = mlab.figure(size=(1000, 1000))
@@ -75,7 +75,8 @@ act.plot()
 ## 
 # Get dipole activity for each epoch
 #
-proj = mne.dipole.project_dipole(dip, epochs, cov, bem, trans, verbose=True)
+#proj = mne.dipole.project_dipole(dip, epochs, cov, bem, trans, verbose=True)
+proj = np.load(f'sub-{subject:02d}-proj.npz')['letters']
 
 plt.figure()
 for cl in ['noisy word', 'consonants', 'pseudoword', 'word', 'symbols']:

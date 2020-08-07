@@ -49,17 +49,17 @@ with open(fname.model_dsms(name=model_name), 'rb') as f:
 layer_activity = np.array(d['layer_activity'])[:, stimuli.index]
 layer_names = d['dsm_names'][:-4]
 
-# # Plot layer activations
-# fig, axes = plt.subplots(4, 4, sharex=True, figsize=(16, 10))
-# for i, ax in enumerate(axes.ravel()):
-#     ax.plot(layer_activity[i])
-#     ax.set_title(layer_names[i])
-#     for j, cat in enumerate(stimuli['type'].unique()):
-#         cat_index = np.flatnonzero(stimuli['type'] == cat)
-#         ax.plot(cat_index[[0, -1]], layer_activity[i][cat_index].mean().repeat(2), color=matplotlib.cm.magma(j / 4), label=cat)
-#     if i == 0:
-#         ax.legend(loc='upper right')
-# plt.tight_layout()
+# Plot layer activations
+fig, axes = plt.subplots(4, 4, sharex=True, figsize=(16, 10))
+for i, ax in enumerate(axes.ravel()):
+    ax.plot(layer_activity[i])
+    ax.set_title(layer_names[i])
+    for j, cat in enumerate(stimuli['type'].unique()):
+        cat_index = np.flatnonzero(stimuli['type'] == cat)
+        ax.plot(cat_index[[0, -1]], layer_activity[i][cat_index].mean().repeat(2), color=matplotlib.cm.magma(j / 4), label=cat)
+    if i == 0:
+        ax.legend(loc='upper right')
+plt.tight_layout()
 
 def pearsonr(x, y, *, x_axis=-1, y_axis=-1):
     """Compute Pearson correlation along the given axis."""

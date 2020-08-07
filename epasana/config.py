@@ -62,6 +62,7 @@ fname.add('epochs', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-e
 fname.add('evokeds', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-ave.fif')
 fname.add('cov', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-cov.fif')
 fname.add('inv', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-inv.fif')
+fname.add('fwd', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-fwd.fif')
 fname.add('dsms', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dsms.npz')
 fname.add('layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_layer_corr-ave.fif')
 fname.add('ga_layer_corr', '{reading_models_dir}/epasana/grand_average/ga_layer_corr-ave.fif')
