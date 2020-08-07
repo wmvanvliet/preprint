@@ -2,9 +2,9 @@ import mne
 import mne_bids
 from config import fname, n_jobs
 from mayavi import mlab
-from tqdm import tqdm
+from matplotlib import pyplot as plt
 
-subject=1
+subject=3
 
 epochs = mne.read_epochs(fname.epochs(subject=subject))
 epochs.pick_types(meg='grad')
@@ -18,10 +18,12 @@ evoked.comment = 'noise'
 #evoked = epochs[epochs.metadata.type.isin(['word', 'pseudoword', 'consonants'])].average()
 #evoked.comment = 'letter'
 #evoked = epochs[epochs.metadata.type.isin(['word', 'pseudoword'])].average()
+#evoked.comment = 'word'
 #time_roi = (0.27, 0.54)
 
 # Read a dipole
-dip = mne.read_dipole('sub-01-ave.bdip')
+#dip = mne.read_dipole(fname.dip(subject=subject, landmark='word'))
+dip = mne.read_dipole('/l/vanvlm1/reading_models/sub-03-noise.bdip')
 
 # Make a fancy plot showing the realtionship between the dipole and the field lines
 fig = mlab.figure(size=(1000, 1000))
@@ -66,21 +68,17 @@ act, _ = mne.fit_dipole(
     pos=dip.pos[0],
     ori=dip.ori[0],
     verbose=False,
+    min_dist=0,
 )
 act.plot()
 
-# ## 
-# # Get dipole activity for each epoch (WTF MNE-Python diple API???)
-# acts = []
-# for i in tqdm(range(len(epochs))):
-#     act, _ = mne.fit_dipole(
-#         epochs[i].average(),
-#         cov,
-#         bem,
-#         trans,
-#         pos=dip.pos[best],
-#         ori=dip.ori[best],
-#         rank=dict(grad=69),
-#         verbose=False,
-#     )
-#     acts.append(act.data[0])
+## 
+# Get dipole activity for each epoch
+#
+proj = mne.dipole.project_dipole(dip, epochs, cov, bem, trans, verbose=True)
+
+plt.figure()
+for cl in ['noisy word', 'consonants', 'pseudoword', 'word', 'symbols']:
+    w = proj[epochs.metadata.type == cl].mean(axis=0)
+    plt.plot(epochs.times, w, label=cl)
+plt.legend()

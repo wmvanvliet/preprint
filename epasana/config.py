@@ -79,3 +79,6 @@ fname.add('raw', '{bids_root}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasa
 fname.add('events', '{bids_root}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_events.tsv')
 fname.add('channels', '{bids_root}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_channels.tsv')
 fname.add('bem', '{subjects_dir}/sub-{subject:02d}/bem/sub-{subject:02d}_5120-5120-5120_bem-sol.fif')
+
+# Dipoles
+fname.add('dip', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-{landmark}.bdip')

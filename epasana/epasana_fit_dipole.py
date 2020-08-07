@@ -2,7 +2,7 @@ import mne
 import mne_bids
 from config import fname, n_jobs
 from mayavi import mlab
-from tqdm import tqdm
+from matplotlib import pyplot as plt
 
 subject=1
 
@@ -86,19 +86,3 @@ act, _ = mne.fit_dipole(
     verbose=False,
 )
 act.plot()
-
-# ## 
-# # Get dipole activity for each epoch (WTF MNE-Python diple API???)
-# acts = []
-# for i in tqdm(range(len(epochs))):
-#     act, _ = mne.fit_dipole(
-#         epochs[i].average(),
-#         cov,
-#         bem,
-#         trans,
-#         pos=dip.pos[best],
-#         ori=dip.ori[best],
-#         rank=dict(grad=69),
-#         verbose=False,
-#     )
-#     acts.append(act.data[0])
