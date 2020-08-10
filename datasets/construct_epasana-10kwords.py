@@ -68,10 +68,13 @@ more_words = list(vectors.vocab.keys())[:1_000_000]
 pattern = re.compile('^[a-zäö#]+$')
 more_words = [w for w in more_words if pattern.match(w)]
 
+# Words need to be at least length 2
+more_words = [w for w in more_words if len(w) >= 2]
+
 # Do we have enough words left after our filters?
 assert len(more_words) >= 10_000
 
-# Pad the original word list up to 1_000 words
+# Pad the original word list up to 10_000 words
 more_words = pd.DataFrame(more_words)
 words = pd.concat([words, more_words], ignore_index=True)
 words = words.drop_duplicates()
@@ -115,7 +118,7 @@ dpi = 96.
 f = Figure(figsize=(256 / dpi, 256 / dpi), dpi=dpi)
 canvas = FigureCanvasAgg(f)
 for label, word in tqdm(enumerate(words), total=len(words)):
-    word = word.replace('#', '')
+    word = word.replace('#', '')  # Pound signs (#) were used to deliminate lemmas in compound words
     for i in range(n):
         f.clf()
         ax = f.add_axes([0, 0, 1, 1])

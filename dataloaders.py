@@ -229,6 +229,7 @@ class TFRecord(VisionDataset):
         super().__init__(root, transform=transform,
                          target_transform=target_transform)
 
+        self.label_offset = label_offset
         self.labels = labels
         base_fname = 'train' if train else 'test'
         self.file = open(op.join(root, f'{base_fname}.tfrecord'), 'rb')
@@ -283,7 +284,7 @@ class TFRecord(VisionDataset):
             features[key] = value
 
         img = Image.open(BytesIO(features['image/encoded'])).convert('RGB')
-        target = int(features['image/class/label'][0])
+        target = int(features['image/class/label'][0]) + self.label_offset
 
         if self.transform is not None:
             img = self.transform(img)
