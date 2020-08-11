@@ -68,8 +68,8 @@ more_words = list(vectors.vocab.keys())[:1_000_000]
 pattern = re.compile('^[a-zäö#]+$')
 more_words = [w for w in more_words if pattern.match(w)]
 
-# Words need to be at least length 2
-more_words = [w for w in more_words if len(w) >= 2]
+# Words need to be at least length 2 (don't count # symbols)
+more_words = [w for w in more_words if len(w.replace('#', '')) >= 2]
 
 # Do we have enough words left after our filters?
 assert len(more_words) >= 10_000
@@ -78,26 +78,35 @@ assert len(more_words) >= 10_000
 more_words = pd.DataFrame(more_words)
 words = pd.concat([words, more_words], ignore_index=True)
 words = words.drop_duplicates()
-words = list(words[:10_000][0])
 
 # Fix lemmatization of some words
-for i, w in enumerate(words):
+for i, w in enumerate(words.values):
     if w == 'maalari':
-        words[i] = 'taide#maalari'
+        words.iloc[i] = 'taide#maalari'
     elif w == 'luominen':
-        words[i] = 'luomus'
+        words.iloc[i] = 'luomus'
     elif w == 'oleminen':
-        words[i] = 'olemus'
+        words.iloc[i] = 'olemus'
     elif w == 'eläminen':
-        words[i] = 'elatus'
+        words.iloc[i] = 'elatus'
     elif w == 'koraani':
-        words[i] = 'koraanin'
+        words.iloc[i] = 'koraanin'
 
 # Perform a lookup for the w2v vectors for each chosen word
-vectors = vectors[words]
+vectors = vectors[words[0]]
 
 # Words in the epasana experiment were always shown in upper case
-words = [word.upper() for word in words]
+words = pd.Series([word.upper() for word in words[0]])
+
+# Drop # signs deliminating compound words
+words = words.str.replace('#', '')
+
+# After our manipulations, we may have some duplicates now
+words = words.drop_duplicates()
+
+# Select 10k most common words
+words = words[:10_000]
+vectors = vectors[words.index]
 
 # Start generating images
 rng = np.random.RandomState(0)
@@ -118,8 +127,8 @@ dpi = 96.
 f = Figure(figsize=(256 / dpi, 256 / dpi), dpi=dpi)
 canvas = FigureCanvasAgg(f)
 for label, word in tqdm(enumerate(words), total=len(words)):
-    word = word.replace('#', '')  # Pound signs (#) were used to deliminate lemmas in compound words
     for i in range(n):
+        word = word.replace('#', '')
         f.clf()
         ax = f.add_axes([0, 0, 1, 1])
         ax.set_xlim(0, 1)
@@ -160,7 +169,6 @@ for label, word in tqdm(enumerate(words), total=len(words)):
 
         buf = BytesIO()
         Image.fromarray(image.astype(np.uint8)).save(buf, format='jpeg')
-        #Image.fromarray(image.astype(np.uint8)).save('/tmp/test.jpg', format='jpeg')
 
         writer.write({
             'image/height': (height, 'int'),
