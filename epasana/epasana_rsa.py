@@ -1,3 +1,7 @@
+"""
+Perform RSA between the model DSMs (computed with epasana_model_dsms.py) and
+the MEG DSMs (computed with epasana_dsms.py).
+"""
 import mne_rsa
 import mne
 import numpy as np
@@ -10,7 +14,7 @@ times = meg_data['times']
 dsms_meg = meg_data['dsms']
 print('done.')
 
-model_name = 'vgg11_first_imagenet_then_epasana-1kwords_epasana-nontext'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
 with open(f'../data/dsms/epasana_{model_name}_dsms.pkl', 'rb') as f:
     model_data = pickle.load(f)
     dsms_model = model_data['dsms']

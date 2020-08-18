@@ -60,7 +60,7 @@ more_words = pd.read_csv('../data/parsebank_v4_ud_scrambled.wordlist.txt', sep='
 more_words.columns = ['ITEM']
 
 # Select words between 2 and 6 letters long
-more_words = more_words[more_words.ITEM.str.len() <= 6]
+more_words = more_words[more_words.ITEM.str.len() <= 9]
 more_words = more_words[more_words.ITEM.str.len() >= 2]
 
 # Drop words with capitals (like names)

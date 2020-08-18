@@ -1,13 +1,10 @@
 """
-Utility functions for grabbing pilot data.
+Utility functions for working with the epasana data.
 """
-import mne
-import numpy as np
 import torch
 from torchvision import transforms
 from PIL import Image
 from tqdm import tqdm
-import pandas as pd
 
 
 def get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana'):
@@ -26,9 +23,9 @@ def get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana'):
         A tensor containing the bitmap data of the images presented to the
         subject during the MEG experiment. Ready to feed into a model.
     """
-    # Transform the images to a 60x60 pixel image suitable for feeding through
-    # the model. This is the same transform as used in train_net.py during the
-    # training of the model.
+    # Transform the images to something suitable for feeding through the model.
+    # This is the same transform as used in train_net.py during the training of
+    # the model.
     preproc = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406],

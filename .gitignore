@@ -14,3 +14,4 @@ figures
 pilot/networks
 tags
 *.DS_Store
+.doit*
