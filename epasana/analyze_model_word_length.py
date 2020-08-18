@@ -19,13 +19,18 @@ import mne_rsa
 from scipy.spatial import distance
 import seaborn as sns
 import pandas as pd
-from reading_models import networks
 import os
 import contextlib
 
+# We're in a subdirectory, so add the main directory to the path so we can
+# import from it
+import sys
+sys.path.append('..')
+import networks
+
 # parameters
 model_path = ("/m/nbe/scratch/reading_models/models/"
-              "vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext.pth.tar") # need to select a model
+              "vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext_imagenet256.pth.tar") # need to select a model
 data_path='/m/nbe/scratch/epasana'
 meta_path = '/m/nbe/scratch/reading_models/datasets/epasana-10kwords-new/train.csv'
 feature_layers=None # set to None to use default setting of "get_layer_activation" function or specify as a list
@@ -180,11 +185,13 @@ DSM_pixelwise_len = mne_rsa.compute_dsm(img_len, metric='euclidean')
 n_layers_to_plot = len(feature_layers) + len(classifier_layers) + (1 if arch=='vgg_sem' else 0)
 dsms_len = []
 rsa_len = []
+act_len = []
 for i in range(n_layers_to_plot):
-    dsm = mne_rsa.compute_dsm(next(outputs), metric='correlation')
+    output = next(outputs)
+    dsm = mne_rsa.compute_dsm(output, metric='correlation')
     rsa_len.append(mne_rsa.rsa(dsm, DSM_pixelwise_len))
     dsms_len.append(dsm)
-    del dsm
+    act_len.append(abs(output).mean(axis=tuple(range(1, output.ndim))))
 
 # plot model DSMs
 h = int(np.ceil(np.sqrt(n_layers_to_plot)))

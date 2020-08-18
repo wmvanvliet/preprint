@@ -6,6 +6,7 @@ Created on Tue Aug  4 11:00:04 2020
 @author: shimizt1
 """
 
+
 import inspect
 import torch
 import torchvision.transforms as transforms
@@ -16,20 +17,25 @@ from scipy.spatial import distance
 import seaborn as sns
 import pandas as pd
 from PIL import Image
-from reading_models import networks
 import os
 import contextlib
 
+# We're in a subdirectory, so add the main directory to the path so we can
+# import from it
+import sys
+sys.path.append('..')
+import networks
+
 # parameters
 model_path = ("/m/nbe/scratch/reading_models/models/"
-              "vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext.pth.tar") # need to select a model
-data_path='/m/nbe/scratch/epasana'
+              "vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext_imagenet256.pth.tar") # need to select a model
+data_path = '/m/nbe/scratch/epasana'
 meta_path = '/m/nbe/scratch/epasana/bids/stimuli.csv'
-feature_layers=None # set to None to use default setting of "get_layer_activation" function or specify as a list
-classifier_layers=None # set to None to use default setting of "get_layer_activation" function or specify as a list
-noise_path='noise.pdf'
+feature_layers = None # set to None to use default setting of "get_layer_activation" function or specify as a list
+classifier_layers = None # set to None to use default setting of "get_layer_activation" function or specify as a list
+noise_path = 'noise.pdf'
 
-def create_image_noise(data_path=data_path, index=300, 
+def create_image_noise(data_path=data_path, index=300,
                        n_noise_levels=100, max_noise_std=1.5):
     """Get the stimulus images presented during the MEG experiment with noises
     Parameters
@@ -104,7 +110,7 @@ elif arch=='vgg_sem':
 else:
     raise NotImplementedError("Model architecture is not expected; "
                               "currently, this function works for vgg_sem and vgg11.")
-    
+
 def get_default(func, param):
     signature = inspect.signature(func)
     return signature.parameters[param].default
@@ -113,12 +119,12 @@ if feature_layers is None:
     feature_layers = get_default(model.get_layer_activations, 'feature_layers')
 if classifier_layers is None:
     classifier_layers = get_default(model.get_layer_activations, 'classifier_layers')
-    
+
 with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
     outputs = model.get_layer_activations(img_noise,
                                           feature_layers=feature_layers,
                                           classifier_layers=classifier_layers)
-    
+
 # noisy image DSM
 DSM_pixelwise_noise = mne_rsa.compute_dsm(img_noise, metric='euclidean')
 
@@ -126,11 +132,13 @@ DSM_pixelwise_noise = mne_rsa.compute_dsm(img_noise, metric='euclidean')
 n_layers_to_plot = len(feature_layers) + len(classifier_layers) + (1 if arch=='vgg_sem' else 0)
 dsms_noise = []
 rsa_noise = []
+act_noise = []
 for i in range(n_layers_to_plot):
-    dsm = mne_rsa.compute_dsm(next(outputs), metric='correlation')
+    output = next(outputs)
+    dsm = mne_rsa.compute_dsm(output, metric='correlation')
     rsa_noise.append(mne_rsa.rsa(dsm, DSM_pixelwise_noise))
     dsms_noise.append(dsm)
-    del dsm
+    act_noise.append(abs(output).mean(axis=tuple(range(1, output.ndim))))
 
 # plot model DSMs
 h = int(np.ceil(np.sqrt(n_layers_to_plot)))
@@ -140,14 +148,13 @@ fig, axes = plt.subplots(h, w, figsize=figsize)
 for i in range(n_layers_to_plot-1, -1, -1): # loop through from the end to the first to reduce run time
     ax = axes.flat[i]
     sns.heatmap(distance.squareform(dsms_noise[i]), ax=ax, square=True)
-    del dsms_noise[-1] # free memory
 
-rsa_noise_round = np.round(rsa_noise, 2)    
+rsa_noise_round = np.round(rsa_noise, 2)
 
 feature = ("Feature Layer " + pd.Series(feature_layers, dtype=str)
            + " (RSA=" + pd.Series(rsa_noise_round[:len(feature_layers)], dtype=str) + ")")
 classifier = ("Classifier Layer " + pd.Series(classifier_layers, dtype=str)
-             + " (RSA=" + pd.Series(rsa_noise_round[len(feature_layers):len(feature_layers) + len(classifier_layers)], dtype=str) + ")")
+              + " (RSA=" + pd.Series(rsa_noise_round[len(feature_layers):len(feature_layers) + len(classifier_layers)], dtype=str) + ")")
 if arch == 'vgg_sem':
     sem = "Semantics Layer (RSA=" + str(rsa_noise_round[-1])  + ")"
 

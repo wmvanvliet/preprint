@@ -19,13 +19,18 @@ import mne_rsa
 from scipy.spatial import distance
 import seaborn as sns
 import pandas as pd
-from reading_models import networks
 import os
 import contextlib
 
+# We're in a subdirectory, so add the main directory to the path so we can
+# import from it
+import sys
+sys.path.append('..')
+import networks
+
 # parameters
 model_path = ("/m/nbe/scratch/reading_models/models/"
-              "vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext.pth.tar") # need to select a model
+              "vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext_imagenet256.pth.tar") # need to select a model
 data_path='/m/nbe/scratch/epasana'
 feature_layers=None # set to None to use default setting of "get_layer_activation" function or specify as a list
 classifier_layers=None # set to None to use default setting of "get_layer_activation" function or specify as a list
