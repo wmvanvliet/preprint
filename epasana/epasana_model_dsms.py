@@ -14,9 +14,10 @@ import utils
 torch.set_num_threads(1)
 
 stimuli = pd.read_csv('stimulus_selection.csv')
-images = utils.get_stimulus_images(stimuli, data_path='../data/epasana')
+images = utils.get_stimulus_images(stimuli)
 
-model_name = 'vgg11_first_imagenet_then_epasana-1kwords'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
+
 
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
 model = networks.vgg11.from_checkpoint(checkpoint, freeze=True)
@@ -56,10 +57,10 @@ for output in layer_outputs:
         layer_activity.append(np.square(output).mean(axis=(1, 2, 3)))
     elif output.ndim == 2:
         layer_activity.append(np.square(output).mean(axis=1))
-    #if output.shape[-1] == 10001:
-    #    print('Removing nontext class')
-    #    output = np.hstack((output[:, :10000], output[:, 10001:]))
-    #    print('New output shape:', output.shape)
+    if output.shape[-1] == 10001:
+        print('Removing nontext class')
+        output = np.hstack((output[:, :10000], output[:, 10001:]))
+        print('New output shape:', output.shape)
     dsm_models.append(mne_rsa.compute_dsm(n(output), metric='correlation'))
 
 dsm_models += [
@@ -85,7 +86,7 @@ dsm_names = [
     'fc2',
     'fc2_relu',
     'word',
-    #'word_relu',
+    'word_relu',
     'Words only',
     'Letters only',
     'Noise level',

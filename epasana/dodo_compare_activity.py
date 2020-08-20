@@ -29,3 +29,12 @@ def task_contrasts():
         targets = [fname.ga_contrasts],
         actions = ['python epasana_functional_localizers.py']
     )
+
+def task_compare_activity_source():
+    for subject in range(1, 16):
+        yield dict(
+            name=f'sub-{subject:02d}',
+            file_dep = [fname.epochs(subject=subject), 'epasana_compare_activity_source.py'],
+            targets = [fname.stc_layer_corr(subject=subject)],
+            actions = [f'python epasana_compare_activity_source.py {subject}']
+        )
