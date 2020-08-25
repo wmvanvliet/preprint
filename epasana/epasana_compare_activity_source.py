@@ -51,7 +51,7 @@ lambda2 = 1.0 / snr ** 2
 inv = mne.minimum_norm.read_inverse_operator(fname.inv(subject=subject))
 inv = mne.minimum_norm.prepare_inverse_operator(inv, nave=len(epochs), lambda2=lambda2)
 morph = mne.read_source_morph(fname.morph(subject=subject))
-stcs = mne.minimum_norm.apply_inverse_epochs(epochs, inv, lambda2=lambda2, prepared=True, return_generator=True, verbose=False)
+stcs = mne.minimum_norm.apply_inverse_epochs(epochs, inv, lambda2=lambda2, prepared=True, return_generator=True, verbose=False, pick_ori='normal')
 
 # 32-bit instead of 64-bit to save memory
 stc_data = np.zeros((len(epochs), 20484, 60), dtype=np.float32)

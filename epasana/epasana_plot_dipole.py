@@ -5,7 +5,7 @@ from mayavi import mlab
 from matplotlib import pyplot as plt
 import numpy as np
 
-subject=3
+subject = 1
 
 epochs = mne.read_epochs(fname.epochs(subject=subject))
 epochs.pick_types(meg='grad')
@@ -23,9 +23,13 @@ evoked.comment = 'word'
 #time_roi = (0.27, 0.54)
 
 # Read a dipole
-dip = mne.read_dipole(fname.dip(subject=subject, landmark='word'))
+dips = mne.read_dipole(fname.dip(subject=subject))
 
 # Make a fancy plot showing the realtionship between the dipole and the field lines
+
+##
+sel_dip = 6
+time = 0.2
 fig = mlab.figure(size=(1000, 1000))
 mne.viz.plot_alignment(
     evoked.info,
@@ -38,7 +42,7 @@ mne.viz.plot_alignment(
     bem=bem,
     coord_frame='mri'
 )
-dip.plot_locations(
+dips[sel_dip].plot_locations(
     trans,
     f'sub-{subject:02d}',
     fname.subjects_dir,
@@ -53,7 +57,7 @@ maps = mne.make_field_map(
     fname.subjects_dir,
     ch_type='meg'
 )
-evoked.plot_field(maps, time=dip.times[0], fig=fig)
+evoked.plot_field(maps, time=time, fig=fig)
 
 # Tweak the surfaces in the plot so you can see everything
 a = fig.children[1].children[0].children[0].children[0].actor.property.opacity = 0.2
@@ -65,8 +69,8 @@ act, _ = mne.fit_dipole(
     cov,
     bem,
     trans,
-    pos=dip.pos[0],
-    ori=dip.ori[0],
+    pos=dips.pos[sel_dip],
+    ori=dips.ori[sel_dip],
     verbose=False,
     min_dist=0,
 )
@@ -75,11 +79,30 @@ act.plot()
 ## 
 # Get dipole activity for each epoch
 #
-#proj = mne.dipole.project_dipole(dip, epochs, cov, bem, trans, verbose=True)
-proj = np.load(f'sub-{subject:02d}-proj.npz')['letters']
+#proj = np.array([mne.dipole.project_dipole(dip, epochs, cov, bem, trans, verbose=True)
+#                 for dip in dips])
+proj = np.load(fname.dip_timecourses(subject=subject))['proj']
+n_dip = len(proj)
+fig, axes = plt.subplots(n_dip//3+1, 3, sharex=True, sharey=False)
+for p, ax in zip(proj, axes.flat):
+    for cl in ['noisy word', 'consonants', 'pseudoword', 'word', 'symbols']:
+        w = p[epochs.metadata.type == cl].mean(axis=0)
+        ax.plot(epochs.times, w, label=cl)
+    ax.legend()
 
+##
 plt.figure()
-for cl in ['noisy word', 'consonants', 'pseudoword', 'word', 'symbols']:
-    w = proj[epochs.metadata.type == cl].mean(axis=0)
-    plt.plot(epochs.times, w, label=cl)
-plt.legend()
+plt.axhline(0, color='black')
+plt.axvline(0, color='black')
+plt.plot(1000 * epochs.times, ls[metadata.query("type=='word'").index].mean(axis=0), color='C0', label='Word')
+plt.plot(1000 * epochs.times, ls[metadata.query("type=='pseudoword'").index].mean(axis=0), color='black', label='Pseudoword')
+plt.plot(1000 * epochs.times, ls[metadata.query("type=='consonants'").index].mean(axis=0), color='pink', label='Consonant string')
+plt.plot(1000 * epochs.times, ls[metadata.query("type=='symbols'").index].mean(axis=0), color='red', label='Symbol string')
+plt.plot(1000 * epochs.times, ls[metadata.query("type=='noisy word'").index].mean(axis=0), color='green', label='Noisy word')
+plt.axhline(0, color='black')
+plt.axvline(0, color='black')
+plt.legend(loc='upper right')
+plt.xlabel('Time (ms)')
+plt.ylabel('Amplitude (nAm)')
+plt.title('Left occipital-temporal cortex  at ~150 ms (n=14)')
+

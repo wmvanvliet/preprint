@@ -38,3 +38,12 @@ def task_compare_activity_source():
             targets = [fname.stc_layer_corr(subject=subject)],
             actions = [f'python epasana_compare_activity_source.py {subject}']
         )
+
+def task_dip_epochs():
+    for subject in range(1, 16):
+        yield dict(
+            name=f'sub-{subject:02d}',
+            file_dep = [fname.epochs(subject=subject), 'epasana_dipole_epochs.py'],
+            targets = [fname.dip_timecourses(subject=subject)],
+            actions = [f'python epasana_dipole_epochs.py {subject}']
+        )

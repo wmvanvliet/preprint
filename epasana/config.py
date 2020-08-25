@@ -54,6 +54,7 @@ fname = FileNames()
 fname.add('orig_epasana_dir', orig_epasana_dir)
 fname.add('reading_models_dir', reading_models_dir)
 fname.add('derivatives_dir', '{orig_epasana_dir}/derivatives/marijn')
+fname.add('dipoles_dir', '{orig_epasana_dir}/derivatives/dipoles')
 fname.add('stimulus_dir', '{orig_epasana_dir}/stimulus_images')
 fname.add('subjects_dir', '{orig_epasana_dir}/derivatives/freesurfer')
 
@@ -63,7 +64,10 @@ fname.add('evokeds', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-
 fname.add('cov', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-cov.fif')
 fname.add('inv', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-inv.fif')
 fname.add('fwd', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-fwd.fif')
+fname.add('src', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-src.fif')
 fname.add('morph', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-morph.h5')
+fname.add('stc', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-{condition}')
+fname.add('ga_stc', '{derivatives_dir}/grand_average/ga-{condition}')
 fname.add('dsms', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dsms.npz')
 fname.add('layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_layer_corr-ave.fif')
 fname.add('ga_layer_corr', '{reading_models_dir}/epasana/grand_average/ga_layer_corr-ave.fif')
@@ -85,4 +89,6 @@ fname.add('channels', '{bids_root}/sub-{subject:02d}/meg/sub-{subject:02d}_task-
 fname.add('bem', '{subjects_dir}/sub-{subject:02d}/bem/sub-{subject:02d}_5120-5120-5120_bem-sol.fif')
 
 # Dipoles
-fname.add('dip', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-{landmark}.bdip')
+fname.add('dip', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipoles.bdip')
+fname.add('dip_timecourses', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_timecourses.npz')
+fname.add('dip_selection', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_selection.tsv')

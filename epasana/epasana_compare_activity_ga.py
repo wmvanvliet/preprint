@@ -12,3 +12,5 @@ for subject in tqdm(range(1, 16)):
 for cond, evokeds in act.items():
     act[cond] = mne.grand_average(evokeds)
     act[cond].comment = cond
+
+evokeds_r = list(act.values())
