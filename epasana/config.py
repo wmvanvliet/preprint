@@ -92,3 +92,8 @@ fname.add('bem', '{subjects_dir}/sub-{subject:02d}/bem/sub-{subject:02d}_5120-51
 fname.add('dip', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipoles.bdip')
 fname.add('dip_timecourses', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_timecourses.npz')
 fname.add('dip_selection', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_selection.tsv')
+fname.add('dip_layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dip_layer_corr.csv')
+
+# Reports
+fname.add('report', 'reports/sub{subject:02d}_report.h5')
+fname.add('report_html', 'reports/sub{subject:02d}_report.html')

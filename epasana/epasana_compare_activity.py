@@ -43,7 +43,7 @@ for t in stimuli.type.unique():
     evokeds.append(ev)
 
 # Load model layer activations
-model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana_nontext'
 with open(fname.model_dsms(name=model_name), 'rb') as f:
     d = pickle.load(f)
 layer_activity = np.array(d['layer_activity'])[:, stimuli.index]

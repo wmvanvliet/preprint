@@ -15,21 +15,6 @@ def task_compare_activity():
         actions = ['python epasana_compare_activity.py']
     )
 
-def task_contrasts():
-    for subject in range(1, 16):
-        yield dict(
-            name=f'sub-{subject:02d}',
-            file_dep = [fname.epochs(subject=subject), 'epasana_functional_localizers.py'],
-            targets = [fname.contrasts(subject=subject)],
-            actions = [f'python epasana_functional_localizers.py {subject}']
-        )
-    yield dict(
-        name = 'ga',
-        file_dep = [fname.ga_epochs, 'epasana_functional_localizers.py'],
-        targets = [fname.ga_contrasts],
-        actions = ['python epasana_functional_localizers.py']
-    )
-
 def task_compare_activity_source():
     for subject in range(1, 16):
         yield dict(
@@ -39,11 +24,13 @@ def task_compare_activity_source():
             actions = [f'python epasana_compare_activity_source.py {subject}']
         )
 
-def task_dip_epochs():
+def task_compare_activity_dipoles():
     for subject in range(1, 16):
         yield dict(
             name=f'sub-{subject:02d}',
-            file_dep = [fname.epochs(subject=subject), 'epasana_dipole_epochs.py'],
-            targets = [fname.dip_timecourses(subject=subject)],
-            actions = [f'python epasana_dipole_epochs.py {subject}']
+            file_dep = [fname.dip_timecourses(subject=subject),
+                        fname.dip_selection(subject=subject),
+                        'epasana_compare_activity_dipoles.py'],
+            targets = [fname.dip_layer_corr(subject=subject)],
+            actions = [f'python epasana_compare_activity_dipoles.py {subject}']
         )
