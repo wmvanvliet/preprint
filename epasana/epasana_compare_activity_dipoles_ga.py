@@ -64,8 +64,8 @@ time_rois = {
 }
 
 mean_acts = []
-fig, axes = plt.subplots(2, 3, sharex=True, figsize=(10, 10))
-groups =['LeftOcci1', 'LeftOcciTemp2', 'LeftTemp3', 'RightOcci1', 'RightOcciTemp2', 'RightTemp3']
+fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(5, 3))
+groups =['LeftOcci1', 'LeftOcciTemp2', 'LeftTemp3']
 for group, ax in zip(groups, axes.flat):
     group_act = []
     sel = dip_selection.query(f'group=="{group}"')
@@ -73,6 +73,7 @@ for group, ax in zip(groups, axes.flat):
         print(sub, dip, neg)
         tc = dip_timecourses[sub - 1][dip] * (-1 if neg else 1)
         quant = zscore(tc[:, time_rois[group]].mean(axis=1))
+        #quant = tc[:, time_rois[group]].mean(axis=1) * 1E9
         df = metadata.query(f'subject=={sub}').sort_values('tif_file')
         df[group] = quant
         group_act.append(df)
@@ -81,18 +82,29 @@ for group, ax in zip(groups, axes.flat):
     mean_act = group_act.groupby('tif_file').agg('mean')[group]
     mean_acts.append(mean_act)
     cat = group_act.groupby('tif_file').agg('first').type
-    #ax.plot(mean_act.values, linewidth=1)
-    #ax.scatter(np.arange(len(mean_act)), mean_act.values, s=2)
     x_offset = 0
     for j, cat in enumerate(stimuli['type'].unique()):
         cat_index = np.flatnonzero(stimuli['type'] == cat)
         selection = mean_act[cat_index]
-        ax.scatter(np.arange(len(selection)) + x_offset, selection, s=2)
+        ax.scatter(np.arange(len(selection)) + x_offset, selection, s=1, alpha=0.2)
         x_offset += len(selection)
         ax.plot(cat_index[[0, -1]], selection.mean().repeat(2), color=plt.get_cmap('tab10').colors[j], label=cat)
-    ax.set_title(group)
+        ax.xaxis.set_visible(False)
+        ax.set_facecolor('#eee')
+        ax.set_facecolor('#fafbfc')
+        for pos in ['top', 'bottom', 'left', 'right']:
+            ax.spines[pos].set_visible(False)
     if group == 'LeftOcci1':
         ax.legend()
+        ax.set_ylabel('Activation (z-scores)')
+        ax.set_title('Left Occi.\n65-115 ms', fontsize=10)
+        ax.spines['left'].set_visible(True)
+    elif group == 'LeftOcciTemp2':
+        ax.set_title('Left Occi.Temp.\n140-200 ms', fontsize=10)
+        ax.yaxis.set_visible(False)
+    elif group == 'LeftTemp3':
+        ax.set_title('Left Temp.\n300-500 ms', fontsize=10)
+        ax.yaxis.set_visible(False)
 plt.tight_layout()
 mean_acts = np.array(mean_acts)
 

@@ -42,8 +42,8 @@ time_rois = {
 }
 
 dipole_act_quant = np.array([
-     dip_timecourses[dip, :, time_rois[region]].mean(axis=1) * (-1 if neg else 1)
-     for region, [dip, neg] in dip_selection.iterrows()
+    dip_timecourses[dip, :, time_rois[region]].mean(axis=1) * (-1 if neg else 1)
+    for region, [dip, neg] in dip_selection.iterrows()
 ])
 
 # Load model layer activations
