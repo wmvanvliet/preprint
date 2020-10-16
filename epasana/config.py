@@ -93,6 +93,7 @@ fname.add('dip', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epa
 fname.add('dip_timecourses', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_timecourses.npz')
 fname.add('dip_selection', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_selection.tsv')
 fname.add('dip_layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dip_layer_corr.csv')
+fname.add('dip_activation', '{dipoles_dir}/epasana_dipole_activation.csv')
 
 # Reports
 fname.add('report', 'reports/sub{subject:02d}_report.h5')
