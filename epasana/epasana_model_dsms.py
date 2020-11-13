@@ -16,7 +16,8 @@ torch.set_num_threads(1)
 stimuli = pd.read_csv('stimulus_selection.csv')
 images = utils.get_stimulus_images(stimuli)
 
-model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
+#model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
+model_name = 'vgg11_imagenet256'
 
 
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')

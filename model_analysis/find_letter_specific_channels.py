@@ -37,7 +37,7 @@ symbols = torch.utils.data.DataLoader(
 )
 
 # Run data through the model
-feature_layers = [3]
+feature_layers = [19]
 
 word_activations = []
 for batch, _ in tqdm(words, unit='batch'):

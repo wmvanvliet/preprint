@@ -95,6 +95,9 @@ fname.add('dip_selection', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d
 fname.add('dip_layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dip_layer_corr.csv')
 fname.add('dip_activation', '{dipoles_dir}/epasana_dipole_activation.csv')
 
+# Brain <-> Model comparison
+fname.add('brain_model_comparison', '{reading_models_dir}/epasana/brain_model_comparison.csv')
+
 # Reports
 fname.add('report', 'reports/sub{subject:02d}_report.h5')
 fname.add('report_html', 'reports/sub{subject:02d}_report.html')

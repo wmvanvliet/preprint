@@ -75,8 +75,8 @@ class VGG16(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            nn.ReLU(True),  # <-- Added after training
-            WinnerTakesAll(),  # <-- Added after training
+            #nn.ReLU(True),  # <-- Added after training
+            #WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
@@ -223,8 +223,8 @@ class VGG11(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            nn.ReLU(True),  # <-- Added after training
-            WinnerTakesAll(),  # <-- Added after training
+            #nn.ReLU(True),  # <-- Added after training
+            #WinnerTakesAll(),  # <-- Added after training
         )
 
         self.initialize_weights()
@@ -251,7 +251,8 @@ class VGG11(nn.Module):
 
     def get_layer_activations(self, images,
                               feature_layers=[0, 4, 11, 18, 25],
-                              classifier_layers=[0, 3, 6]):
+                              classifier_layers=[0, 3, 6],
+                              verbose=True):
         """Obtain activation of each layer on a set of images."""
         self.eval()
         batch_size = 600
@@ -263,9 +264,10 @@ class VGG11(nn.Module):
                     layer_out.append(layer(out[j:j + batch_size]))
                 out = torch.cat(layer_out, 0)
                 del layer_out
-                print('feature layer %02d, output=%s' % (i, out.shape))
+                if verbose:
+                    print('feature layer %02d, output=%s' % (i, out.shape))
                 if i in feature_layers:
-                    yield out.detach().numpy().copy()
+                    yield out.detach().cpu().numpy().copy()
             out = out.view(out.size(0), -1)
             layer_out = []
             for i, layer in enumerate(self.classifier):
@@ -273,7 +275,8 @@ class VGG11(nn.Module):
                 for j in range(0, len(out), batch_size):
                     layer_out.append(layer(out[j:j + batch_size]))
                 out = torch.cat(layer_out, 0)
-                print('classifier layer %02d, output=%s' % (i, out.shape))
+                if verbose:
+                    print('classifier layer %02d, output=%s' % (i, out.shape))
                 if i in classifier_layers:
                     yield out.detach().numpy().copy()
 
@@ -479,8 +482,8 @@ class VGGSmall(nn.Module):
             nn.ReLU(True),
             nn.Dropout(),
             nn.Linear(classifier_size, num_classes),
-            nn.ReLU(True),  # <-- Added after training
-            WinnerTakesAll(),  # <-- Added after training
+            #nn.ReLU(True),  # <-- Added after training
+            #WinnerTakesAll(),  # <-- Added after training
         )
         self.semantics = nn.Sequential(
             nn.Linear(num_classes, vector_size, bias=False),

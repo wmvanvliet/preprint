@@ -72,21 +72,6 @@ for subject, sub_dip_timecourses in zip(subjects, dip_timecourses):
 landmark_acts = pd.concat(landmark_acts, ignore_index=True)
 landmark_acts.to_csv(fname.dip_activation, index=False)
 
-##
-for landmark, time in time_rois.values():
-    sel = dip_selection.query(f'group=="{landmark}"')
-    landmark_act = []
-    for sub, dip, neg in zip(sel.subject, sel.dipole, sel.neg):
-        print(sub, dip, neg)
-        tc = dip_timecourses[sub - 1][dip] * (-1 if neg else 1)
-        quant = zscore(tc[:, time_rois[landmark]].mean(axis=1))
-        #quant = tc[:, time_rois[landmark]].mean(axis=1) * 1E9
-        df = metadata.query(f'subject=={sub}').sort_values('tif_file')
-        df[landmark] = quant
-        landmark_act.append(df)
-    landmark_act = pd.concat(landmark_act)
-
-
 ## For three landmarks, show the mean dipole activation for each stimulus.
 mean_acts = []
 landmark_acts = []
@@ -140,11 +125,14 @@ landmark_acts = pd.concat(landmark_acts, ignore_index=True)
 ## Load model layer activations
 import pickle
 from scipy.stats import rankdata
-model_name = 'vgg11_first_imagenet_then_epasana-10kwords_noise'
+#model_name = 'vgg11_first_imagenet_then_epasana-10kwords_noise'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext_imagenet256'
+model_name = 'vgg11_epasana-10kwords_noise'
 with open(fname.model_dsms(name=model_name), 'rb') as f:
     d = pickle.load(f)
 layer_activity = zscore(np.array(d['layer_activity'])[:, stimuli.index][1::2], axis=1)
 layer_names = d['dsm_names'][:-4][1::2]
+layer_acts = pd.DataFrame(layer_activity.T, columns=layer_names)
 
 ## Show the behavior of each model layer for each stimulus
 fig, axes = plt.subplots(1, len(layer_activity), sharex=True, sharey=True, figsize=(15, 3))
@@ -189,3 +177,23 @@ fig, axes = plt.subplots(1, 3, sharex=True)
 for r, ax, landmark in zip(r1, axes.flat, selected_landmarks):
     ax.bar(np.arange(len(r)), r)
     ax.set_title(landmark)
+
+
+## Save giant CSV file
+# data = landmark_acts.join(stimuli[['tif_file']].join(layer_acts).set_index('tif_file'), on='tif_file')
+# data.to_csv(fname.brain_model_comparison)
+
+#     (Intercept)   fc2_relu
+#  2  -0.0008408194 0.20664959
+#  3  -0.0008408194 0.21845941
+#  4  -0.0008408194 0.17940047
+#  6  -0.0008408194 0.03159088
+#  7  -0.0008408194 0.17615774
+#  8  -0.0008408194 0.09583091
+#  9  -0.0008408194 0.13515399
+#  10 -0.0008408194 0.24666465
+#  11 -0.0008408194 0.19468480
+#  13 -0.0008408194 0.06752757
+#  14 -0.0008408194 0.16153019
+#  15 -0.0008408194 0.13566348
+

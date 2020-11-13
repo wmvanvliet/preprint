@@ -1,13 +1,13 @@
+"""
+Compare the behavior of the layers in a model to the behavior of the epasana dipoles.
+"""
 import pandas as pd
 from matplotlib import pyplot as plt
 
 from config import fname
 
 dip_layer_corr = []
-bad_subjects = {3, 6, 13, 15}
 for subject in range(1, 16):
-    #if subject in bad_subjects:
-    #     continue
     df = pd.read_csv(fname.dip_layer_corr(subject=subject))
     df['subject'] = subject
     dip_layer_corr.append(df)

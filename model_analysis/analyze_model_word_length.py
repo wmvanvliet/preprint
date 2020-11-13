@@ -208,7 +208,7 @@ rsa_len_round = np.round(rsa_len, 2)
 feature = ("Feature Layer " + pd.Series(feature_layers, dtype=str)
            + " (RSA=" + pd.Series(rsa_len_round[:len(feature_layers)], dtype=str) + ")")
 classifier = ("Classifier Layer " + pd.Series(classifier_layers, dtype=str)
-             + " (RSA=" + pd.Series(rsa_len_round[len(feature_layers):len(feature_layers) + len(classifier_layers)], dtype=str) + ")")
+              + " (RSA=" + pd.Series(rsa_len_round[len(feature_layers):len(feature_layers) + len(classifier_layers)], dtype=str) + ")")
 if arch == 'vgg_sem':
     sem = "Semantics Layer (RSA=" + str(rsa_len_round[-1])  + ")"
 
