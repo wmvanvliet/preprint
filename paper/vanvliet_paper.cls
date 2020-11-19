@@ -18,7 +18,7 @@
 \RequirePackage{sidenotes}
 
 % Fix the position of the footnote number when it occurs near a comma or period
-\RequirePackage{fnpct}
+\RequirePackage{fnpct_vanvliet}
 
 % Place footnotes in the margin
 \let\oldfootnote\footnote
