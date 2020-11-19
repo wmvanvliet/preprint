@@ -32,6 +32,14 @@ However, the predictions made by existing models of reading are not directly com
 
 \section{Results}
 \section{Discussion}
+One may ask why the lexicon layer of the model is a one-hot encoded output vector.
+This is plainly incompatible with how the brain works.
+Some abstract semantical representation, such as word2vec or semantic features would clearly be better candidates.
+The reason why the final layer of the model is the way it is, is because this is the point where a hard 90 degree turn needs to be made from orthographical similarity to semantic similarity.
+
+The model used in this study is a standard convolutional design and has many shortcomings as a model of the brain.
+Nevertheless, the fact that the model performs well despite these shortcomings shows the power of using deep learning models to implement cognitive theories.
+
 \section{Methods}
 \section{Acknowledgements}
 We acknowledge the computational resources provided by the Aalto Science-IT project.
