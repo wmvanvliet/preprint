@@ -1,10 +1,11 @@
+"""
+Compare source level activity with model activity.
+"""
 import sys
 import mne
 import numpy as np
 import pickle
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib
 from scipy.stats import zscore, rankdata
 from tqdm import tqdm
 from joblib import Parallel, delayed

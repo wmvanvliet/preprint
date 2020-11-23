@@ -1,3 +1,6 @@
+"""
+Compare grand-average activity at the Epasana dipoles with the model activity.
+"""
 import pandas as pd
 from matplotlib import pyplot as plt
 

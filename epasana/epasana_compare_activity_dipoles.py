@@ -1,3 +1,6 @@
+"""
+Compare dipole activity for an epasana subject with model activity.
+"""
 import sys
 import mne
 import numpy as np
@@ -7,8 +10,6 @@ import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib.ticker import MultipleLocator
 from scipy.stats import zscore, rankdata
-from tqdm import tqdm
-from joblib import Parallel, delayed
 
 from config import fname
 

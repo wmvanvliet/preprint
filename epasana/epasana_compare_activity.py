@@ -1,3 +1,6 @@
+"""
+Comparing sensor level activity with model activation.
+"""
 import sys
 import mne
 import numpy as np
