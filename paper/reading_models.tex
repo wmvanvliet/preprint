@@ -48,12 +48,30 @@ We show how various layers in the model behave similarly to several well studied
 
 \section{Results}
 % Network architecture and training
+%   - Example training stimuli
+%   - Test set results
 % MEG experiment
 %   - Previous publication
-%   - Stimuli
-%   - ECD localization
-%   - MNE localization
+%   - Stimuli (point to figure)
+%   - ECD localization (point to figure)
+%   - MNE localization (point to figure)
 % Big results figure
+%   - Comparison of landmark behavior
+%   - Statistics
+\begin{figure*}
+    \includegraphics[width=18cm]{results.pdf}
+    \vspace{2ex}
+    \caption{
+        \textbf{Comparison between \gls{MEG} evoked activity and sum activity in each layer of the model.}
+        Based on the response pattern to each stimulus type, three processing stages where identified that correspond to different time windows in the \gls{MEG} activity and different layers in the model.\\
+        \textbf{A)} Evoked \gls{MEG} activity, quantified during three time intervals.
+        The grand-average \gls{MNE} source activity to valid Finnish words is shown in orange hues.
+        Overlaid are the positions of the most representative \gls{ECD} for each participant during the indicated time interval, as determined by \textcite{Vartiainen2011}.
+        Below is shown for each stimulus, the grand-average activity at the \glspl{ECD}, integrated over the indicated time interval.\\
+        \textbf{B)} For each layer of the model, the sum \gls{ReLu} activation in each layer in response to each stimulus.
+        The network architecture is shown below.
+    \label{fig:results}}
+\end{figure*}
 
 \section{Discussion}
 One may ask why the lexicon layer of the model is a one-hot encoded output vector.
