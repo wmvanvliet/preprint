@@ -28,7 +28,7 @@ Noninvasive measurement techniques such as \gls{EEG}\cite{Grainger2009}, \gls{ME
 However, it is rarely straightforward to translate observations of brain activity into a mechanistic understanding of the computational process being performed by the brain\cite{Poeppel2012}.
 
 Computational models facilitate the development of cognitive theories by allowing us to reason about conceptual "box and arrow" ideas in a qualitative and quantitative manner\cite{Barber2007, Price2018}.
-However, the predictions made by existing models of reading are not directly comparible to actual neuroimaging data, and it is an often repeated sentiment that there should be more contact between the two\cite{Carreiras2014, Laszlo2012, Laszlo2014, Poeppel2012, Taylor2013}.
+However, the predictions made by existing models of reading are not directly comparable to actual neuroimaging data, and it is an often repeated sentiment that there should be more contact between the two\cite{Carreiras2014, Laszlo2012, Laszlo2014, Poeppel2012, Taylor2013}.
 
 In the domain of models of reading in the brain, connectionist models using \gls{PDP}\cite{McClelland2003} and "dual route" approaches\cite{Perry2007} have been shown to account for many observational findings in both healthy volunteers and patients\cite{McLeod2000, McClelland2003, Perry2007}.
 Furthermore, \textcite{Laszlo2012} have shown that by summing the activity of the computational units in specific layers of a connectionist model, the resulting time varying signal resembles a well known component, observed in \gls{EEG} and \gls{MEG} studies, known as the N400 potential\cite{Kutas2011}.
@@ -38,20 +38,28 @@ For example, the model operates on 5-letter words with an alphabet of only 3 pos
 Nevertheless, they demonstrated how a computational model can both perform a simplified reading task and produce neuroimaging-like data.
 
 Recent advances in deep learning and its software ecosystem are rapidly changing our notion of what is computationally tractable to model\cite{Richards2019}.
-\Glspl{CNN} have emerged that perform visual object recognition at a large enough scale to enable a direct comparison between network state and imaging data\cite{Schrimpf2018, Devereux2018, Yamins2016} and consequently our understanding of basic visual processing has increased tremendously\cite{Lindsay2020}.
+\Glspl{CNN} have emerged that perform visual object recognition at a large enough scale to enable a direct comparison between network state and neuroimaging data\cite{Schrimpf2018, Devereux2018, Yamins2016} and consequently our understanding of basic visual processing has increased tremendously\cite{Lindsay2020}.
 Since the first stages of reading, namely visual word recognition, can be seen as a specialized form of object recognition, \glspl{CNN} may very well be a suitable tool for increasing the scale of traditional connectionist models of reading.
 
-In this study, we trained a \gls{CNN} with a \textsc{vgg}-11 network architecture\cite{Szegedy2015} to perform visual word recognition on bitmap images of rendered text.
-The same set of stimulus images was presented to both the model and human volunteers, so the activation inside the model could be directly compared with the amplitude of \gls{MEG} evoked reponses recorded from the study participants.
-Whereas the training set of the model consisted only of images of either valid Finnish words or only visual noise, the stimulus set used in the experiment contained images of valid Finnish words, which were similar to the ones present in the training data for the model, but also images that were not part of its training set, namely consonant strings, symbol strings and pseudowords.
+In this study, we trained a \gls{CNN} with an \textsc{vgg}-inspired\cite{Szegedy2015} network architecture to perform visual word recognition on bitmap images of rendered text.
+The same set of stimulus images was presented to both the model and human volunteers in order to directly compare the activation inside the model to the amplitude of \gls{MEG} evoked responses recorded from the study participants.
+Whereas the training set of the model consisted only of images of either valid Finnish words or only visual noise, the stimulus set used in the experiment contained images of valid Finnish words, which were similar to the ones present in the training data for the model, but also consonant strings, symbol strings and pseudo-words.
 We show how various layers in the model behave similarly to several well studied evoked responses and evaluate this similarity both qualitatively and, for the first time, quantitatively.
 
 \section{Results}
+% Network architecture and training
+% MEG experiment
+%   - Previous publication
+%   - Stimuli
+%   - ECD localization
+%   - MNE localization
+% Big results figure
+
 \section{Discussion}
 One may ask why the lexicon layer of the model is a one-hot encoded output vector.
 This is plainly incompatible with how the brain works.
-Some abstract semantical representation, such as word2vec or semantic features would clearly be better candidates.
-The reason why the final layer of the model is the way it is, is because this is the point where a hard 90 degree turn needs to be made from orthographical similarity to semantic similarity.
+Some abstract semantic representation, such as word2vec or semantic features would clearly be better candidates.
+The reason why the final layer of the model is the way it is, is because this is the point where a hard 90 degree turn needs to be made from orthographic similarity to semantic similarity.
 
 The model used in this study is a standard convolutional design and has many shortcomings as a model of the brain.
 Nevertheless, the fact that the model performs well despite these shortcomings shows the power of using deep learning models to implement cognitive theories.
@@ -66,14 +74,3 @@ This research was funded by the Academy of Finland (grant \#310988 to M.v.V, \#2
 \printbibliography{}
 
 \end{document}
-
-
-% Ok, dit gaat echt nergens meer over. Waar wil ik het over hebben?\
-%
-% Statement over neuroimaging en het modeleren van het proces daar achter.
-% Voorbeelden van modellen: McClelland, DRP+, Laszlo & Plaut.
-% Die laatste trekt een lijn naar neuroimaging: super cool.
-% Deep learning schept nieuwe mogelijkheden: dezelfde stimuli kunnen nu gebruikt worden.
-% Coole resultaten wat betreft object recognition.
-% Dus in deze studie proberen we een deep learning model van reading te maken.
-% En we vergelijken de activatie in het model met MEG activatie tijdens lezen.

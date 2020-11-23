@@ -15,7 +15,7 @@ import networks
 from pilot import utils
 
 # The model to perform the analysis on. I keep changing this around as I train new models.
-model_name = 'vgg_first_imagenet64_then_tiny-words-noisy_tiny-imagenet'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
 
 # Get the images that were presented during the MEG experiment
 stimuli = utils.get_stimulus_info(subject=2)

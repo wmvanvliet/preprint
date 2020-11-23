@@ -1,16 +1,11 @@
-These scripts generate training images for the computational models. Each dataset is around 100_000 images. To prevent folders with 100_000 files in them, the images are saved as pickled python lists of PNG byte-encoded images. The [`dataloaders.py`](../../../blob/master/dataloaders.py) file contains PyTorch dataloaders to load these pickled files.
+These scripts generate training images for the computational models. Each dataset is around 100_000 images. To prevent folders with 100_000 files in them, the images are saved as TensorFlow Records. The [`dataloaders.py`](../../../blob/master/dataloaders.py) file contains PyTorch dataloaders to load these.
 
 | script                          | dataset it generates
 |---------------------------------|---------------------------------------------------------------------
-| construct_10k-words.py          | 10000 short finnish words
-| construct_facescrub.py          | images of celebrity faces
-| construct_quickdraw.py          | doodles downloaded from https://quickdraw.withgoogle.com
-| construct_redness1_dataset.py   | words used in the Redness1 experiment
-| construct_redness2_dataset.py   | words used in the Redness2 experiment
-| construct_tiny-consonants.py    | random consonant strings
-| construct_tiny-symbols.py       | random symbol strings
-| construct_tiny-text-noise.py    | random consonant+symbol strings
-| construct_tiny-words.py         | words used in the pilot experiment and some additional finnish words
-| construct_epasana-words.py      | 100_000/10_000 128x128 pixel word train/test images
-| construct_epasana-consonants.py | 100_000/10_000 128x128 pixel consonant string train/test images
-| construct_epasana_symbols.py    | 100_000/10_000 128x128 pixel symbol string train/test images
+| construct_epasana-10kwords.py   | The valid Finnish words used in "Epasana", plus common Finnish words
+| construct_epasana-consonants.py | Random consonant strings like the ones used in "Epasana"
+| construct_epasana-symbols.py    | Random symbol strings like the ones used in "Epasana"
+| construct-imagenet256.py        | A selection of the ImageNet database
+| construct_noise.py              | Images containing only visual noise
+| construct-pilot-nontext.py      | Random consonant and symbol strings like the ones used in the pilot study
+| construct-pilot-words.py        | The words used in the pilot study
