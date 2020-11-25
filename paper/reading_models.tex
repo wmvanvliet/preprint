@@ -41,12 +41,27 @@ Recent advances in deep learning and its software ecosystem are rapidly changing
 \Glspl{CNN} have emerged that perform visual object recognition at a large enough scale to enable a direct comparison between network state and neuroimaging data\cite{Schrimpf2018, Devereux2018, Yamins2016} and consequently our understanding of basic visual processing has increased tremendously\cite{Lindsay2020}.
 Since the first stages of reading, namely visual word recognition, can be seen as a specialized form of object recognition, \glspl{CNN} may very well be a suitable tool for increasing the scale of traditional connectionist models of reading.
 
-In this study, we trained a \gls{CNN} with an \textsc{vgg}-inspired\cite{Szegedy2015} network architecture to perform visual word recognition on bitmap images of rendered text.
+In this study, we trained a \gls{CNN} to perform visual word recognition on bitmap images of rendered text.
 The same set of stimulus images was presented to both the model and human volunteers in order to directly compare the activation inside the model to the amplitude of \gls{MEG} evoked responses recorded from the study participants.
 Whereas the training set of the model consisted only of images of either valid Finnish words or only visual noise, the stimulus set used in the experiment contained images of valid Finnish words, which were similar to the ones present in the training data for the model, but also consonant strings, symbol strings and pseudo-words.
 We show how various layers in the model behave similarly to several well studied evoked responses and evaluate this similarity both qualitatively and, for the first time, quantitatively.
 
 \section{Results}
+
+For the model, we used a \textsc{VGG}-11\cite{Szegedy2015} network architecture, pretrained on ImageNet\cite{Russakovsky2015}, as provided by the TorchVision package\cite{Marcel2010}.
+This architecture consists of five convolution layers (three of which perform convolution twice), followed by two densely connected layers, terminating in an output layer.
+The model was trained to perform visual word recognition using a training set that contained 1~000~000 images, where each image depicted one of 10~000 possible Finnish words, rendered in varying fonts, sizes and rotations, with varying degrees of visual background noise.
+The task for the model was to identify the correct word (by setting the corresponding unit in the output layer to a high value), irregardless of the font, size and rotation used to render the text.
+The vocabulary size (10~000) was chosen to exceed the number of units in the densely connected layers (4~096) to force the model to construct a sub-lexical representation.
+
+In addition to the images of valid Finnish words, 50~000 images consisting of only visual noise were added to the training set.
+The inclusion of this "no word present" condition introduces a detection element to what is otherwise a discrimination task.
+If no word was present in the image, all output units should have a low value.
+%This was achieved by training the model with an additional output unit, indicating the "only noise" condition, while using a cross-entropy loss function, which favors only a single output having a high value, driving all other outputs to zero.
+%After training, the final output unit was removed from the model.
+During training, the performance of the model was evaluated on an independant test set of 100~000 images that contained words and 5~000 that contained only noise.
+Training was stopped when the model's performance on the test set reached 100\%.
+
 % Network architecture and training
 %   - Example training stimuli
 %   - Test set results
@@ -63,7 +78,7 @@ We show how various layers in the model behave similarly to several well studied
     \vspace{2ex}
     \caption{
         \textbf{Comparison between \gls{MEG} evoked activity and sum activity in each layer of the model.}
-        Based on the response pattern to each stimulus type, three processing stages where identified that correspond to different time windows in the \gls{MEG} activity and different layers in the model.\\
+        Based on the response pattern to each stimulus type, three processing stages where identified that correspond to different time windows in the \gls{MEG} activity and different layer types in the model.\\
         \textbf{A)} Evoked \gls{MEG} activity, quantified during three time intervals.
         The grand-average \gls{MNE} source activity to valid Finnish words is shown in orange hues.
         Overlaid are the positions of the most representative \gls{ECD} for each participant during the indicated time interval, as determined by \textcite{Vartiainen2011}.
