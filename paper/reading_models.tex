@@ -50,8 +50,8 @@ We show how various layers in the model behave similarly to several well studied
 
 For the model, we used a \textsc{VGG}-11\cite{Szegedy2015} network architecture, pretrained on ImageNet\cite{Russakovsky2015}, as provided by the TorchVision package\cite{Marcel2010}.
 This architecture consists of five convolution layers (three of which perform convolution twice), followed by two densely connected layers, terminating in an output layer.
-The model was trained to perform visual word recognition using a training set that contained 1~000~000 images, where each image depicted one of 10~000 possible Finnish words, rendered in varying fonts, sizes and rotations, with varying degrees of visual background noise.
-The task for the model was to identify the correct word (by setting the corresponding unit in the output layer to a high value), irregardless of the font, size and rotation used to render the text (\autoref{fig:train}).
+The model was trained to perform visual word recognition using a training set that contained 1~000~000 images, where each image depicted one of 10~000 possible Finnish words, rendered in varying fonts, sizes and rotations, with varying degrees of visual background noise (\autoref{fig:train}).
+The task for the model was to identify the correct word (by setting the corresponding unit in the output layer to a high value), irregardless of the font, size and rotation used to render the text.
 The vocabulary size (10~000) was chosen to exceed the number of units in the densely connected layers (4~096) to force the model to construct a sub-lexical representation.
 
 \begin{figure}
@@ -64,8 +64,12 @@ The inclusion of this "no word present" condition introduces a detection element
 If no word was present in the image, all output units should have a low value.
 %This was achieved by training the model with an additional output unit, indicating the "only noise" condition, while using a cross-entropy loss function, which favors only a single output having a high value, driving all other outputs to zero.
 %After training, the final output unit was removed from the model.
-During training, the performance of the model was evaluated on an independant test set of 100~000 images that contained words and 5~000 that contained only noise.
-Training was stopped when the model's performance on the test set reached 100\%.
+During training, the performance of the model was evaluated on an independent test set of 100~000 images that contained words and 5~000 that contained only noise.
+Training was stopped when the model's performance plateaued, at which point the accuracy on the test set was 99.3\%.
+
+The model was compared to \gls{MEG} data collected as part of an earlier study by \textcite{Vartiainen2011}.
+During the recording session, 15 participants were presented with various visual stimuli, designed to form a series of experimental contrasts that highlight three processing stages during single word reading.
+The first stage is characterized by early onset activity in the visual cortex (\SIRange{65}{115}{\milli\second} after stimulus onset), which is modulated by the visual complexity of the stimulus.
 
 % Network architecture and training
 %   - Example training stimuli
