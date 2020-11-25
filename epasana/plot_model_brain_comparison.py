@@ -125,9 +125,9 @@ landmark_acts = pd.concat(landmark_acts, ignore_index=True)
 ## Load model layer activations
 import pickle
 from scipy.stats import rankdata
-#model_name = 'vgg11_first_imagenet_then_epasana-10kwords_noise'
-model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext_imagenet256'
-model_name = 'vgg11_epasana-10kwords_noise'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_noise'
+#model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext_imagenet256'
+#model_name = 'vgg11_epasana-10kwords_noise'
 with open(fname.model_dsms(name=model_name), 'rb') as f:
     d = pickle.load(f)
 layer_activity = zscore(np.array(d['layer_activity'])[:, stimuli.index][1::2], axis=1)
