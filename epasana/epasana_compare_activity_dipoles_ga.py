@@ -4,13 +4,10 @@ Compare grand-average activity at the Epasana dipoles with the model activity.
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from config import fname
+from config import fname, subjects
 
 dip_layer_corr = []
-bad_subjects = {3, 6, 13, 15}
-for subject in range(1, 16):
-    #if subject in bad_subjects:
-    #     continue
+for subject in subjects:
     df = pd.read_csv(fname.dip_layer_corr(subject=subject))
     df['subject'] = subject
     dip_layer_corr.append(df)
@@ -35,7 +32,7 @@ from scipy.stats import zscore
 metadata = []
 dip_timecourses = []
 dip_selection = []
-for subject in tqdm(range(1, 16)):
+for subject in tqdm(subjects):
     epochs = mne.read_epochs(fname.epochs(subject=subject), preload=False)
     dip_t = np.load(fname.dip_timecourses(subject=subject))['proj']
     dip_t = dip_t[:, np.argsort(epochs.metadata.tif_file), :]

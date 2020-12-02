@@ -29,6 +29,10 @@ elif user == 'wmvan':
     orig_epasana_dir = 'M:/scratch/epasana/bids'
     reading_models_dir = '../data'
     n_jobs = 6  # My laptop has 6 cores
+elif user == 'vanvlm1':
+    orig_epasana_dir = '/m/nbe/scratch/epasana/bids'
+    reading_models_dir = '/m/nbe/scratch/reading_models'
+    n_jobs = 1
 else:
     raise ValueError('Please add your system to config.py')
 
@@ -56,7 +60,6 @@ fname.add('reading_models_dir', reading_models_dir)
 fname.add('derivatives_dir', '{orig_epasana_dir}/derivatives/marijn')
 fname.add('dipoles_dir', '{orig_epasana_dir}/derivatives/dipoles')
 fname.add('stimulus_dir', '{orig_epasana_dir}/stimulus_images')
-fname.add('subjects_dir', '{orig_epasana_dir}/derivatives/freesurfer')
 
 # The data files that are used and produced by the analysis steps
 fname.add('epochs', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-epo.fif')
@@ -67,7 +70,7 @@ fname.add('fwd', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-fwd.
 fname.add('src', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-src.fif')
 fname.add('morph', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-morph.h5')
 fname.add('stc', '{derivatives_dir}/sub-{subject:02d}/meg/sub-{subject:02d}-{condition}')
-fname.add('ga_stc', '{derivatives_dir}/grand_average/ga-{condition}')
+fname.add('ga_stc', '{derivatives_dir}/grand_average/grand_average-{condition}')
 fname.add('dsms', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dsms.npz')
 fname.add('layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_layer_corr-ave.fif')
 fname.add('ga_layer_corr', '{reading_models_dir}/epasana/grand_average/ga_layer_corr-ave.fif')
@@ -86,14 +89,19 @@ fname.add('bids_root', '{orig_epasana_dir}')
 fname.add('raw', '{bids_root}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_meg.fif')
 fname.add('events', '{bids_root}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_events.tsv')
 fname.add('channels', '{bids_root}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_channels.tsv')
-fname.add('bem', '{subjects_dir}/sub-{subject:02d}/bem/sub-{subject:02d}_5120-5120-5120_bem-sol.fif')
 
 # Dipoles
 fname.add('dip', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipoles.bdip')
+fname.add('dip_tal', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipoles_talairach.bdip')
 fname.add('dip_timecourses', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_timecourses.npz')
 fname.add('dip_selection', '{dipoles_dir}/sub-{subject:02d}/meg/sub-{subject:02d}_task-epasana_dipole_selection.tsv')
 fname.add('dip_layer_corr', '{reading_models_dir}/epasana/sub-{subject:02d}/sub-{subject:02d}_dip_layer_corr.csv')
 fname.add('dip_activation', '{dipoles_dir}/epasana_dipole_activation.csv')
+
+# Freesurfer stuff
+fname.add('subjects_dir', '{orig_epasana_dir}/derivatives/freesurfer')
+fname.add('bem', '{subjects_dir}/sub-{subject:02d}/bem/sub-{subject:02d}_5120-5120-5120_bem-sol.fif')
+fname.add('trans_tal', '{subjects_dir}/sub-{subject:02d}/mri/transforms/talairach.xfm')
 
 # Brain <-> Model comparison
 fname.add('brain_model_comparison', '{reading_models_dir}/epasana/brain_model_comparison.csv')
@@ -101,3 +109,9 @@ fname.add('brain_model_comparison', '{reading_models_dir}/epasana/brain_model_co
 # Reports
 fname.add('report', 'reports/sub{subject:02d}_report.h5')
 fname.add('report_html', 'reports/sub{subject:02d}_report.html')
+
+# Filenames in BIDSPath format
+def bids_raw(fname, subject):
+    from mne_bids import BIDSPath
+    return BIDSPath(subject=f'{subject:02d}', task='epasana', suffix='meg', extension='fif', root=fname.bids_root)
+fname.add('bids_raw', bids_raw)

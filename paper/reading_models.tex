@@ -65,11 +65,15 @@ If no word was present in the image, all output units should have a low value.
 %This was achieved by training the model with an additional output unit, indicating the "only noise" condition, while using a cross-entropy loss function, which favors only a single output having a high value, driving all other outputs to zero.
 %After training, the final output unit was removed from the model.
 During training, the performance of the model was evaluated on an independent test set of 100~000 images that contained words and 5~000 that contained only noise.
-Training was stopped when the model's performance plateaued, at which point the accuracy on the test set was 99.3\%.
+Training was stopped when the model's performance plateaued, at which point the accuracy on the test set was \SI{99.3}{\percent}.
 
 The model was compared to \gls{MEG} data that was collected as part of an earlier study by \textcite{Vartiainen2011}.
 During the recording session, 15 participants were presented with various orthographic stimuli, designed to form a series of experimental contrasts that highlight three processing stages during single word reading.
-The first stage is characterized by early onset activity in the visual cortex (\SIrange{65}{115}{\milli\second} after stimulus onset), which is modulated by the visual complexity of the stimulus.
+To summarize the high-dimensional \gls{MEG} data, the sensor level signals were segregated into cortical-level spatiotemporal components by means of guided \gls{ECD} modeling\cite{Hamalainen1993}.
+This yielded for each participant, a collection of 11--15 \glspl{ECD} that together account for at least \SI{75}{\percent} of the signal.
+The \glspl{ECD} where then grouped based on their location and the timing of peak activation. 
+The current study re-uses three of such dipole groups defined in the original study\cite{Vartiainen2011} along the ventral stream (\autoref{fig:results}A).
+The first group of \glspl{ECD} is occipitally located and is characterized by early onset activity in the visual cortex, peaking \SIrange{65}{115}{\milli\second} after stimulus onset.
 
 % Network architecture and training
 %   - Example training stimuli
