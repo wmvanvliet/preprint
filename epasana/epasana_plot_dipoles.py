@@ -5,27 +5,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-mne.viz.set_3d_backend('mayavi')
-
-ga_stc = mne.read_source_estimate(fname.ga_stc(condition='word'))
-morph = mne.compute_source_morph(ga_stc, subject_from='fsaverage', subject_to='colin27', spacing=4, subjects_dir=fname.subjects_dir)
-ga_stc = morph.apply(ga_stc)
-
-to_colin27 = mne.Transform('fs_tal', 'mri', [
-    [1.03061319e+00, 1.75597081e-03, 1.32446652e-02, -2.93965741e-01],
-    [-7.64009722e-03, 1.02982571e+00, -5.51759364e-02, 1.96450828e+01],
-    [-1.56219187e-02, -3.15304730e-02, 1.05012865e+00, -1.86331397e+01],
-    [ 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 1.00000000e+00],
-])
-
-views = [
-    (180, 90, 640, [0, 0, 0]),
-    (-90, 180, 640, [0, 0, 0]),
-]
-view_names = ['lateral', 'ventral']
-
-
-##
 foci = []
 for subject in subjects:
     dips = mne.read_dipole(fname.dip_tal(subject=subject))
@@ -33,11 +12,20 @@ for subject in subjects:
     if 'LeftOcci1' in dip_selection.index:
         foci.append(dips.pos[dip_selection.loc['LeftOcci1'].dipole] * 1000)
 foci = np.array(foci)
-foci = mne.transforms.apply_trans(to_colin27, foci)
 
+# to_colin27 = mne.Transform('fs_tal', 'mri', [
+#     [1.03061319e+00, 1.75597081e-03, 1.32446652e-02, -2.93965741e-01],
+#     [-7.64009722e-03, 1.02982571e+00, -5.51759364e-02, 1.96450828e+01],
+#     [-1.56219187e-02, -3.15304730e-02, 1.05012865e+00, -1.86331397e+01],
+#     [ 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 1.00000000e+00],
+# ])
+# foci = mne.transforms.apply_trans(to_colin27, foci)
+
+ga_stc = mne.read_source_estimate(fname.ga_stc(condition='word'))
 fig1 = mlab.figure(1, size=(1000, 1000))
+mne.viz.set_3d_backend('mayavi')
 brain = ga_stc.copy().crop(0.065, 0.11).mean().plot(
-    'colin27',
+    'fsaverage',
     subjects_dir=fname.subjects_dir,
     hemi='lh',
     background='white',
@@ -46,6 +34,12 @@ brain = ga_stc.copy().crop(0.065, 0.11).mean().plot(
     figure=fig1,
 )
 brain.scale_data_colormap(3.5, 3.8, 7, True)
+
+views = [
+    (180, 90, 440, [0, 0, 0]),
+    (-90, 180, 440, [0, 0, 0]),
+]
+view_names = ['lateral', 'ventral']
 
 # Save images without dipoles
 for view, view_name in zip(views, view_names):
@@ -67,11 +61,9 @@ for subject in subjects:
     if 'LeftOcciTemp2' in dip_selection.index:
         foci.append(dips.pos[dip_selection.loc['LeftOcciTemp2'].dipole] * 1000)
 foci = np.array(foci)
-foci = mne.transforms.apply_trans(to_colin27, foci)
-
 fig2 = mlab.figure(2, size=(1000, 1000))
 brain = ga_stc.copy().crop(0.14, 0.2).mean().plot(
-    'colin27',
+    'fsaverage',
     subjects_dir=fname.subjects_dir,
     hemi='lh',
     background='white',
@@ -80,6 +72,12 @@ brain = ga_stc.copy().crop(0.14, 0.2).mean().plot(
     figure=fig2,
 )
 brain.scale_data_colormap(3.5, 3.8, 7, True)
+
+views = [
+    (180, 90, 440, [0, 0, 0]),
+    (-90, 180, 440, [0, 0, 0]),
+]
+view_names = ['lateral', 'ventral']
 
 # Save images without dipoles
 for view, view_name in zip(views, view_names):
@@ -101,11 +99,9 @@ for subject in subjects:
     if 'LeftTemp3' in dip_selection.index:
         foci.append(dips.pos[dip_selection.loc['LeftTemp3'].dipole] * 1000)
 foci = np.array(foci)
-foci = mne.transforms.apply_trans(to_colin27, foci)
-
 fig = mlab.figure(3, size=(1000, 1000))
 brain = ga_stc.copy().crop(0.3, 0.5).mean().plot(
-    'colin27',
+    'fsaverage',
     subjects_dir=fname.subjects_dir,
     hemi='lh',
     background='white',
@@ -114,6 +110,12 @@ brain = ga_stc.copy().crop(0.3, 0.5).mean().plot(
     figure=fig,
 )
 brain.scale_data_colormap(3.5, 3.8, 7, True)
+
+views = [
+    (180, 90, 440, [0, 0, 0]),
+    (-90, 180, 440, [0, 0, 0]),
+]
+view_names = ['lateral', 'ventral']
 
 # Save images without dipoles
 for view, view_name in zip(views, view_names):
