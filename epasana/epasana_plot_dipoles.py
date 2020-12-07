@@ -5,6 +5,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+views = [
+    (180, 90, 440, [0, 0, 0]),
+    (-90, 180, 440, [0, 0, 0]),
+]
+view_names = ['lateral', 'ventral']
+
+##
 foci = []
 for subject in subjects:
     dips = mne.read_dipole(fname.dip_tal(subject=subject))
@@ -34,12 +41,6 @@ brain = ga_stc.copy().crop(0.065, 0.11).mean().plot(
     figure=fig1,
 )
 brain.scale_data_colormap(3.5, 3.8, 7, True)
-
-views = [
-    (180, 90, 440, [0, 0, 0]),
-    (-90, 180, 440, [0, 0, 0]),
-]
-view_names = ['lateral', 'ventral']
 
 # Save images without dipoles
 for view, view_name in zip(views, view_names):
@@ -73,12 +74,6 @@ brain = ga_stc.copy().crop(0.14, 0.2).mean().plot(
 )
 brain.scale_data_colormap(3.5, 3.8, 7, True)
 
-views = [
-    (180, 90, 440, [0, 0, 0]),
-    (-90, 180, 440, [0, 0, 0]),
-]
-view_names = ['lateral', 'ventral']
-
 # Save images without dipoles
 for view, view_name in zip(views, view_names):
     mlab.view(*view)
@@ -110,12 +105,6 @@ brain = ga_stc.copy().crop(0.3, 0.5).mean().plot(
     figure=fig,
 )
 brain.scale_data_colormap(3.5, 3.8, 7, True)
-
-views = [
-    (180, 90, 440, [0, 0, 0]),
-    (-90, 180, 440, [0, 0, 0]),
-]
-view_names = ['lateral', 'ventral']
 
 # Save images without dipoles
 for view, view_name in zip(views, view_names):

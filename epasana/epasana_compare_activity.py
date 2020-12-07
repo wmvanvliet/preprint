@@ -46,7 +46,7 @@ for t in stimuli.type.unique():
     evokeds.append(ev)
 
 # Load model layer activations
-model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana_nontext'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_noise'
 with open(fname.model_dsms(name=model_name), 'rb') as f:
     d = pickle.load(f)
 layer_activity = np.array(d['layer_activity'])[:, stimuli.index]
@@ -80,12 +80,12 @@ info['sfreq'] = epochs.info['sfreq']
 evokeds_r = []
 # Combine grads
 grads_comb = np.linalg.norm(epochs._data.reshape(len(epochs), 102, 2, len(epochs.times)), axis=2)
-# for r, name in zip(spearmanr(layer_activity, grads_comb, x_axis=1, y_axis=0), layer_names):
-#     ev = mne.EvokedArray(r.repeat(2, axis=0), epochs.info, tmin=epochs.times[0], comment=name)
-#     evokeds_r.append(ev)
-for r, name in zip(spearmanr(layer_activity, epochs._data, x_axis=1, y_axis=0), layer_names):
-    ev = mne.EvokedArray(r, epochs.info, tmin=epochs.times[0], comment=name)
+for r, name in zip(spearmanr(layer_activity, grads_comb, x_axis=1, y_axis=0), layer_names):
+    ev = mne.EvokedArray(r.repeat(2, axis=0), epochs.info, tmin=epochs.times[0], comment=name)
     evokeds_r.append(ev)
+# for r, name in zip(spearmanr(layer_activity, epochs._data, x_axis=1, y_axis=0), layer_names):
+#     ev = mne.EvokedArray(r, epochs.info, tmin=epochs.times[0], comment=name)
+#     evokeds_r.append(ev)
 mne.viz.plot_evoked_topo([evokeds_r[i] for i in [1, 3, 5, 7, 9, 11, 13, 15]], scalings=dict(grad=1), ylim=dict(grad=[0, 0.7]), merge_grads=False)
 
 if subject == 'ga':

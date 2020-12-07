@@ -14,6 +14,10 @@ from config import fname
 # Brain landmarks to show
 selected_landmarks = ['LeftOcci1', 'LeftOcciTemp2', 'LeftTemp3']
 
+# Stimulus types in the order in which they should be plotted
+stimulus_types = ['word', 'pseudoword', 'consonants', 'symbols', 'noisy word']
+
+# The subjects to plot the data for
 subjects = range(1, 16)
 
 # Read in the epochs metadata and dipole information from each subject
@@ -41,10 +45,6 @@ for subject in tqdm(subjects):
 metadata = pd.concat(metadata, ignore_index=True)
 dip_selection = pd.concat(dip_selection, ignore_index=True)
 
-# Stimulus information
-stimuli = pd.read_csv(fname.stimulus_selection)
-stimuli['type'] = stimuli['type'].astype('category')
-
 # For each landmark, we analyze a different time interval
 time_rois = {
     'LeftOcci1': slice(*np.searchsorted(epochs.times, [0.065, 0.115])),
@@ -64,7 +64,6 @@ for subject, sub_dip_timecourses in zip(subjects, dip_timecourses):
     dip_info = dip_selection.query(f'subject=="{subject}"')
     landmark_act = metadata.query(f'subject=={subject}').sort_values('tif_file')
     for dip, landmark, neg in zip(dip_info.dipole, dip_info.group, dip_info.neg):
-        print(subject, dip, neg)
         tc = sub_dip_timecourses[dip] * (-1 if neg else 1)
         quant = zscore(tc[:, time_rois[landmark]].mean(axis=1))
         landmark_act[landmark] = quant
@@ -74,37 +73,20 @@ landmark_acts.to_csv(fname.dip_activation, index=False)
 
 ## For three landmarks, show the mean dipole activation for each stimulus.
 mean_acts = []
-landmark_acts = []
-fig, axes = plt.subplots(1, len(selected_landmarks), sharex=True, sharey=True, figsize=(5, 3))
+fig, axes = plt.subplots(1, len(selected_landmarks), sharex=True, sharey=True, figsize=(4.4, 3))
 for landmark, ax in zip(selected_landmarks, axes.flat):
-    landmark_act = []
-    sel = dip_selection.query(f'group=="{landmark}"')
-    for sub, dip, neg in zip(sel.subject, sel.dipole, sel.neg):
-        print(sub, dip, neg)
-        tc = dip_timecourses[sub - 1][dip] * (-1 if neg else 1)
-        quant = zscore(tc[:, time_rois[landmark]].mean(axis=1))
-        #quant = tc[:, time_rois[landmark]].mean(axis=1) * 1E9
-        df = metadata.query(f'subject=={sub}').sort_values('tif_file')
-        df[landmark] = quant
-        landmark_act.append(df)
-    landmark_act = pd.concat(landmark_act)
-    landmark_acts.append(landmark_act)
-
-    mean_act = landmark_act.groupby('tif_file').agg('mean')[landmark]
-    mean_acts.append(mean_act)
-    cat = landmark_act.groupby('tif_file').agg('first').type
     x_offset = 0
-    for j, cat in enumerate(stimuli['type'].unique()):
-        cat_index = np.flatnonzero(stimuli['type'] == cat)
-        selection = mean_act[cat_index]
-        ax.scatter(np.arange(len(selection)) + x_offset, selection, s=1, alpha=0.2)
-        x_offset += len(selection)
-        ax.plot(cat_index[[0, -1]], selection.mean().repeat(2), color=plt.get_cmap('tab10').colors[j], label=cat)
+    for i, stimulus_type in enumerate(stimulus_types):
+        mean_act = landmark_acts.query(f'type=="{stimulus_type}"').groupby('tif_file').agg('mean')[landmark]
+        mean_acts.append(mean_act)
+        ax.scatter(np.arange(len(mean_act)) + x_offset, mean_act, s=1, alpha=0.2)
+        ax.plot([x_offset, x_offset + len(mean_act) - 1], mean_act.mean().repeat(2), color=plt.get_cmap('tab10').colors[i], label=stimulus_type)
         ax.xaxis.set_visible(False)
         ax.set_facecolor('#eee')
         ax.set_facecolor('#fafbfc')
         for pos in ['top', 'bottom', 'left', 'right']:
             ax.spines[pos].set_visible(False)
+        x_offset += len(mean_act)
     if landmark == selected_landmarks[0]:
         ax.legend()
         ax.set_ylabel('Activation (z-scores)')
@@ -120,7 +102,6 @@ for landmark, ax in zip(selected_landmarks, axes.flat):
         ax.set_title('Left Temp.\n300-500 ms', fontsize=10)
 plt.tight_layout()
 mean_acts = np.array(mean_acts)
-landmark_acts = pd.concat(landmark_acts, ignore_index=True)
 
 ## Load model layer activations
 import pickle
@@ -130,20 +111,22 @@ model_name = 'vgg11_first_imagenet_then_epasana-10kwords_noise'
 #model_name = 'vgg11_epasana-10kwords_noise'
 with open(fname.model_dsms(name=model_name), 'rb') as f:
     d = pickle.load(f)
-layer_activity = zscore(np.array(d['layer_activity'])[:, stimuli.index][1::2], axis=1)
+layer_activity = zscore(np.array(d['layer_activity'])[1::2], axis=1)
 layer_names = d['dsm_names'][:-4][1::2]
 layer_acts = pd.DataFrame(layer_activity.T, columns=layer_names)
 
+stimuli = pd.read_csv(fname.stimulus_selection)
+stimuli['type'] = stimuli['type'].astype('category')
+
 ## Show the behavior of each model layer for each stimulus
-fig, axes = plt.subplots(1, len(layer_activity), sharex=True, sharey=True, figsize=(15, 3))
+fig, axes = plt.subplots(1, len(layer_activity), sharex=True, sharey=True, figsize=(10, 3))
 for i, (act, ax) in enumerate(zip(layer_activity, axes.flat)):
     x_offset = 0
-    for j, cat in enumerate(stimuli['type'].unique()):
+    for j, cat in enumerate(stimulus_types):
         cat_index = np.flatnonzero(stimuli['type'] == cat)
         selection = act[cat_index]
         ax.scatter(np.arange(len(selection)) + x_offset, selection, s=1, alpha=0.2)
-        x_offset += len(selection)
-        ax.plot(cat_index[[0, -1]], selection.mean().repeat(2), color=plt.get_cmap('tab10').colors[j], label=cat)
+        ax.plot([x_offset, x_offset+len(selection) - 1], selection.mean().repeat(2), color=plt.get_cmap('tab10').colors[j], label=cat)
         ax.xaxis.set_visible(False)
         ax.set_facecolor('#eee')
         ax.set_facecolor('#fafbfc')
@@ -156,6 +139,7 @@ for i, (act, ax) in enumerate(zip(layer_activity, axes.flat)):
             ax.spines['left'].set_visible(True)
         else:
             ax.yaxis.set_visible(False)
+        x_offset += len(selection)
 plt.tight_layout()
 
 ##

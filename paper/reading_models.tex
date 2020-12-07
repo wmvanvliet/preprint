@@ -48,11 +48,12 @@ We show how various layers in the model behave similarly to several well studied
 
 \section{Results}
 
+\subsection{The model}
 For the model, we used a \textsc{VGG}-11\cite{Szegedy2015} network architecture, pretrained on ImageNet\cite{Russakovsky2015}, as provided by the TorchVision package\cite{Marcel2010}.
 This architecture consists of five convolution layers (three of which perform convolution twice), followed by two densely connected layers, terminating in an output layer.
 The model was trained to perform visual word recognition using a training set that contained 1~000~000 images, where each image depicted one of 10~000 possible Finnish words, rendered in varying fonts, sizes and rotations, with varying degrees of visual background noise (\autoref{fig:train}).
 The task for the model was to identify the correct word (by setting the corresponding unit in the output layer to a high value), irregardless of the font, size and rotation used to render the text.
-The vocabulary size (10~000) was chosen to exceed the number of units in the densely connected layers (4~096) to force the model to construct a sub-lexical representation.
+The vocabulary size (10~000) was chosen to exceed the number of units in the densely connected layers (4~096), forcing the model to construct a sub-lexical representation.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{train.png}
@@ -67,13 +68,37 @@ If no word was present in the image, all output units should have a low value.
 During training, the performance of the model was evaluated on an independent test set of 100~000 images that contained words and 5~000 that contained only noise.
 Training was stopped when the model's performance plateaued, at which point the accuracy on the test set was \SI{99.3}{\percent}.
 
+\subsection{The brain}
+
 The model was compared to \gls{MEG} data that was collected as part of an earlier study by \textcite{Vartiainen2011}.
 During the recording session, 15 participants were presented with various orthographic stimuli, designed to form a series of experimental contrasts that highlight three processing stages during single word reading.
+Stimuli included valid Finnish words, pseudowords, consonant strings, letter-like symbol strings and Finnish words embedded in visual noise (\autoref{fig:stimuli}).
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{stimuli.pdf}
+    \caption{Examples of stimuli used in the \gls{MEG} experiment.}\label{fig:stimuli}
+\end{figure}
+
 To summarize the high-dimensional \gls{MEG} data, the sensor level signals were segregated into cortical-level spatiotemporal components by means of guided \gls{ECD} modeling\cite{Hamalainen1993}.
 This yielded for each participant, a collection of 11--15 \glspl{ECD} that together account for at least \SI{75}{\percent} of the signal.
 The \glspl{ECD} where then grouped based on their location and the timing of peak activation. 
-The current study re-uses three of such dipole groups defined in the original study\cite{Vartiainen2011} along the ventral stream (\autoref{fig:results}A).
+The current study re-uses three of such dipole groups defined in the original study\cite{Vartiainen2011} along the ventral stream (\autoref{fig:results}A), that capture the different processing stages which the experiment sought to highlight.
+For each dipole, the response to each stimulus was summarized by integrating the activity over the time window used in \textcite{Vartiainen2011} for statistical analysis.
+To obtain the group-level response to each stimulus, the activity integrals for the dipoles in the group were z-transformed across the stimuli, and averaged.
+
 The first group of \glspl{ECD} is occipitally located and is characterized by early onset activity in the visual cortex, peaking \SIrange{65}{115}{\milli\second} after stimulus onset.
+The activity at these dipoles is driven by the visual complexity of the stimulus and is characterized in this study by a large response to noise embedded words relative to all other stimulus types.
+The second group is located further along the fusiform gyrus, sometimes referred to as the \gls{VWFA}\cite{Cohen2004} and their activity peaks slightly later at \SIrange{140}{200}{\milli\second}.
+Dipoles belonging this group exhibit sensitivity to whether the stimulus contains letters that are part of the participant's native alphabet\cite{Tarkiainen1999}, and is characterized in this study by a smaller response to stimuli containing symbol strings and noise embedded words, relative to stimuli that contain letters.
+The third and final group is located temporally, peaking much later at \SIrange{300}{500}{\milli\second}, corresponding to the N400 component of the evoked response\cite{Halgren2002, Helenius1998b, Service2007}.
+Activity 
+
+
+
+
+\subsection{Comparing model and brain}
+
+The 530 visual stimuli used in the \gls{MEG} experiment were run through the trained model and the sum activation in each layer of the model was recorded for each stimulus (\autoref{fig:results}B).
 
 % Network architecture and training
 %   - Example training stimuli
