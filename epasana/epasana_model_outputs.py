@@ -17,11 +17,17 @@ from matplotlib import pyplot as plt
 import mkl
 mkl.set_num_threads(4)
 
+import sys
+sys.path.append('../')
+
 import networks
 import utils
+import dataloaders
 
 # The model to perform the analysis on. I keep changing this around as I train new models.
-model_name = 'vgg11_first_imagenet_then_epasana-10kwords_epasana-nontext'
+model_name = 'vgg11_first_imagenet_then_epasana-10kwords_noise'
+classes = dataloaders.TFRecord('/m/nbe/scratch/reading_models/datasets/epasana-10kwords').classes
+classes.append(pd.Series(['noise'], index=[10000]))
 
 # Get the images that were presented during the MEG experiment
 stimuli = pd.read_csv('stimulus_selection.csv')
@@ -31,32 +37,23 @@ images = utils.get_stimulus_images(stimuli, data_path='/m/nbe/scratch/epasana')
 checkpoint = torch.load('../data/models/%s.pth.tar' % model_name, map_location='cpu')
 model = networks.vgg11.from_checkpoint(checkpoint, freeze=True)
 #model = networks.vgg_sem.from_checkpoint(checkpoint, freeze=True)
-outputs = model.get_layer_activations(images, feature_layers=[], classifier_layers=[4, 7])
-fc2 = next(outputs)
-outputs = next(outputs)
+output = next(model.get_layer_activations(images, feature_layers=[], classifier_layers=[6]))
 
-# Plot all the images being fed into the model
-plt.figure(figsize=(10, 10))
-plt.imshow(make_grid(images/5 + 0.5, nrow=20).numpy().transpose(1, 2, 0))
-plt.axis('off')
-plt.tight_layout()
+# Translate output of the model to text predictions
+predictions = stimuli.copy()
+predictions['predicted_text'] = classes[output.argmax(axis=1)].values
+predictions['predicted_class'] = output.argmax(axis=1)
 
-# Plot the model outputs
-plt.figure()
-plt.imshow(outputs)
-#plt.axhline(180, color='black')
-#plt.axhline(180 + 90, color='black')
-plt.colorbar()
-#plt.axvline(202, color='black')
-#plt.savefig('fig1.png', dpi=200)
-plt.xlim(0, 500)
-#plt.ylim(352, 470)
+predictions.to_csv('predictions.csv')
 
-# plt.figure()
-# sem = semantic_outputs[-1][order]
-# val_range = abs(sem).max()
-# plt.imshow(sem, vmin=-val_range, vmax=val_range, cmap='RdBu_r')
-# plt.axhline(180, color='black')
-# plt.axhline(180 + 90, color='black')
-# plt.colorbar()
-# plt.savefig('fig2.png', dpi=200)
+# How many of the word stimuli did we classify correctly?
+word_predictions = predictions.query('type=="word"')
+n_correct = (word_predictions['text'] == word_predictions['predicted_text']).sum()
+accuracy = n_correct / len(word_predictions)
+print(f'Word prediction accuracy: {n_correct}/{len(word_predictions)} = {accuracy * 100:.1f}%')  # 113/118, not bad at all!
+
+# Write all predictions to large latex tables
+for stimulus_type in ['word', 'pseudoword', 'consonants', 'symbols', 'noisy word']:
+    with open(f'predictions_{stimulus_type.replace(" ", "_")}.tex', 'w') as f:
+        f.write(predictions.query(f'type=="{stimulus_type}"').to_latex(index=False, columns=['type', 'text', 'predicted_text']))
+

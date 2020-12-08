@@ -1,4 +1,6 @@
 \documentclass[a4paper, 10pt]{vanvliet_paper}
+\usepackage{supertabular}
+\usepackage{multicol}
 \input{acronyms}
 \addbibresource{reading_models.bib}
 
@@ -48,35 +50,15 @@ We show how various layers in the model behave similarly to several well studied
 
 \section{Results}
 
-\subsection{The model}
-For the model, we used a \textsc{VGG}-11\cite{Szegedy2015} network architecture, pretrained on ImageNet\cite{Russakovsky2015}, as provided by the TorchVision package\cite{Marcel2010}.
-This architecture consists of five convolution layers (three of which perform convolution twice), followed by two densely connected layers, terminating in an output layer.
-The model was trained to perform visual word recognition using a training set that contained 1~000~000 images, where each image depicted one of 10~000 possible Finnish words, rendered in varying fonts, sizes and rotations, with varying degrees of visual background noise (\autoref{fig:train}).
-The task for the model was to identify the correct word (by setting the corresponding unit in the output layer to a high value), irregardless of the font, size and rotation used to render the text.
-The vocabulary size (10~000) was chosen to exceed the number of units in the densely connected layers (4~096), forcing the model to construct a sub-lexical representation.
-
-\begin{figure}
-    \includegraphics[width=\textwidth]{train.png}
-    \caption{Examples of images in the training set for the model.}\label{fig:train}
-\end{figure}
-
-In addition to the images of valid Finnish words, 50~000 images consisting of only visual noise were added to the training set.
-The inclusion of this "no word present" condition introduces a detection element to what is otherwise a discrimination task.
-If no word was present in the image, all output units should have a low value.
-%This was achieved by training the model with an additional output unit, indicating the "only noise" condition, while using a cross-entropy loss function, which favors only a single output having a high value, driving all other outputs to zero.
-%After training, the final output unit was removed from the model.
-During training, the performance of the model was evaluated on an independent test set of 100~000 images that contained words and 5~000 that contained only noise.
-Training was stopped when the model's performance plateaued, at which point the accuracy on the test set was \SI{99.3}{\percent}.
-
 \subsection{The brain}
 
-The model was compared to \gls{MEG} data that was collected as part of an earlier study by \textcite{Vartiainen2011}.
-During the recording session, 15 participants were presented with various orthographic stimuli, designed to form a series of experimental contrasts that highlight three processing stages during single word reading.
+For this study, we reused the \gls{MEG} data that was collected as part of an earlier study by \textcite{Vartiainen2011}.
+During the recording session, 15 participants (who gave their informed consent, in agreement with the prior approval of the Helsinki and Uusimaa Ethics Committee) were presented with 560 orthographic stimuli (silent reading task), designed to form a series of experimental contrasts that highlight three processing stages during single word reading.
 Stimuli included valid Finnish words, pseudowords, consonant strings, letter-like symbol strings and Finnish words embedded in visual noise (\autoref{fig:stimuli}).
 
 \begin{figure}
     \includegraphics[width=\textwidth]{stimuli.pdf}
-    \caption{Examples of stimuli used in the \gls{MEG} experiment.}\label{fig:stimuli}
+    \caption{Examples of stimuli used in the \gls{MEG} experiment. Each stimulus contained 7--8 letters or symbols.}\label{fig:stimuli}
 \end{figure}
 
 To summarize the high-dimensional \gls{MEG} data, the sensor level signals were segregated into cortical-level spatiotemporal components by means of guided \gls{ECD} modeling\cite{Hamalainen1993}.
@@ -91,14 +73,54 @@ The activity at these dipoles is driven by the visual complexity of the stimulus
 The second group is located further along the fusiform gyrus, sometimes referred to as the \gls{VWFA}\cite{Cohen2004} and their activity peaks slightly later at \SIrange{140}{200}{\milli\second}.
 Dipoles belonging this group exhibit sensitivity to whether the stimulus contains letters that are part of the participant's native alphabet\cite{Tarkiainen1999}, and is characterized in this study by a smaller response to stimuli containing symbol strings and noise embedded words, relative to stimuli that contain letters.
 The third and final group is located temporally, peaking much later at \SIrange{300}{500}{\milli\second}, corresponding to the N400 component of the evoked response\cite{Halgren2002, Helenius1998b, Service2007}.
-Activity 
+In this group, activity is modulated by the lexical content of the stimulus, and is characterized in this study by a larger response to the word-like (i.e., words and pseudowords) versus the non-word-like stimuli.
 
+\subsection{The model}
 
+As a model of the computations underlying the brain activity observed during the \gls{MEG} experiment, we used a \textsc{VGG}-11\cite{Szegedy2015} network architecture, pretrained on ImageNet\cite{Russakovsky2015}, as provided by the TorchVision package\cite{Marcel2010}.
+This architecture consists of five convolution layers (three of which perform convolution twice), followed by two densely connected layers, terminating in an output layer.
+The model was trained to perform visual word recognition using a training set that contained 1~000~000 images, where each image depicted one of 10~000 possible Finnish words, rendered in varying fonts, sizes and rotations, with varying degrees of visual background noise (\autoref{fig:train}).
+The task for the model was to identify the correct word (by setting the corresponding unit in the output layer to a high value), irregardless of the font, size and rotation used to render the text.
+The vocabulary size (10~000) was chosen to exceed the number of units in the densely connected layers (4~096), forcing the model to construct a sub-lexical representation.
+
+\begin{figure}[b]
+    \includegraphics[width=\textwidth]{train.png}
+    \caption{Examples of images in the training set for the model.}\label{fig:train}
+\end{figure}
+
+In addition to the images of valid Finnish words, 50~000 images consisting of only visual noise were added to the training set.
+The inclusion of this "no word present" condition introduces a detection element to what is otherwise a discrimination task.
+If no word was present in the image, all output units should have a low value.
+%This was achieved by training the model with an additional output unit, indicating the "only noise" condition, while using a cross-entropy loss function, which favors only a single output having a high value, driving all other outputs to zero.
+%After training, the final output unit was removed from the model.
+During training, the performance of the model was evaluated on an independent test set of 100~000 images that contained words and 5~000 that contained only noise.
+Training was stopped when the model's performance plateaued, at which point the accuracy on the test set was \SI{99.3}{\percent}.
+
+After training, the model was used to classify the stimulus images used during the \gls{MEG} experiment (see Supplementary Table 1).
+The model classified 113 of the 118 word stimuli correctly (accuracy 95.8\%).
+The 5 incorrectly classified stimuli were instead classified as close orthographic neighbours (e.g. LUOMINEN$\rightarrow$TUOMINEN).
+All noise embedded words were misclassified, since the amount of noise made them unrecognizable, with 99/118 being classified as the word METSÄTEOLLISUUS, which is one of the words in the training set with the highest visual complexity.
+Of course, all the non-word stimuli were misclassified, as the model was not trained on any of these types of stimuli (i.e. pseudowords, consonant strings, symbol strings).
+In this case, it was more difficult to find a pattern in the way they were classified.
+In many cases, similarity in letter shape seemed to play a role (e.g. SKKNTMT$\rightarrow$SUKUNIMI, ÄHKÄÄJÄ$\rightarrow$VARAAJA), not not always (e.g. TTNRNHR$\rightarrow$UUTINENKIRJE, INKRIHTI$\rightarrow$EMOLEVY).
 
 
 \subsection{Comparing model and brain}
 
-The 530 visual stimuli used in the \gls{MEG} experiment were run through the trained model and the sum activation in each layer of the model was recorded for each stimulus (\autoref{fig:results}B).
+To directly compare layer activations in the model to dipole responses in the brain (\autoref{fig:results}, middle), the sum activation in each layer of the model was recorded for each stimulus as it passed through the model (\autoref{fig:results}B).
+Since the same stimuli were processed by both the model and the brain, we can measure the model-brain correspondence qualitatively by examining the responses to each stimulus type, and quantitatively by computing the correlation between the summarized activity in the model layers and dipole groups (\autoref{tab:correlations}).
+
+In the first three convolution layers of the model, we see a much larger response to the "noisy word" stimuli, relative to the other stimulus types, likely driven by the much higher visual complexity of these stimuli.
+Convolution filters that are detecting edges and corners output high values for visual noise and low values for stretches of flat gray background.
+This corresponds well to the response of the first dipole group (Pearson correlations: 0.79, 0.79 and 0.68), localized in the visual cortex of the brain, which shows a similar sensitivity to noise, and does not distinguish between the other stimulus types.
+
+We see a change in the response pattern of the model in the next two convolution layers: layers 4 and 5.
+In these layers, the activity in response to symbol strings is now lower than that of the other types.
+This indicates the presence of convolution filters that are sensitive to the specific line arrangements that are found in letters of the Finnish alphabet, which are not present in the symbol strings.
+In this regard, these layers correspond to the responses of dipole group two in the brain (Person correlations: ?? and ??).
+However, many of the filters are still sensitive to noise, which does not correspond to the responses of the second dipole group.
+Overall, layer 5 corresponds better to dipole group one (Pearson correlation: 0.66).
+
 
 % Network architecture and training
 %   - Example training stimuli
