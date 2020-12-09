@@ -110,29 +110,44 @@ In many cases, similarity in letter shape seemed to play a role (e.g. SKKNTMT$\r
 To directly compare layer activations in the model to dipole responses in the brain (\autoref{fig:results}, middle), the sum activation in each layer of the model was recorded for each stimulus as it passed through the model (\autoref{fig:results}B).
 Since the same stimuli were processed by both the model and the brain, we can measure the model-brain correspondence qualitatively by examining the responses to each stimulus type, and quantitatively by computing the correlation between the summarized activity in the model layers and dipole groups (\autoref{tab:correlations}).
 
+\begin{table}[b]
+    \begin{tabular}{rlrrr}
+        \toprule
+        Layer & Type        & Dipole group 1 & Dipole group 2 & Dipole group 3 \\
+        \midrule
+            1 & Convolution &           0.79 &          -0.48 &          -0.35 \\
+            2 & Convolution &           0.79 &          -0.48 &          -0.35 \\
+            3 & Convolution &           0.68 &          -0.42 &          -0.33 \\
+            4 & Convolution &           0.15 &          -0.03 &          -0.01 \\
+            5 & Convolution &           0.66 &          -0.32 &          -0.19 \\
+            6 & Fully conn. &          -0.32 &           0.39 &           0.39 \\
+            7 & Fully conn. &          -0.53 &           0.47 &           0.43 \\
+            8 & Output      &          -0.61 &           0.45 &           0.44 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Pearson correlations between each layer of the model and the grand-average of each dipole group.}\label{tab:correlations}
+\end{table}
+
 In the first three convolution layers of the model, we see a much larger response to the "noisy word" stimuli, relative to the other stimulus types, likely driven by the much higher visual complexity of these stimuli.
 Convolution filters that are detecting edges and corners output high values for visual noise and low values for stretches of flat gray background.
-This corresponds well to the response of the first dipole group (Pearson correlations: 0.79, 0.79 and 0.68), localized in the visual cortex of the brain, which shows a similar sensitivity to noise, and does not distinguish between the other stimulus types.
+This corresponds well to the response of the first dipole group (Pearson correlations: 0.79, 0.79, 0.68), localized in the visual cortex of the brain, which shows a similar sensitivity to noise, and does not distinguish between the other stimulus types.
 
 We see a change in the response pattern of the model in the next two convolution layers: layers 4 and 5.
 In these layers, the activity in response to symbol strings is now lower than that of the other types.
 This indicates the presence of convolution filters that are sensitive to the specific line arrangements that are found in letters of the Finnish alphabet, which are not present in the symbol strings.
-In this regard, these layers correspond to the responses of dipole group two in the brain (Person correlations: ?? and ??).
-However, many of the filters are still sensitive to noise, which does not correspond to the responses of the second dipole group.
-Overall, layer 5 corresponds better to dipole group one (Pearson correlation: 0.66).
+In this regard, these layers correspond to the responses of dipole group two in the brain.
+However, many of the filters are still sensitive to noise, which does not correspond to the responses of the second dipole group, resulting in a negative correlation (Pearson correlations: -0.03, -0.32).
+Overall, layers 4 and 5 correspond best to dipole group one (Pearson correlations: 0.15, 0.66).
 
+The selectivity for letter shapes becomes more pronounced in the two fully connected layers of the model.
+In these layers, we also see less activity in response to the noise stimuli.
+However, no distinction is made between consonant strings and word-like stimuli, indicating that letters are detected in isolation.
+This means the response patterns of these layers correspond to that of the second dipole group (Pearson correlations 0.39, 0.47).
 
-% Network architecture and training
-%   - Example training stimuli
-%   - Test set results
-% MEG experiment
-%   - Previous publication
-%   - Stimuli (point to figure)
-%   - ECD localization (point to figure)
-%   - MNE localization (point to figure)
-% Big results figure
-%   - Comparison of landmark behavior
-%   - Statistics
+Finally, at the output layer of the model, we observe that consonant strings produce less activity, indicating that the shapes of multiple letters are combined to produce the output.
+It is noteworthy that pseudowords, which were not present in the training set, produce a roughly equal amount of activation in the output layer as valid Finnish words.
+This means that the response pattern of the output layer corresponds to that of the third dipole group (Pearson correlation 0.44).
+
 \begin{figure*}
     \includegraphics[width=18cm]{results.pdf}
     \vspace{2ex}
