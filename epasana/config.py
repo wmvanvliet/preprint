@@ -82,7 +82,6 @@ fname.add('model', '{reading_models_dir}/models/{name}_pth.tar')
 fname.add('model_dsms', '{reading_models_dir}/dsms/epasana_{name}_dsms.pkl')
 fname.add('ga_epochs', '{reading_models_dir}/epasana/grand_average/items-epo.fif')
 fname.add('stimulus_selection', 'stimulus_selection.csv')
-fname.add('info_102', 'info_102.fif')
 
 # Original BIDS files
 fname.add('bids_root', '{orig_epasana_dir}')
