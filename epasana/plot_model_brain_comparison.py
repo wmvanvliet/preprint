@@ -164,8 +164,8 @@ for r, ax, landmark in zip(r1, axes.flat, selected_landmarks):
 
 
 ## Save giant CSV file
-# data = landmark_acts.join(stimuli[['tif_file']].join(layer_acts).set_index('tif_file'), on='tif_file')
-# data.to_csv(fname.brain_model_comparison)
+data = landmark_acts.join(stimuli[['tif_file']].join(layer_acts).set_index('tif_file'), on='tif_file')
+data.to_csv(fname.brain_model_comparison)
 
 #     (Intercept)   fc2_relu
 #  2  -0.0008408194 0.20664959
@@ -180,4 +180,3 @@ for r, ax, landmark in zip(r1, axes.flat, selected_landmarks):
 #  13 -0.0008408194 0.06752757
 #  14 -0.0008408194 0.16153019
 #  15 -0.0008408194 0.13566348
-

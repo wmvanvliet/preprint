@@ -105,6 +105,7 @@ fname.add('trans_tal', '{subjects_dir}/sub-{subject:02d}/mri/transforms/talairac
 
 # Brain <-> Model comparison
 fname.add('brain_model_comparison', '{reading_models_dir}/epasana/brain_model_comparison.csv')
+fname.add('layer_activaty', '{reading_models_dir}/epasana/{model}_layer_activity.pth')
 
 # Reports
 fname.add('report', 'reports/sub{subject:02d}_report.h5')
