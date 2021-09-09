@@ -25,7 +25,7 @@
 \begin{abstract}
 To aid the transition from observation to understanding, we have developed a computational model of word recognition that provides a mechanistic account of how word recognition may be performed in the brain.
 This model can accurately identify a bitmap image of rendered text (with arbitrary font-size, font-family and rotation) as one of 10k possible Finnish words.
-We show that the model produces activity that mimics that of three evoked components that are observed in \gls{MEG} studies involving the presentation of written words.
+Futhermore, we show that the activity produced by the model accurately predicts the amplitude of three evoked \gls{MEG} components, when presenting the same stimuli to both the model and human volunteers.
 \end{abstract}
 
 \section{Introduction}
@@ -35,7 +35,9 @@ This question has been the focus of a large number of neuroimaging studies that 
 Noninvasive measurement techniques such as \gls{EEG}\cite{Grainger2009}, \gls{MEG}\cite{Salmelin2007} and \gls{fMRI}\cite{Price2012} have provided a wealth of information about when and where changes in activity might be expected during various tasks involving orthographic processing\cite{Carreiras2014}.
 However, these observations alone are unlikely to lead to a complete understanding of the computations performed by the brain during reading\cite{Poeppel2012}.
 To develop such an understanding, we need to make these computations explicit, model them, and map the model onto neural signatures observed during imaging studies\cite{Barber2007, Price2018}.
-In this study, we introduce a new computational model of visual word recognition that can accurately identify a bitmap image of rendered text (with arbitrary font-size, font-family and rotation) as one of 10k possible Finnish words, while producing activity that can be mapped onto three evoked components that are observed in \gls{MEG} studies involving the presentation of written words.
+%In this study, we introduce a new computational model of visual word recognition that can accurately identify a bitmap image of rendered text (with arbitrary font-size, font-family and rotation) as one of 10k possible Finnish words, while producing activity that can be mapped onto three evoked components that are observed in \gls{MEG} studies involving the presentation of written words.
+%As the model is able to operate on the same set of bitmap images used as stimuli in an \gls{MEG} experiment, 
+the stimulated activity can be directly compared with real brain activity.
 
 In the past decades, several computational models have been created that successfully capture some aspects of visual word recognition as performed by the brain.
 The \gls{IAC} model of letter perception, by McClelland and Rumelhart\cite{McClelland1981, Rumelhart1982}, was among the first and showed how the interplay of bottom-up and top-down connections results in a system capable of "filling in the blanks" when faced with a partially obscured word.
@@ -45,11 +47,13 @@ Although \textcite{Coltheart2001} pointed out the benefits of explicitly defined
 Together, \gls{PDP} and \gls{DRC} models have been shown to account for many behavioral findings, such as reaction times and recognition errors, in both healthy volunteers and patients\cite{McLeod2000, McClelland2003, Perry2007}.
 More recently, work has also began to apply these models to explain finding in neuroimaging studies.
 
-\textcite{Laszlo2012} created a \gls{PDP}-style model of visual word recognition that can explain how the computations involved in translating a collection of lines (\word{DOG}) into an abstract semantic representration of a concept (a furry animal that barks).
+\textcite{Laszlo2012} created a \gls{PDP}-style model of visual word recognition that performs the computations required to translatie a collection of lines (\word{DOG}) into an abstract semantic representration of a concept (a furry animal that barks), while producing an \gls{EEG}-like signal.
+By summing the activity of the computational units in specific layers in the model, the resulting time varying signal resembles a well known signal component, observed in \gls{EEG} and \gls{MEG} studies, known as the N400 potential\cite{Kutas2011}.
+This result was later extended to model the behavior of more of such components\cite{Laszlo2014}.
 
-have shown that by summing the activity of the computational units in specific layers of a \gls{PDP}-style model, the resulting time varying signal resembles a well known signal component, observed in \gls{EEG} and \gls{MEG} studies, known as the N400 potential\cite{Kutas2011}.
-This result has later been extended to model more of such components\cite{Laszlo2014}.
-However, this 
+However, while the model of \cite{Laszlo2014} produces a neuroimaging-like signal, it cannot be directly compared with real neuroimaging data.
+In fact, none of the existing models of reading can produce numerical data that can be directly compared to actual measurements from the brain, and it is an often repeated sentiment that there should be more contact between the two\cite{Carreiras2014, Laszlo2012, Laszlo2014, Poeppel2012, Taylor2013}.
+This is because the simulated environment is extremely simplified to reduce the complexity of the model, whereas the brain data will by nature reflect the reading process in a realistic setting.
 
 The original \gls{IAC} model\cite{McClelland1981} defines three levels of perception: the feature level, letter level and word level.
 The feature level consists of a "letter bank", in which up to four letters could be loaded, where a single letter is defined as a collection of 16 possible lines.
@@ -57,12 +61,7 @@ Each letter bank at the feature level is connected to a group of 26 nodes in the
 Finally, the letter nodes where connected to a large collection of nodes in the word level, each node corresponding to a word, with a letter-word connection indicating that the letter was part of the word.
 Note that all connections in this model are well defined and no machine learning is employed in the creation of this model.
 
-Each level consists of a layer of nodes with excitory and inhibitory connections between them, so that activity in one level is propagated to the later levels.
-
-
 Although the model operates on 5-letter words with an alphabet of only 3 possible letters, \textcite{Laszlo2012} demonstrated how a computational model can both perform a simplified reading task and produce neuroimaging-like data.
-However, the signal produced by the model cannot be directly compared with neuroimaging data, because the simulated environment was extremely simplified to reduce the complexity of the model, whereas the brain data will by nature reflect the reading process in a realistic setting.
-In fact, none of the existing models of reading can be directly compared to actual neuroimaging data, and it is an often repeated sentiment that there should be more contact between the two\cite{Carreiras2014, Laszlo2012, Laszlo2014, Poeppel2012, Taylor2013}.
 
 Recent advances in deep learning and its software ecosystem are rapidly changing our notion of what is computationally tractable to model\cite{Richards2019}.
 \Glspl{CNN} have emerged that perform visual object recognition at a large enough scale to enable a direct comparison between network state and neuroimaging data\cite{Schrimpf2018, Devereux2018, Yamins2016} and consequently our understanding of basic visual processing has increased tremendously\cite{Lindsay2020}.
@@ -73,8 +72,6 @@ The same set of stimulus images was presented to both the model and human volunt
 Whereas the training set of the model consisted only of images of either valid Finnish words or only visual noise, the stimulus set used in the experiment contained images of valid Finnish words, which were similar to the ones present in the training data for the model, but also consonant strings, symbol strings and pseudo-words.
 We show how various layers in the model behave similarly to several well studied evoked responses and evaluate this similarity both qualitatively and, for the first time, quantitatively.
 
-To aid the transition from observation to understanding, we have developed a computational model of word recognition that is able to operate on the same set of bitmap images used as stimuli in an \gls{MEG} experiment.
-This allowed us to directly compare the stimulated with real brain activity.
 
 
 \section{Results}
