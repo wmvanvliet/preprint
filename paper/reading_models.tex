@@ -25,7 +25,7 @@
 \begin{abstract}
 To aid the transition from observation to understanding, we have developed a computational model of word recognition that provides a mechanistic account of how word recognition may be performed in the brain.
 This model can accurately identify a bitmap image of rendered text (with arbitrary font-size, font-family and rotation) as one of 10k possible Finnish words.
-Futhermore, we show that the activity produced by the model accurately predicts the amplitude of three evoked \gls{MEG} components, when presenting the same stimuli to both the model and human volunteers.
+Furthermore, we show that the activity produced by the model accurately predicts the amplitude of three evoked \gls{MEG} components, when presenting the same stimuli to both the model and human volunteers.
 \end{abstract}
 
 \section{Introduction}
@@ -45,15 +45,19 @@ This model was later extended to model semantics as well, showing how the activa
 As the scope of the models increased, "hand-wiring" the connections in the model became increasingly difficult.
 Although \textcite{Coltheart2001} pointed out the benefits of explicitly defined connections in their \gls{DRC} model of visual word recognition and reading out loud, most current models employ back-propagation learn the connections between units based on a large training dataset.
 Together, \gls{PDP} and \gls{DRC} models have been shown to account for many behavioral findings, such as reaction times and recognition errors, in both healthy volunteers and patients\cite{McLeod2000, McClelland2003, Perry2007}.
-More recently, work has also began to apply these models to explain finding in neuroimaging studies.
+More recently, work has also began to apply these models to explain findings in neuroimaging studies.
 
-\textcite{Laszlo2012} created a \gls{PDP}-style model of visual word recognition that performs the computations required to translatie a collection of lines (\word{DOG}) into an abstract semantic representration of a concept (a furry animal that barks), while producing an \gls{EEG}-like signal.
+\textcite{Laszlo2012} created a \gls{PDP}-style model of visual word recognition that performs the computations required to translate a collection of lines (\word{DOG}) into an abstract semantic representation of a concept (a furry animal that barks), while producing an \gls{EEG}-like signal.
 By summing the activity of the computational units in specific layers in the model, the resulting time varying signal resembles a well known signal component, observed in \gls{EEG} and \gls{MEG} studies, known as the N400 potential\cite{Kutas2011}.
 This result was later extended to model the behavior of more of such components\cite{Laszlo2014}.
 
-However, while the model of \cite{Laszlo2014} produces a neuroimaging-like signal, it cannot be directly compared with real neuroimaging data.
+However, while the model of \textcite{Laszlo2014} produces a neuroimaging-like signal, it cannot be directly compared with real neuroimaging data.
 In fact, none of the existing models of reading can produce numerical data that can be directly compared to actual measurements from the brain, and it is an often repeated sentiment that there should be more contact between the two\cite{Carreiras2014, Laszlo2012, Laszlo2014, Poeppel2012, Taylor2013}.
 This is because the simulated environment is extremely simplified to reduce the complexity of the model, whereas the brain data will by nature reflect the reading process in a realistic setting.
+Let's take the model of \textcite{Laszlo2014} as an example, because it has arguably come closest to producing neuroimaging-like data.
+This model defines four layers: visual input, orthographic, hidden, and semantics.
+
+
 
 The original \gls{IAC} model\cite{McClelland1981} defines three levels of perception: the feature level, letter level and word level.
 The feature level consists of a "letter bank", in which up to four letters could be loaded, where a single letter is defined as a collection of 16 possible lines.
